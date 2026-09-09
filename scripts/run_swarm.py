@@ -127,6 +127,7 @@ def main():
               "completion_time_s": successful_at, "final_hold_s": held, "final_hold_valid": bool(hold_valid),
               "simulator": "native_MuJoCo", "mujoco": mujoco_version(), "physics_timestep_s": args.timestep,
               "control_timestep_s": env.dt, "seed": args.seed, "difficulty": args.difficulty,
+              "episode_seconds": args.episode_seconds, "requested_hold_seconds": args.hold_seconds,
               "wall_seconds": time.perf_counter() - start, "failure": failure,
               "robot_travel_m": robot_travel.tolist(), "object_carried_distance_m": object_carried.tolist(),
               "object_supported_control_steps": supported_samples.tolist(),

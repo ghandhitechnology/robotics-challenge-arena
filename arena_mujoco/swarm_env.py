@@ -247,7 +247,7 @@ class SwarmVectorEnv:
         return self._observation()
 
     def reset_done(self, done_mask):
-        indices = torch.nonzero(done_mask, as_tuple=False).flatten()
+        indices = torch.nonzero(self._tensor(done_mask, torch.bool), as_tuple=False).flatten()
         if len(indices):
             self._reset_indices(indices)
         return self._observation()
@@ -269,11 +269,16 @@ class SwarmVectorEnv:
             adr = self.object_qadr_np[o]
             qpos[:, adr:adr + 2] = origin[:, o]
             qpos[:, adr + 2] = self.object_half_height[o] + .0001
+            # Opposing pads approach the square kit's flat faces. The grasp
+            # frame rotates with the initial payload pose during randomization.
+            qpos[:, adr + 3] = torch.cos(angles[:, o] / 2)
+            qpos[:, adr + 4:adr + 6] = 0
+            qpos[:, adr + 6] = -torch.sin(angles[:, o] / 2)
         packing = self._tensor(self.metadata["robot_start_packing_m"])
         queue = packing[:, :2].expand(size, -1, -1).clone()
-        # Queue agents learn a short, staggered repositioning inside their start
-        # area while carriers manipulate the objects elsewhere on the field.
-        queue[..., 1] += .025
+        # The remaining modules travel in formation alongside the carrier
+        # teams. The columns retain their spacing as the swarm leaves its queue.
+        queue[..., 1] -= .05 + .05 * difficulty
         self.queue_targets[ids] = queue
         for r in range(self.num_robots):
             adr = self.robot_qadr_np[r]
@@ -288,6 +293,7 @@ class SwarmVectorEnv:
                 qpos[:, adr + 6] = torch.sin(yaw / 2)
             else:
                 qpos[:, adr:adr + 3] = packing[r]
+                qpos[:, adr + 3:adr + 7] = self._tensor([0., 0., 0., 1.])
         self.qpos[ids], self.qvel[ids] = qpos, qvel
         self.command[ids] = 0
         self.command[ids, :, 2] = -1
@@ -342,7 +348,7 @@ class SwarmVectorEnv:
         target = torch.where((phase >= 4)[..., None], retreat, target)
         target = torch.where(self.carrier[..., None], target, self.queue_targets)
         wanted_yaw = torch.atan2(-axis[..., 0], axis[..., 1]) + (self.pair_sign < 0).float()[None, :] * math.pi
-        wanted_yaw = torch.where(self.carrier, wanted_yaw, torch.zeros_like(wanted_yaw))
+        wanted_yaw = torch.where(self.carrier, wanted_yaw, torch.full_like(wanted_yaw, math.pi))
         return target, wanted_yaw, obj, goal, phase, axis
 
     def _observation(self):
@@ -421,8 +427,14 @@ class SwarmVectorEnv:
         delta = qr[:, :, None, :2] - qr[:, None, :, :2]
         distance = torch.linalg.vector_norm(delta, dim=-1).clamp(min=.001)
         other = self.robot_indices[:, None] != self.robot_indices[None, :]
-        partner = self.robot_indices[None, :] == self.partner[:, None]
-        avoidance = ((delta / distance[..., None]) * ((.055 - distance).clamp(min=0) * other * ~partner)[..., None]).sum(2)
+        partner = (self.robot_indices[None, :] == self.partner[:, None]) & self.carrier[:, :, None]
+        # Formation spacing follows the narrow body, rather than treating each
+        # 24 x 55 mm module as a 55 mm disc and compressing adjacent columns.
+        separation = torch.sqrt(((delta * right[:, :, None]).sum(-1) / .028).square() +
+                                ((delta * forward[:, :, None]).sum(-1) / .060).square())
+        margin = torch.where(self.carrier[..., None], (.055 - distance).clamp(min=0),
+                             .028 * (1 - separation).clamp(min=0))
+        avoidance = ((delta / distance[..., None]) * (margin * other * ~partner)[..., None]).sum(2)
         nav = (~self.carrier) | (phase == 0)
         turn += torch.where(nav, -20 * (avoidance * right).sum(-1), 0.)
         wheels = torch.stack([velocity_target - turn * .021 / 2, velocity_target + turn * .021 / 2], -1) / .14
@@ -533,14 +545,17 @@ class SwarmVectorEnv:
         distance = torch.linalg.vector_norm(self.goals - qo[..., :2], dim=-1)
         pair_lift = lift[:, :2 * self.num_objects].reshape(self.num_envs, self.num_objects, 2).amax(-1)
         transition = ((self.phase == 0) & (self.contact_hold >= 8) & (pair_lift < .001)) | ((self.phase == 1) & supported & (self.phase_steps > 50))
-        transition |= (self.phase == 2) & (distance < .008) & supported
+        transition |= (self.phase == 2) & (distance < .010) & supported
         transition |= (self.phase == 3) & (pair_lift < .001) & (clearance < .0015) & (self.phase_steps > 55)
         transition |= (self.phase == 4) & (~any_pad_contact) & (self.phase_steps > 100)
         transition &= self.object_active
         self.phase = torch.where(transition, (self.phase + 1).clamp(max=5), self.phase)
         self.phase_steps = torch.where(transition, 0, self.phase_steps)
         self.lost_support_hold = torch.where((old_phase == 2) & ~supported, self.lost_support_hold + 1, 0)
-        recover = (self.lost_support_hold >= 25) & (clearance < .003) & self.object_active
+        # Lower and reacquire after a slipped pinch, including a failed lift
+        # that leaves only one pad supporting the payload.
+        recover = ((self.lost_support_hold >= 25) |
+                   ((old_phase == 1) & (self.phase_steps > 150) & ~supported)) & self.object_active
         self.phase = torch.where(recover, 0, self.phase)
         self.phase_steps = torch.where(recover, 0, self.phase_steps)
         self.contact_hold = torch.where(recover, 0, self.contact_hold)
@@ -573,7 +588,9 @@ class SwarmVectorEnv:
                       "outside": -.2 * outside.float(), "energy": -energy, "action_change": -smoothness}
         reward = sum(components.values()) * self.active
         valid_delivered = self.delivered & settled
-        success = ((valid_delivered | ~self.object_active).all(-1) & (self.steps > 100))
+        formation_error = torch.linalg.vector_norm(self.queue_targets - qr[..., :2], dim=-1)
+        formation_settled = ((formation_error < .012) & (torch.linalg.vector_norm(velocity, dim=-1) < .01)) | self.carrier | ~self.active.bool()
+        success = ((valid_delivered | ~self.object_active).all(-1) & formation_settled.all(-1) & (self.steps > 100))
         failure = ((outside & self.active.bool()).any(-1) | ((tilt < .6) & self.active.bool()).any(-1) |
                    ~torch.isfinite(self.qpos).all(-1) | (self.overflow != 0))
         terminated = success | failure
@@ -585,6 +602,8 @@ class SwarmVectorEnv:
                 "elapsed": self.steps * self.dt, "phase": self.phase.clone(),
                 "overflow": self.overflow.clone(), "clearance": clearance,
                 "object_goal_error": distance, "active_objects": self.object_active.sum(-1)}
+        info["formation_goal_error"] = formation_error
+        info["formation_settled"] = formation_settled
         return self._observation(), reward, terminated, truncated, info
 
     def native_snapshot(self, world=0):
