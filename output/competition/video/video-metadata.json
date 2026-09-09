@@ -1,0 +1,43 @@
+{
+  "exports": {
+    "master": {
+      "path": "videos/competition-proof/renders/competition-proof.mp4",
+      "bytes": 26724870,
+      "sha256": "a6abc04ef8f970025e7bb3a71177db4832a3e9c60874b35a6f419f36e21c7747",
+      "duration_seconds": 249.933333,
+      "width": 1920,
+      "height": 1080,
+      "fps": "30/1",
+      "codec": "h264",
+      "pixel_format": "yuv420p"
+    },
+    "attachment": {
+      "path": "videos/competition-proof/renders/competition-proof-pr.mp4",
+      "bytes": 8866080,
+      "sha256": "2ac61465c19ef1f4a8f3f1a086cd4bdb85638dac4383fa3f101d6b2b461c7dfa",
+      "duration_seconds": 249.933333,
+      "width": 1280,
+      "height": 720,
+      "fps": "30/1",
+      "codec": "h264",
+      "pixel_format": "yuv420p"
+    }
+  },
+  "qa_video_times_seconds": {
+    "sample_pickup": 90.3,
+    "sample_release": 96.3,
+    "final_state": 249.0
+  },
+  "hyperframes_version": "0.8.33",
+  "workers": 4,
+  "native_keyframe_interval_seconds": 1,
+  "pose_interpolation": false,
+  "visual_qa": {
+    "native_contact_sheet": "passed",
+    "master_sample_placement_and_final_state": "passed",
+    "attachment_sample_placement_and_final_state": "passed",
+    "text_counts_and_training_label": "passed"
+  },
+  "composition_html_sha256": "816b4b2295a6eb67a528195a274bc2be9571b1c80b3b3b1632b7e34b83815e61",
+  "training_report_sha256": "29128e845c3d1190bd8239c61e746140820e96d6fbc14df063f632e654631870"
+}

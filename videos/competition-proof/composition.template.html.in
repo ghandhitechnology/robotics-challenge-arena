@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=1920, height=1080" />
   <title>Competition robot proof</title>
+  <link rel="preload" href="assets/fonts/Barlow-SemiBold.ttf" as="font" type="font/ttf" crossorigin />
+  <link rel="preload" href="assets/fonts/IBMPlexMono-Regular.ttf" as="font" type="font/ttf" crossorigin />
   <script src="assets/gsap.min.js"></script>
   <style>
     @font-face { font-family: Barlow; src: url("assets/fonts/Barlow-SemiBold.ttf"); font-weight: 600; }
@@ -21,7 +23,8 @@
     .score { font-family: "IBM Plex Mono", monospace; font-size: 78px; line-height: 1.25; font-variant-numeric: tabular-nums; letter-spacing: -4px; }
     .status { color: #dfc779; font-size: 28px; line-height: 1.2; }
     .task-list { display: grid; gap: 13px; border-top: 2px solid #43534f; padding-top: 22px; }
-    .task { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 27px; line-height: 1.25; }
+    .task { display: grid; grid-template-columns: minmax(0, 1fr) 88px; align-items: baseline; gap: 12px; font-size: 26px; line-height: 1.25; }
+    .task .number { text-align: right; }
     .number { font-family: "IBM Plex Mono", monospace; font-size: 25px; font-variant-numeric: tabular-nums; white-space: nowrap; }
     .facts { display: grid; gap: 17px; margin-top: auto; border-top: 2px solid #43534f; padding-top: 22px; }
     .fact { display: grid; gap: 5px; }
@@ -47,14 +50,20 @@
       <div class="facts">
         <div class="fact"><p class="label">Recorded simulation</p><p class="number">__SIM_SECONDS__ s</p></div>
         <div class="fact"><p class="label">Official time limit</p><p class="number">__OFFICIAL_LIMIT__</p></div>
-        <div class="fact"><p class="label">Numerical warnings</p><p class="number">__WARNINGS__</p></div>
+        <div class="fact"><p class="label">A100 training</p><p class="number">__TRAINING_SECONDS__ s</p></div>
       </div>
       <p class="footnote">__FOOTNOTE__</p>
     </aside>
   </div>
   <script>
-    const tl = gsap.timeline({ paused: true });
-    window.__timelines["competition-proof"] = tl;
+    Promise.all([
+      document.fonts.load("600 58px Barlow"),
+      document.fonts.load('400 25px "IBM Plex Mono"'),
+    ]).then(() => {
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["competition-proof"] = tl;
+      window.__hfForceTimelineRebind?.();
+    });
   </script>
 </body>
 </html>

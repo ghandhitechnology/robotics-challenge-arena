@@ -95,4 +95,4 @@ The verifier checks source/model/weight hashes, the initial setup, the declarati
 .venv/bin/python scripts/render_competition_video.py --render
 ```
 
-This renders the recorded native poses, then uses HyperFrames for the continuous field view and report panel. The simulation clock and task phase come from the recording. Playback runs at 3×, with no pose interpolation. The final 720p inline attachment is `videos/competition-proof/renders/competition-proof-pr.mp4`; the master is 1080p. A render manifest binds the video to the scene, trajectory and report hashes.
+This renders the recorded native poses, then uses HyperFrames for the continuous field view and report panel. The simulation clock and task phase come from the recording. Playback runs at 3×, with no pose interpolation. The final 720p inline attachment is `videos/competition-proof/renders/competition-proof-pr.mp4`; the master is 1080p. The render manifest records the scene, trajectory, report and native-footage hashes. `output/competition/video/video-metadata.json` records the finished export checksums, and the same folder contains inspected frames.

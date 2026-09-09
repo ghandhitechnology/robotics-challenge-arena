@@ -18,7 +18,7 @@ The script requires the repository's MuJoCo Python environment with Pillow, FFmp
 
 For a short pipeline test, copy this scaffold under `tmp/`, then pass `--project tmp/competition-video-test --input tmp/mission_first --max-seconds 3`. Test clips remain outside the final proof directory.
 
-The final report supplies the score, task counts, physical tape mode, simulation time, and official time limit. The video identifies simulator state feedback. A feasibility result beyond the official limit remains labeled as a feasibility run.
+The final report supplies the score, task counts, physical tape mode, simulation time, and official time limit. The completion label requires both mission success and a complete task score. The A100 training duration comes from `output/competition/policy/training.json`; its weight checksum must match both the mission report and the actual weights file. The video identifies simulator state feedback. A feasibility result beyond the official limit remains labeled as a feasibility run.
 
 The installed GitHub CLI supports direct video attachment:
 
@@ -28,4 +28,3 @@ gh pr create --head feat/competition-robot --title "..." --body-file /tmp/pr-bod
 ```
 
 `--attach` renders video as an inline player. The 9.5 MB encode fits the documented 10 MB Free-plan video limit. See [GitHub's CLI attachment announcement](https://github.blog/changelog/2026-09-01-github-cli-media-in-issues-pull-requests-and-comments/).
-

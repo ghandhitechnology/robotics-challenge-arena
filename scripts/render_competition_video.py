@@ -78,7 +78,8 @@ def render_native(args, inputs, report):
     command = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-f", "rawvideo",
                "-pix_fmt", "rgb24", "-s", f"{SCENE_WIDTH}x{SCENE_HEIGHT + HUD_HEIGHT}",
                "-r", str(args.fps), "-i", "-", "-an", "-c:v", "libx264", "-preset", "fast",
-               "-crf", "19", "-pix_fmt", "yuv420p", "-threads", "2", "-movflags", "+faststart", str(source)]
+               "-crf", "19", "-g", str(args.fps), "-keyint_min", str(args.fps),
+               "-pix_fmt", "yuv420p", "-threads", "2", "-movflags", "+faststart", str(source)]
     started = time.perf_counter()
     process = subprocess.Popen(command, stdin=subprocess.PIPE)
     samples = {}
@@ -133,7 +134,20 @@ def render_native(args, inputs, report):
     return manifest
 
 
-def compose(project: Path, report: dict, manifest: dict):
+def verified_training(report: dict) -> dict:
+    policy = ROOT / "output/competition/policy"
+    training = json.loads((policy / "training.json").read_text())
+    weights_sha256 = digest(policy / "weights.npz")
+    if report.get("weights_sha256") != weights_sha256 or training.get("weights_sha256") != weights_sha256:
+        raise ValueError("Mission, training report, and policy weights must have matching SHA-256 hashes")
+    if "A100" not in training.get("gpu", ""):
+        raise ValueError("Training report does not identify an A100 GPU")
+    if not math.isfinite(training["training_seconds"]) or training["training_seconds"] <= 0:
+        raise ValueError("Training duration must be finite and positive")
+    return training
+
+
+def compose(project: Path, report: dict, manifest: dict, training: dict):
     score = report.get("score", {})
     names = {"samples": "Samples", "kits": "Medical kits", "red_patients": "Red patients",
              "yellow_patients": "Yellow patients", "green_patients": "Green patients"}
@@ -149,10 +163,10 @@ def compose(project: Path, report: dict, manifest: dict):
         "DURATION": f'{manifest["duration_seconds"]:.8f}',
         "MODE": mode, "CONTROLLER": f'{report.get("policy", "Recorded").capitalize()} controller',
         "SCORE": f'{score.get("score", "—")}/{score.get("maximum_score", "—")}',
-        "STATUS": "All tasks complete" if score.get("all_tasks_complete") else "Tasks incomplete",
+        "STATUS": "All tasks complete" if report.get("success") and score.get("all_tasks_complete") else "Run incomplete",
         "SIM_SECONDS": f'{report["simulation_seconds"]:.1f}',
         "OFFICIAL_LIMIT": f"{limit:g} s" if limit is not None else "Not specified",
-        "WARNINGS": str(report.get("diagnostics", {}).get("warnings", "—")),
+        "TRAINING_SECONDS": f'{training["training_seconds"]:.1f}',
         "FOOTNOTE": ("Test excerpt · " if manifest["partial_replay"] else "") +
                     f'Native MuJoCo · simulator state feedback · {report.get("tape_mode", "unspecified")} tape',
     }
@@ -162,6 +176,7 @@ def compose(project: Path, report: dict, manifest: dict):
     template = template.replace("__TASK_ROWS__", "\n".join(rows))
     (project / "index.html").write_text(template)
     (project / "source-report.json").write_text(json.dumps(report, indent=2) + "\n")
+    (project / "source-training.json").write_text(json.dumps(training, indent=2) + "\n")
 
 
 def compact_attachment(source: Path, target: Path, duration: float, budget_mb: float):
@@ -202,6 +217,7 @@ def main():
         if not shutil.which(binary):
             parser.error(f"Required executable is missing: {binary}")
     report = json.loads((args.input / "report.json").read_text())
+    training = verified_training(report)
     inputs = load_recording(args.input, args.speed, args.fps, args.max_seconds)
     manifest_path = args.project / "render-manifest.json"
     if args.reuse_source:
@@ -217,14 +233,14 @@ def main():
             raise ValueError("Cached source video checksum changed")
     else:
         manifest = render_native(args, inputs, report)
-    compose(args.project, report, manifest)
+    compose(args.project, report, manifest, training)
     if not args.native_only:
         subprocess.run(["npm", "run", "check", "--", "--samples", "3", "--snapshots"], cwd=args.project, check=True)
     if args.render:
         output = args.project / "renders"
         output.mkdir(exist_ok=True)
         video = output / "competition-proof.mp4"
-        subprocess.run(["npm", "run", "render", "--", "--quality", "high", "--fps", str(args.fps),
+        subprocess.run(["npm", "run", "render", "--", "--quality", "high", "--fps", str(args.fps), "--workers", "4",
                         "--output", str(video)], cwd=args.project, check=True)
         info = json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-show_format", "-of", "json", str(video)]))
         duration = float(info["format"]["duration"])

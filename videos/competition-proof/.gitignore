@@ -2,10 +2,10 @@ assets/trajectory.mp4
 assets/native-poster.png
 render-manifest.json
 source-report.json
+source-training.json
 native-contact-sheet.png
 snapshots/
 renders/
 .hyperframes/
 .media/
 node_modules/
-
