@@ -1,0 +1,786 @@
+{
+  "schema_version": 1,
+  "audited_on": "2026-09-10",
+  "active_profile": "national_senior_preliminary",
+  "scope": "Korean senior preliminary only; international finals are a separate reference, not an active task.",
+  "sources": {
+    "national_2026_full": {
+      "path": "reference/challenge_2026_full.pdf",
+      "title": "2026 로보틱스 챌린지 문제해결 트랙 안내",
+      "date": "2026-08",
+      "pdf_pages": 20,
+      "printed_page_offset": -1,
+      "sha256": "391b2459411f33baf017b4ffc6b1d913ba868cf7d8c1cd4c82599ff5a10e43f8",
+      "official_site": "https://robotics-2026.web.app/challenge/qualifier",
+      "priority": "Primary rules for the Korean preliminary round."
+    },
+    "international_2026_2027": {
+      "path": "reference/challenge_2026_international.pdf",
+      "title": "Robotics for Good Youth Challenge Rulebook 2026-2027",
+      "pdf_pages": 24,
+      "url": "https://robotics-2026.web.app/files/intl-rulebook-en.pdf",
+      "listing_url": "https://robotics-2026.web.app/resources",
+      "sha256": "e8d1a93481eede01b995c313bea3ff39565483386dd83bf080536a4a541dbd40",
+      "latest_download_verified": "2026-09-10",
+      "latest_download_matches_local": true,
+      "priority": "National finals adopt this document. For preliminary geometry, use only explicitly identified supplementary dimensions."
+    },
+    "national_public_site": {
+      "url": "https://robotics-2026.web.app/challenge/qualifier",
+      "checked_on": "2026-09-10",
+      "note": "Confirms senior preliminary 160 points, fixed setup and free crossing of the central H tape. Resources still labels the downloadable Korean DOCX as a v2 draft; the supplied full PDF remains primary."
+    }
+  },
+  "coordinates": {
+    "units": "meters",
+    "origin": "Lower-left playing-surface corner in the supplied photo orientation",
+    "x": "right",
+    "y": "up in the plan view",
+    "z": "vertically upward",
+    "rectangle_format": "[xmin, ymin, xmax, ymax]",
+    "zone_edges": "Clear inner edges; black boundary tape is excluded from scored zone interiors."
+  },
+  "geometry": {
+    "arena_spec": "arena_spec.json",
+    "configuration": "senior_preliminary",
+    "field_bounds_xy": [
+      0,
+      0,
+      1.143,
+      1.181
+    ],
+    "zones": {
+      "hospital": {
+        "bounds_xy": [
+          0,
+          0.358,
+          0.18,
+          0.861
+        ],
+        "accepted_patient_color": "red",
+        "kit_capacity_for_score": 2,
+        "evidence": [
+          {
+            "source": "national_2026_full",
+            "pdf_pages": [
+              19
+            ]
+          }
+        ]
+      },
+      "pcc_lower": {
+        "bounds_xy": [
+          0,
+          0,
+          0.18,
+          0.338
+        ],
+        "accepted_patient_color": "yellow",
+        "kit_capacity_for_score": 1,
+        "evidence": [
+          {
+            "source": "national_2026_full",
+            "pdf_pages": [
+              19
+            ]
+          }
+        ],
+        "derivation": "Lower PCC length=1181-300-20-503-20=338 mm; this lower length is not separately dimensioned."
+      },
+      "pcc_upper": {
+        "bounds_xy": [
+          0,
+          0.881,
+          0.18,
+          1.181
+        ],
+        "accepted_patient_color": "yellow",
+        "kit_capacity_for_score": 1,
+        "evidence": [
+          {
+            "source": "national_2026_full",
+            "pdf_pages": [
+              19
+            ]
+          }
+        ]
+      },
+      "recovery": {
+        "bounds_xy": [
+          0.863,
+          0.701,
+          1.143,
+          1.181
+        ],
+        "accepted_patient_color": "green",
+        "kit_capacity_for_score": 0,
+        "same_area_as": "start",
+        "evidence": [
+          {
+            "source": "national_2026_full",
+            "pdf_pages": [
+              18
+            ]
+          }
+        ]
+      },
+      "start": {
+        "bounds_xy": [
+          0.863,
+          0.701,
+          1.143,
+          1.181
+        ],
+        "clear_size_xy": [
+          0.28,
+          0.48
+        ],
+        "evidence": [
+          {
+            "source": "national_2026_full",
+            "pdf_pages": [
+              14,
+              18
+            ]
+          }
+        ]
+      },
+      "quarantine": {
+        "bounds_xy": [
+          0.863,
+          0,
+          1.143,
+          0.28
+        ],
+        "evidence": [
+          {
+            "source": "national_2026_full",
+            "pdf_pages": [
+              19
+            ]
+          }
+        ]
+      }
+    },
+    "laboratory": {
+      "plate_bounds_xy": [
+        0.993,
+        0.318,
+        1.143,
+        0.663
+      ],
+      "plate_thickness_m": 0.003,
+      "slot_radius_m": 0.03,
+      "slots": [
+        {
+          "id": "lab_1",
+          "center_xy": [
+            1.068,
+            0.3905
+          ]
+        },
+        {
+          "id": "lab_2",
+          "center_xy": [
+            1.068,
+            0.4905
+          ]
+        },
+        {
+          "id": "lab_3",
+          "center_xy": [
+            1.068,
+            0.5905
+          ]
+        }
+      ],
+      "sample_radius_m": 0.028,
+      "sample_thickness_m": 0.005,
+      "flat_sample_max_center_offset_m": 0.002,
+      "slot_diameter_evidence": {
+        "source": "international_2026_2027",
+        "pdf_pages": [
+          9
+        ],
+        "section": "c.3.2"
+      },
+      "plate_dimensions_evidence": {
+        "source": "national_2026_full",
+        "pdf_pages": [
+          20
+        ]
+      },
+      "placement_status": "Lab centering and 100 mm slot pitch are reconstructed from the supplied images; exact slot centers are not numerically specified by the national rules."
+    },
+    "cylinder": {
+      "radius_m": 0.01,
+      "height_m": 0.02,
+      "initial_count_by_color": {
+        "red": 4,
+        "yellow": 4,
+        "green": 4
+      }
+    },
+    "kit": {
+      "size_m": [
+        0.025,
+        0.025,
+        0.02
+      ],
+      "count": 4
+    },
+    "tape_width_m": 0.02,
+    "tape_thickness_m": 0.00015,
+    "tape_thickness_status": "User-specified, not a published competition measurement.",
+    "frame": false,
+    "containment_beams": 0,
+    "layout_limits": [
+      "Literal national outer dimensions are retained despite schematic aspect-ratio conflicts.",
+      "Kit and sample centers in arena_spec.json are photographic registrations, not independently dimensioned official coordinates.",
+      "The 345 mm national laboratory plate must not be replaced by the 440 mm international plate for this preliminary scene."
+    ],
+    "initial_sample_centers_xy": [
+      [
+        0.972,
+        0.145
+      ],
+      [
+        1.072,
+        0.195
+      ],
+      [
+        1.072,
+        0.095
+      ]
+    ],
+    "initial_cylinders": [
+      {
+        "color": "yellow",
+        "center_xy": [
+          0.45,
+          0.15
+        ]
+      },
+      {
+        "color": "yellow",
+        "center_xy": [
+          0.65,
+          0.15
+        ]
+      },
+      {
+        "color": "green",
+        "center_xy": [
+          0.45,
+          0.25
+        ]
+      },
+      {
+        "color": "green",
+        "center_xy": [
+          0.65,
+          0.25
+        ]
+      },
+      {
+        "color": "red",
+        "center_xy": [
+          0.45,
+          0.35000000000000003
+        ]
+      },
+      {
+        "color": "red",
+        "center_xy": [
+          0.65,
+          0.35000000000000003
+        ]
+      },
+      {
+        "color": "red",
+        "center_xy": [
+          0.45,
+          0.8310000000000001
+        ]
+      },
+      {
+        "color": "red",
+        "center_xy": [
+          0.65,
+          0.8310000000000001
+        ]
+      },
+      {
+        "color": "green",
+        "center_xy": [
+          0.45,
+          0.931
+        ]
+      },
+      {
+        "color": "green",
+        "center_xy": [
+          0.65,
+          0.931
+        ]
+      },
+      {
+        "color": "yellow",
+        "center_xy": [
+          0.45,
+          1.031
+        ]
+      },
+      {
+        "color": "yellow",
+        "center_xy": [
+          0.65,
+          1.031
+        ]
+      }
+    ]
+  },
+  "profiles": {
+    "national_senior_preliminary": {
+      "official_time_limit_s": 120,
+      "maximum_task_score": 160,
+      "initial_movable_object_count": 19,
+      "minimum_correctly_delivered_object_count_for_full_score": 16,
+      "initial_inventory": {
+        "sample": 3,
+        "medical_kit": 4,
+        "red_cylinder": 4,
+        "yellow_cylinder": 4,
+        "green_cylinder": 4,
+        "containment_beam": 0
+      },
+      "setup": {
+        "patient_positions": "fixed, as supplied national diagram",
+        "sample_positions": "fixed, as supplied national diagram",
+        "patient_color_randomization": false,
+        "sample_position_randomization": false,
+        "kits_may_be_preloaded": true,
+        "kit_floor_rearrangement": "Not explicitly permitted in the national preliminary rules; use the depicted floor layout or preload kits on the robot.",
+        "unloaded_kit_slot_uncertainty": "The supplied senior inventory is four kits while the adjacent illustration shows six; exact choice of four floor slots is not separately specified.",
+        "all_robots_and_preloads_inside_start": true,
+        "samples_or_patients_may_be_prepositioned": false,
+        "unused_cylinders_may_be_moved_during_run": true,
+        "evidence": [
+          {
+            "source": "national_2026_full",
+            "pdf_pages": [
+              11,
+              12,
+              14
+            ]
+          }
+        ]
+      },
+      "tasks": [
+        {
+          "id": "samples",
+          "count": 3,
+          "points_each": 10,
+          "maximum_points": 30,
+          "destination": "laboratory slots",
+          "full_score_distribution": {
+            "lab_1": 1,
+            "lab_2": 1,
+            "lab_3": 1
+          },
+          "distinct_slots_status": "Conservative implementation target consistent with three samples and three laboratory slots; the national score row does not separately state a one-disc-per-slot cap.",
+          "evidence": [
+            {
+              "source": "national_2026_full",
+              "pdf_pages": [
+                12
+              ]
+            },
+            {
+              "source": "international_2026_2027",
+              "pdf_pages": [
+                4,
+                5
+              ],
+              "section": "b. Mission 1"
+            }
+          ]
+        },
+        {
+          "id": "kits",
+          "count": 4,
+          "points_each": 10,
+          "maximum_points": 40,
+          "full_score_distribution": {
+            "hospital": 2,
+            "pcc_lower": 1,
+            "pcc_upper": 1
+          },
+          "evidence": [
+            {
+              "source": "national_2026_full",
+              "pdf_pages": [
+                12
+              ]
+            }
+          ]
+        },
+        {
+          "id": "red_patients",
+          "color": "red",
+          "count": 3,
+          "available_count": 4,
+          "points_each": 10,
+          "maximum_points": 30,
+          "destinations": [
+            "hospital"
+          ],
+          "any_three_of_four_allowed": true,
+          "evidence": [
+            {
+              "source": "national_2026_full",
+              "pdf_pages": [
+                12
+              ]
+            }
+          ]
+        },
+        {
+          "id": "yellow_patients",
+          "color": "yellow",
+          "count": 3,
+          "available_count": 4,
+          "points_each": 10,
+          "maximum_points": 30,
+          "destinations": [
+            "pcc_lower",
+            "pcc_upper"
+          ],
+          "minimum_per_pcc": 1,
+          "valid_full_score_splits": [
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              1
+            ]
+          ],
+          "distribution_gate": "If either PCC has no correctly placed yellow cylinder, all yellow placement points are denied.",
+          "any_three_of_four_allowed": true,
+          "evidence": [
+            {
+              "source": "national_2026_full",
+              "pdf_pages": [
+                12
+              ]
+            }
+          ]
+        },
+        {
+          "id": "green_patients",
+          "color": "green",
+          "count": 3,
+          "available_count": 4,
+          "points_each": 10,
+          "maximum_points": 30,
+          "destinations": [
+            "recovery"
+          ],
+          "any_three_of_four_allowed": true,
+          "evidence": [
+            {
+              "source": "national_2026_full",
+              "pdf_pages": [
+                12
+              ]
+            }
+          ]
+        }
+      ],
+      "placement_validity": {
+        "evaluated_at": "match end, not transient intermediate placement",
+        "entire_object_inside_clear_destination": true,
+        "boundary_straddling_scores": false,
+        "released_from_robot": true,
+        "numerical_pose_or_contact_tolerance_in_rules": null,
+        "recommended_simulation_evidence": "Evaluate the complete projected collision footprint and actual robot-object contacts; demonstrate a stable released end state.",
+        "evidence": [
+          {
+            "source": "national_2026_full",
+            "pdf_pages": [
+              12,
+              13
+            ]
+          }
+        ]
+      },
+      "wrong_color_rule": {
+        "effect": "Cancel cylinder points associated with a destination zone containing a wrong-colored cylinder at match end.",
+        "affected_score": "cylinder points for the contaminated destination zone; no stated cancellation of kit points",
+        "zone_accepted_colors": {
+          "hospital": [
+            "red"
+          ],
+          "pcc_lower": [
+            "yellow"
+          ],
+          "pcc_upper": [
+            "yellow"
+          ],
+          "recovery": [
+            "green"
+          ]
+        },
+        "source": {
+          "source": "national_2026_full",
+          "pdf_pages": [
+            12
+          ]
+        },
+        "unresolved_details": [
+          "The document does not quantify whether a wrong-colored cylinder merely straddling a boundary contaminates the zone.",
+          "Interaction between contamination in one PCC and the yellow distribution gate is not separately specified. Full-score proof must avoid contamination in either PCC."
+        ]
+      },
+      "penalties": {
+        "robot_completely_outside_field_points_per_occurrence": -10,
+        "post_start_human_intervention": "submitted run invalid",
+        "evidence": [
+          {
+            "source": "national_2026_full",
+            "pdf_pages": [
+              12,
+              13
+            ]
+          }
+        ]
+      },
+      "timing": {
+        "start": "The instant the team member releases their hand from the robot after preparation.",
+        "end": "Earlier of a visible/audible end declaration or 120 elapsed seconds.",
+        "after_end_motion_counts": false,
+        "final_unchanged_view_minimum_s": 5,
+        "no_early_declaration_official_time_s": 120,
+        "tie_breakers": [
+          "shorter official completion time",
+          "earlier final submission time"
+        ],
+        "evidence": [
+          {
+            "source": "national_2026_full",
+            "pdf_pages": [
+              13,
+              14,
+              15
+            ]
+          }
+        ]
+      },
+      "return_or_parking_task": false,
+      "central_H_tape_may_be_crossed": true,
+      "central_H_crossing_evidence": {
+        "source": "national_public_site",
+        "pdf_pages": [],
+        "section": "Preliminary missions"
+      },
+      "recording": {
+        "simultaneous_cameras": 2,
+        "views": [
+          "entire-field overhead",
+          "front view including field, timer and start/end action"
+        ],
+        "minimum_resolution": "720p",
+        "minimum_fps": 30,
+        "maximum_video_length_s": 300,
+        "unedited_one_take": true,
+        "physical_timer_visible": true,
+        "team_name_and_verification_code_required": true,
+        "evidence": [
+          {
+            "source": "national_2026_full",
+            "pdf_pages": [
+              13,
+              14,
+              17
+            ]
+          }
+        ]
+      }
+    },
+    "international_senior_reference_only": {
+      "active": false,
+      "adopted_for": "Korean finals, not the current preliminary scope",
+      "official_time_limit_s": 120,
+      "maximum_positive_score": 250,
+      "initial_movable_object_count": 27,
+      "inventory": {
+        "sample": 3,
+        "containment_beam": 2,
+        "medical_kit": 10,
+        "red_cylinder": 4,
+        "yellow_cylinder": 4,
+        "green_cylinder": 4
+      },
+      "positive_score_components": {
+        "samples": {
+          "count": 3,
+          "points_each": 15,
+          "all_three_bonus": 5,
+          "maximum": 50
+        },
+        "beams": {
+          "count": 2,
+          "points_each": 25,
+          "closed_perimeter_bonus": 20,
+          "maximum": 70
+        },
+        "kits": {
+          "count": 10,
+          "points_each": 3,
+          "distribution": {
+            "hospital": 6,
+            "pcc_lower": 2,
+            "pcc_upper": 2
+          },
+          "distribution_bonus": 20,
+          "maximum": 50
+        },
+        "patients": {
+          "count": 12,
+          "points_each": 5,
+          "all_red_bonus": 6,
+          "yellow_two_per_pcc_bonus": 8,
+          "all_green_bonus": 6,
+          "maximum": 80
+        }
+      },
+      "randomized_senior_setup": [
+        "sample locations inside quarantine",
+        "patient color arrangement over the 12 fixed starting stickers"
+      ],
+      "beam_validity": "Both beams upright (60 mm tall, 20 mm footprint width), stable and released; each touches a fixed wall, beams meet at an end, together form approximately right-angled closed perimeter and touch/partly cover quarantine tape.",
+      "beam_sizes_m": [
+        [
+          0.25,
+          0.06,
+          0.02
+        ],
+        [
+          0.28,
+          0.06,
+          0.02
+        ]
+      ],
+      "return_or_parking_task": false,
+      "evidence": [
+        {
+          "source": "international_2026_2027",
+          "pdf_pages": [
+            4,
+            5,
+            6,
+            7,
+            17,
+            18,
+            19,
+            21,
+            23,
+            24
+          ]
+        }
+      ],
+      "ambiguities": [
+        "Table h.3.2 states -3 for a patient outside its correct destination; j.4.4 states -5 for a patient in an incorrect destination. Double counting versus replacement is not specified.",
+        "Mission text prohibits kit/beam handling after start, while round procedure g.4 explicitly allows handover of initial base elements to a robot wholly inside start; use no human handover for an autonomous proof.",
+        "Printed quarantine clear 280 mm dimensions and 250/280 mm upright beams need a separate closure-geometry audit before claiming finals completion."
+      ]
+    }
+  },
+  "robot_constraints": {
+    "national_preliminary_explicit": {
+      "collective_start_envelope_xy_m": [
+        0.28,
+        0.48
+      ],
+      "all_preloaded_elements_included": true,
+      "multiple_robots_allowed": true,
+      "no_human_intervention_after_start": true,
+      "medical_kit_preload_allowed": true,
+      "sample_or_patient_preload_allowed": false,
+      "evidence": [
+        {
+          "source": "national_2026_full",
+          "pdf_pages": [
+            13,
+            14
+          ]
+        }
+      ]
+    },
+    "numeric_limits_not_found_in_national_rules": {
+      "height_m": null,
+      "mass_kg": null,
+      "motor_count": null,
+      "sensor_count": null,
+      "battery_voltage_v": null,
+      "mandatory_robot_brand": null,
+      "mandatory_programming_language": null
+    },
+    "international_explicit_and_prudent_design_targets": {
+      "all_robots_start_inside_same_envelope": true,
+      "fully_autonomous": true,
+      "all_robots_activated_at_start": true,
+      "accessible_identifiable_emergency_stop": true,
+      "any_materials_and_programming_platforms": true,
+      "public_health_theme_decoration": true,
+      "no_sharp_or_damaging_parts": true,
+      "secure_cables_batteries_and_parts": true,
+      "evidence": [
+        {
+          "source": "international_2026_2027",
+          "pdf_pages": [
+            4,
+            17,
+            18
+          ],
+          "section": "e. Robots / g. Round procedure"
+        }
+      ]
+    },
+    "not_explicitly_resolved": [
+      "External cameras and offboard autonomous computation are not specifically addressed; onboard sensing and inference avoid that dependency.",
+      "Absence of a published numeric mass/height limit is not a measured physical stability or safety specification."
+    ],
+    "authorship": {
+      "national_rule": "Third-party proxy creation and improper reuse are grounds for disqualification; external source material must be attributed.",
+      "evidence": [
+        {
+          "source": "national_2026_full",
+          "pdf_pages": [
+            8,
+            14
+          ]
+        }
+      ]
+    }
+  },
+  "proof_modes": {
+    "official_120s": {
+      "time_limit_s": 120,
+      "target_task_score": 160,
+      "maximum_robot_outside_events": 0,
+      "required": "All five task types at their score caps, correct distributions, stable released pieces, no wrong-color contamination, valid initial placement and no human intervention.",
+      "claim": "Simulation evidence toward an official-time solution; physical competition success still requires the actual robot and kit."
+    },
+    "unlimited_feasibility": {
+      "time_limit_s": null,
+      "target_task_score": 160,
+      "same_placement_and_autonomy_conditions": true,
+      "must_report_actual_elapsed_seconds": true,
+      "official_time_pass": false,
+      "claim": "All-task mechanical/policy feasibility only; a run exceeding 120 seconds is not an official 160-point result."
+    }
+  }
+}
