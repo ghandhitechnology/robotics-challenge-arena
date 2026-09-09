@@ -28,6 +28,34 @@ def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def camera_settings(args) -> dict:
+    settings = {"camera": args.camera, "camera_fovy": args.camera_fovy}
+    if args.camera == "robot-pov":
+        settings.update(camera_body="competition_robot", camera_position_body_m=list(args.pov_position),
+                        camera_pitch_down_degrees=args.pov_pitch_degrees, camera_stabilization=False)
+    return settings
+
+
+def configure_camera(model, args):
+    """Use a render-only camera mount without changing recorded model files."""
+    name = "overview" if args.camera == "robot-pov" else args.camera
+    camera_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_CAMERA, name)
+    if camera_id < 0:
+        raise ValueError(f"Saved model has no camera named {name!r}")
+    model.cam_fovy[camera_id] = args.camera_fovy
+    if args.camera == "robot-pov":
+        body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, "competition_robot")
+        if body_id < 0:
+            raise ValueError("Robot POV requires the competition_robot body")
+        model.cam_bodyid[camera_id] = body_id
+        model.cam_mode[camera_id] = mujoco.mjtCamLight.mjCAMLIGHT_FIXED
+        model.cam_pos[camera_id] = args.pov_position
+        # A MuJoCo camera looks along local -Z. Rotate toward the robot's +Y.
+        half_angle = math.radians(90 - args.pov_pitch_degrees) / 2
+        model.cam_quat[camera_id] = [math.cos(half_angle), math.sin(half_angle), 0, 0]
+    return name
+
+
 def load_recording(directory: Path, speed: float, fps: int, max_seconds: float | None):
     with np.load(directory / "trajectory.npz", allow_pickle=False) as saved:
         times = np.array(saved["times"], dtype=np.float64)
@@ -66,10 +94,7 @@ def render_native(args, inputs, report):
     model.vis.global_.offwidth = SCENE_WIDTH
     model.vis.global_.offheight = SCENE_HEIGHT
     data = mujoco.MjData(model)
-    camera_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_CAMERA, args.camera)
-    if camera_id < 0:
-        raise ValueError(f"Saved model has no camera named {args.camera!r}")
-    model.cam_fovy[camera_id] = args.camera_fovy
+    camera_name = configure_camera(model, args)
     font_path = assets / "fonts/Barlow-SemiBold.ttf"
     mono_path = assets / "fonts/IBMPlexMono-Regular.ttf"
     phase_font = ImageFont.truetype(str(font_path), 34)
@@ -91,7 +116,7 @@ def render_native(args, inputs, report):
                 data.qpos[:] = poses[recorded_index]
                 data.time = times[recorded_index]
                 mujoco.mj_forward(model, data)
-                renderer.update_scene(data, camera=args.camera)
+                renderer.update_scene(data, camera=camera_name)
                 frame = Image.new("RGB", (SCENE_WIDTH, SCENE_HEIGHT + HUD_HEIGHT), "#12181b")
                 frame.paste(Image.fromarray(renderer.render()), (0, 0))
                 draw = ImageDraw.Draw(frame)
@@ -122,7 +147,7 @@ def render_native(args, inputs, report):
         "trajectory_sha256": digest(args.input / "trajectory.npz"),
         "report_sha256": digest(args.input / "report.json"),
         "source_video_sha256": digest(source),
-        "mujoco_version": mujoco.__version__, "camera": args.camera, "camera_fovy": args.camera_fovy,
+        "mujoco_version": mujoco.__version__, **camera_settings(args),
         "fps": args.fps, "playback_speed": args.speed, "pose_interpolation": False,
         "recorded_pose_count": len(times), "rendered_pose_frames": len(indices),
         "final_hold_frames": hold_frames, "duration_seconds": (len(indices) + hold_frames) / args.fps,
@@ -197,8 +222,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, default=ROOT / "output/competition/proof")
     parser.add_argument("--project", type=Path, default=ROOT / "videos/competition-proof")
-    parser.add_argument("--camera", default="overview")
-    parser.add_argument("--camera-fovy", type=float, default=38.0)
+    parser.add_argument("--camera", default="overview", help="Saved camera name or robot-pov")
+    parser.add_argument("--camera-fovy", type=float, help="Vertical field of view; defaults to 90 for POV, 38 otherwise")
+    parser.add_argument("--pov-position", type=float, nargs=3, default=(0., .095, .150), metavar=("X", "Y", "Z"),
+                        help="Robot POV camera position in body coordinates, in meters")
+    parser.add_argument("--pov-pitch-degrees", type=float, default=65., help="Fixed downward pitch from robot forward")
     parser.add_argument("--speed", type=float, default=3.0)
     parser.add_argument("--fps", type=int, choices=(24, 30, 60), default=30)
     parser.add_argument("--hold-final", type=float, default=2.0)
@@ -208,10 +236,14 @@ def main():
     parser.add_argument("--render", action="store_true", help="Render the verified HyperFrames composition and PR-sized MP4")
     parser.add_argument("--attachment-mb", type=float, default=9.5)
     args = parser.parse_args()
+    if args.camera_fovy is None:
+        args.camera_fovy = 90. if args.camera == "robot-pov" else 38.
     if args.native_only and args.render:
         parser.error("--native-only and --render cannot be combined")
     if args.speed <= 0 or args.hold_final < 0 or (args.max_seconds is not None and args.max_seconds <= 0):
         parser.error("Speed and excerpt length must be positive; final hold must be nonnegative")
+    if not 0 < args.camera_fovy < 180 or not 0 < args.pov_pitch_degrees < 90 or not np.isfinite(args.pov_position).all():
+        parser.error("Camera field of view, downward pitch, and mount position must be finite and valid")
     args.input, args.project = args.input.resolve(), args.project.resolve()
     for binary in ("ffmpeg", "ffprobe", "npm"):
         if not shutil.which(binary):
@@ -223,7 +255,7 @@ def main():
     if args.reuse_source:
         manifest = json.loads(manifest_path.read_text())
         expected = {"scene_sha256": digest(args.input / "scene.xml"), "trajectory_sha256": digest(args.input / "trajectory.npz"),
-                    "report_sha256": digest(args.input / "report.json"), "camera": args.camera, "camera_fovy": args.camera_fovy,
+                    "report_sha256": digest(args.input / "report.json"), **camera_settings(args),
                     "fps": args.fps, "playback_speed": args.speed, "rendered_pose_frames": len(inputs[3]),
                     "final_hold_frames": round(args.hold_final * args.fps), "partial_replay": inputs[4],
                     "last_simulation_time": float(inputs[0][inputs[3][-1]])}
@@ -239,15 +271,16 @@ def main():
     if args.render:
         output = args.project / "renders"
         output.mkdir(exist_ok=True)
-        video = output / "competition-proof.mp4"
+        video = output / f"{args.project.name}.mp4"
         subprocess.run(["npm", "run", "render", "--", "--quality", "high", "--fps", str(args.fps), "--workers", "4",
                         "--output", str(video)], cwd=args.project, check=True)
         info = json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-show_format", "-of", "json", str(video)]))
         duration = float(info["format"]["duration"])
         if abs(duration - manifest["duration_seconds"]) > 2 / args.fps:
             raise RuntimeError("Rendered duration does not match the recorded playback")
-        compact_attachment(video, output / "competition-proof-pr.mp4", duration, args.attachment_mb)
-        print(json.dumps({"video": str(video), "attachment": str(output / "competition-proof-pr.mp4"), "duration_seconds": duration}))
+        attachment = output / f"{args.project.name}-pr.mp4"
+        compact_attachment(video, attachment, duration, args.attachment_mb)
+        print(json.dumps({"video": str(video), "attachment": str(attachment), "duration_seconds": duration}))
     print(json.dumps(manifest, indent=2))
 
 

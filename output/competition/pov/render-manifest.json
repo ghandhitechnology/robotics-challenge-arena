@@ -1,0 +1,29 @@
+{
+  "scene_sha256": "fc116e4545f1e2894fd48f8442d410cc49c80f0b3b5bb420ca13307115e26fe8",
+  "trajectory_sha256": "65daa1307ac04079bcb29f3aae3a26bca01e6e2a179bf50fc5600631f3d84b4c",
+  "report_sha256": "e5ad0019194c28d55bdb6806f181226bd618163f096b11f8b7bfab214335f76a",
+  "source_video_sha256": "e1af4a8353493add11005f5e477e1da1f94b4ef81ed9d9aa85fef55def70021b",
+  "mujoco_version": "3.12.0",
+  "camera": "robot-pov",
+  "camera_fovy": 90.0,
+  "camera_body": "competition_robot",
+  "camera_position_body_m": [
+    0.0,
+    0.095,
+    0.15
+  ],
+  "camera_pitch_down_degrees": 65.0,
+  "camera_stabilization": false,
+  "fps": 30,
+  "playback_speed": 3.0,
+  "pose_interpolation": false,
+  "recorded_pose_count": 7438,
+  "rendered_pose_frames": 7438,
+  "final_hold_frames": 60,
+  "duration_seconds": 249.93333333333334,
+  "first_simulation_time": 0.0,
+  "last_simulation_time": 743.6999999893258,
+  "full_simulation_time": 743.7599999893243,
+  "partial_replay": false,
+  "native_render_wall_seconds": 84.19445145799546
+}

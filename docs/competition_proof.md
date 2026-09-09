@@ -96,3 +96,13 @@ The verifier checks source/model/weight hashes, the initial setup, the declarati
 ```
 
 This renders the recorded native poses, then uses HyperFrames for the continuous field view and report panel. The simulation clock and task phase come from the recording. Playback runs at 3×, with no pose interpolation. The final 720p inline attachment is `videos/competition-proof/renders/competition-proof-pr.mp4`; the master is 1080p. The render manifest records the scene, trajectory, report and native-footage hashes. `output/competition/video/video-metadata.json` records the finished export checksums, and the same folder contains inspected frames.
+
+To render the same run from the robot's camera:
+
+```sh
+.venv/bin/python scripts/render_competition_video.py --camera robot-pov --project videos/competition-pov --render
+```
+
+The POV camera sits above the gripper at body coordinates `[0, 0.095, 0.150]` m, pitches down 65°, and has a 90° vertical field of view. Its position and orientation follow the recorded chassis pose, including body tilt. The renderer changes only camera settings in memory. Recorded scene files, poses, actions, and scores stay intact. Camera settings are included in the replay manifest and checked before cached footage can be reused.
+
+The second PR attachment is `videos/competition-pov/renders/competition-pov-pr.mp4`. Its inspected frames and export metadata are in `output/competition/pov/`.
