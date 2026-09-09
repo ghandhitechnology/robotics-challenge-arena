@@ -24,7 +24,7 @@ from torch import nn
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--output', default='output/competition/policy')
-    parser.add_argument('--steps', type=int, default=4500)
+    parser.add_argument('--steps', type=int, default=10000)
     parser.add_argument('--seed', type=int, default=20260910)
     parser.add_argument('--allow-other-gpu', action='store_true')
     parser.add_argument('--print-artifact', action='store_true')
@@ -45,6 +45,21 @@ def main():
     # handles the GEMMs. This model is too small to amortize compiler startup.
     layers=[nn.Linear(4,48,bias=False),nn.Tanh(),nn.Linear(48,48,bias=False),nn.Tanh(),nn.Linear(48,4,bias=False),nn.Tanh()]
     net=nn.Sequential(*layers).to(device)
+    # A stopped axis must remain stopped while another axis moves. This known
+    # mechanical independence constrains learning and makes final alignment safe.
+    masks=[]
+    for layer_index,layer in enumerate((net[0],net[2],net[4])):
+        mask=torch.zeros_like(layer.weight)
+        for channel in range(4):
+            if layer_index==0:
+                mask[channel*12:(channel+1)*12,channel]=1
+            elif layer_index==1:
+                mask[channel*12:(channel+1)*12,channel*12:(channel+1)*12]=1
+            else:
+                mask[channel,channel*12:(channel+1)*12]=1
+        layer.weight.data.mul_(mask)
+        layer.weight.register_hook(lambda grad, mask=mask: grad*mask)
+        masks.append(mask)
     optimizer=torch.optim.AdamW(net.parameters(), lr=.003, weight_decay=0, fused=True)
     n=131072
     def dataset(count, generator=None):
@@ -57,6 +72,8 @@ def main():
         x[-count//4:]*=torch.nn.functional.one_hot(idx%4,4)
         return x,torch.tanh(x)
     train_x,train_y=dataset(n)
+    permutation=torch.randperm(n,device=device)
+    train_x,train_y=train_x[permutation],train_y[permutation]
     generator=torch.Generator(device=device).manual_seed(args.seed+1)
     valid_x,valid_y=dataset(16384,generator)
     torch.cuda.synchronize()
@@ -91,7 +108,7 @@ def main():
                 print(json.dumps(history[-1]),flush=True)
             if p99<.003 and near<.0005 and step>=500:
                 break
-            if step in (1500,3000):
+            if step in (4000,7500):
                 for group in optimizer.param_groups:
                     group['lr']*=.3
     net.load_state_dict(best_state)
@@ -107,11 +124,11 @@ def main():
         'method':'supervised teacher distillation of goal feedback; geometric task planner outside policy',
         'gpu':gpu,'torch':torch.__version__,'cuda':torch.version.cuda,'seed':args.seed,
         'parameters':sum(p.numel() for p in net.parameters()),'architecture':[4,48,48,4],
-        'bias':False,'activation':'tanh at every layer','training_examples':n,'validation_examples':len(valid_x),
+        'bias':False,'activation':'tanh at every layer','channel_independence':'block diagonal masks','active_parameters':sum(int(m.sum()) for m in masks),'training_examples':n,'validation_examples':len(valid_x),
         'batch_size':batch,'optimizer':'fused AdamW','precision':'FP32 with TF32 matmul allowed',
         'steps':step+1,'preparation_seconds':preparation,'training_seconds':train_seconds,
         'validation':final,'history':history,
-        'efficiency':['on-device frozen demonstrations','near-goal oversampling','axis-only curriculum','odd symmetry and exact zero equilibrium','validation early stopping','small NumPy export'],
+        'efficiency':['on-device frozen demonstrations with one seeded shuffle','near-goal oversampling','axis-only curriculum','independent physical channels','odd symmetry and exact zero equilibrium','validation early stopping','small NumPy export'],
         'physics_validation':'Performed separately with exported weights in native MuJoCo. These validation errors alone do not establish task completion.'}
     out=Path(args.output);out.mkdir(parents=True,exist_ok=True)
     buffer=io.BytesIO();np.savez_compressed(buffer,**arrays);blob=buffer.getvalue()
