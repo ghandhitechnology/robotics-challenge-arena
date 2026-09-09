@@ -2,7 +2,7 @@ name: MuJoCo physics
 
 on:
   push:
-    branches: [main, feat/mujoco-physics]
+    branches: [main]
   pull_request:
 
 jobs:

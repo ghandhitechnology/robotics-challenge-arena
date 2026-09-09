@@ -32,11 +32,11 @@ python3 -m venv .venv
 
 ### 어떤 파일을 열어야 하나요?
 
-| 사용 목적 | Blender에서 열 파일 | Isaac Sim에서 열 파일 |
-| --- | --- | --- |
-| 국내 시니어 예선 연습 및 강화학습 | `challenge_arena_senior.blend` | `challenge_arena_senior_scene.usda` |
-| 제공된 사진과 같은 블록 배치, 울타리 없음 | `challenge_arena.blend` | `challenge_arena_scene.usda` |
-| 제공된 사진과 같은 블록 배치, 나무 울타리 포함 | `challenge_arena_framed.blend` | `challenge_arena_framed_scene.usda` |
+| 사용 목적 | MuJoCo MJCF | Blender에서 열 파일 | 기존 Isaac Sim 파일 |
+| --- | --- | --- | --- |
+| 국내 시니어 예선 연습 및 강화학습 | `mujoco/senior_preliminary.xml` | `challenge_arena_senior.blend` | `challenge_arena_senior_scene.usda` |
+| 제공된 사진과 같은 블록 배치, 울타리 없음 | `mujoco/photo_reference.xml` | `challenge_arena.blend` | `challenge_arena_scene.usda` |
+| 제공된 사진과 같은 블록 배치, 나무 울타리 포함 | `mujoco/framed_reference.xml` | `challenge_arena_framed.blend` | `challenge_arena_framed_scene.usda` |
 
 국내 시니어 예선을 준비한다면 `senior` 파일을 사용합니다. 사진 배치와 시니어 예선 배치는 키트 수와 차단 빔 유무가 다릅니다.
 

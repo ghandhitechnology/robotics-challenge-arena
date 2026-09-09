@@ -1,6 +1,6 @@
 # Colab runtime
 
-A dedicated [Robotics arena MuJoCo runtime checks notebook](https://colab.research.google.com/drive/1zmPS7IvWuNpNUs-WjvSIcPDIHr1Qgtqm) was created on September 9, 2026. It completed native physics checks, six environment tests, and an arena render on the A100 runtime. The local `colab_runtime_diagnostics.ipynb` preserves the executed code and observed text reports.
+A dedicated [Robotics arena MuJoCo runtime checks notebook](https://colab.research.google.com/drive/1zmPS7IvWuNpNUs-WjvSIcPDIHr1Qgtqm) was created on September 9, 2026. It completed all 21 native MuJoCo tests, a short arena simulation, and an arena render on the A100 runtime. The local `colab_runtime_diagnostics.ipynb` preserves the executed code and observed text reports.
 
 | Item | Observed value |
 | --- | --- |
@@ -19,7 +19,7 @@ These are observations from that session. Run the diagnostic cell again after re
 
 ## Running project tests
 
-The notebook's runtime type is set to A100 GPU. It checks out the public `feat/mujoco-physics` branch from `ghandhitechnology/robotics-challenge-arena` in an isolated `/content` directory. This uses ordinary notebook code cells and requires no local asset upload. Each run records the full Git commit before testing.
+The notebook's runtime type is set to A100 GPU. It checks out the public `feat/mujoco-physics` branch from `ghandhitechnology/robotics-challenge-arena` in an isolated `/content` directory. The final validation cell fetches and checks out the exact source commit before running. This uses ordinary notebook code cells and requires no local asset upload. Each run records the full Git commit before testing.
 
 Browser execution has been verified through the notebook's code editor, **Run cell**, and the cell's output panel. The initial diagnostic output remains intact. A local file chooser upload was unavailable; the public repository checkout supplies the project files.
 
@@ -49,16 +49,16 @@ The runtime's Python bond damage, slip-dependent friction, and motor updates wou
 
 ## Arena validation result
 
-The following commands passed on commit `dc77f2aeae639e3120ece2857d74bcfb3bec24d5` from `feat/mujoco-physics`:
+The following commands passed on final source commit `d8c20fd6d9a81cb34986356cd0b222109f94d0f5` from `feat/mujoco-physics`:
 
 ```sh
-python -m arena_mujoco run --seconds .02 --output /content/native_report.json
-python -m unittest discover -s tests/mujoco -p 'test_env.py' -v
-python -m arena_mujoco render --seconds 0 --output /content/arena.png
+python -m unittest discover -s tests/mujoco -p 'test_*.py' -v
+python -m arena_mujoco run --seconds .02 --output /content/native_report_final.json
+python -m arena_mujoco render --seconds 0 --output /content/arena_final.png
 ```
 
-The 0.02-second native run finished with 1,425 contacts, all 1,323 tape bonds intact, and zero numerical warnings. Maximum absolute generalized velocity was 0.00036112; maximum bond slip was 2.618 μm. Native stepping took 8.083 seconds of wall time. This short run checks initialization and immediate stability, not long episodes or physical calibration.
+The 0.02-second native run finished with 1,425 contacts, all 1,323 tape bonds intact, and zero numerical warnings. Maximum absolute generalized velocity was 0.000421602; maximum bond slip was 2.635 μm. Maximum tensile strain was 0.0000737403, and the material limit was not exceeded. Native stepping took 8.083 seconds of wall time. This short run checks initialization and immediate stability; long episodes and physical calibration require separate validation.
 
-All six environment tests passed in 16.659 seconds. They covered flex stepping and checkpoints, the Gymnasium contract, seeded noisy/delayed action replay, task success and time limits, motor-profile application, and robot mass/forward drive. The arena render command also returned successfully with the NVIDIA EGL environment.
+All 21 tests passed in 60.329 seconds. They covered calibration, flex stepping and checkpoints, the Gymnasium contract, seeded noisy/delayed action replay, task success and material limits, motor behavior, surface friction, and tape adhesion, peeling, rebonding, curvature, damage, and mesh refinement. The arena render command also returned successfully with the NVIDIA EGL environment. Its 1280 × 960 image had pixel standard deviation 123.675 and SHA-256 `93f4de348727444a3b362a1e6f40940eb5a8bd0cc02d7d42e51e2b2175c354b5`.
 
-The live runtime retains `native_report.json`, `arena.png`, and the combined command, adhesion, rendering, and image checks under `/content/robotics_runtime_checks/`. Cell outputs in the notebook preserve the observed results after the runtime disconnects.
+The live runtime retains `/content/native_report_final.json`, `/content/arena_final.png`, and `/content/robotics_runtime_checks/final_report.json`. The latter includes the exact commit, command output, native metrics, NVIDIA EGL probe, and image checks. Earlier notebook cells retain the initial six-test validation on `dc77f2aeae639e3120ece2857d74bcfb3bec24d5` and the adhesion compatibility probe. Cell outputs preserve the observed results after the runtime disconnects.

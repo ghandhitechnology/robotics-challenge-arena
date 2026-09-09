@@ -37,11 +37,11 @@
     "Robot wheels crossed start-zone tape"
   ],
   "check_count": 32,
-  "wall_seconds": 150.00032279198058,
+  "wall_seconds": 105.10918362496886,
   "drive_across_tape": true,
-  "time_s": 0.7999999999999445,
-  "contacts": 1421,
-  "max_abs_qvel": 11.648744143685548,
+  "time_s": 0.5499999999999721,
+  "contacts": 1422,
+  "max_abs_qvel": 12.037820267961136,
   "warnings": 0,
   "tape_bond_count": 1323,
   "tape_bonded_count": 1323,
@@ -49,15 +49,17 @@
   "tape_damage_fraction": 0.0,
   "tape_wear_fraction": 0.0,
   "tape_max_opening_m": 0.0,
-  "tape_max_slip_m": 4.9753160623055685e-05,
+  "tape_max_slip_m": 9.3887358618705e-06,
   "tape_damage_energy_proxy_j": 0.0,
-  "tape_contact_work_proxy_j": 6.366313397819088e-05,
+  "tape_contact_work_proxy_j": 4.571705339235119e-05,
   "tape_reach_limited_releases": 0,
   "tape_orientation_releases": 0,
   "tape_rebond_count": 0,
+  "tape_max_tensile_strain": 0.00012089627123690327,
+  "tape_material_limit_exceeded": false,
   "robot_final_position_m": [
-    0.7872941773216232,
-    0.7801850033928054,
-    0.0450613462553262
+    0.8234935915046933,
+    0.7800337741682789,
+    0.04499969157235099
   ]
 }
