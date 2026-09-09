@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Tamper checks for swarm proof artifacts and full-trace action verification."""
 import argparse
-import copy
 import json
 from pathlib import Path
 import shutil
@@ -68,10 +67,13 @@ def unit_checks():
     return ["valid geometric transport", "final hold drift", "partial recording", "last action beyond chunk boundary", "changed model weights"]
 
 
-def artifact_checks(fixture):
-    original = verify_proof(fixture, allow_teacher=True)
+def artifact_checks(fixture, replay_physics=False):
+    original = verify_proof(fixture, allow_teacher=True, replay_physics=replay_physics)
     assert original["valid"] and not original["final_neural_proof"], original["errors"]
     results = []
+    if replay_physics:
+        assert original["physics_replayed"] and original["checks"]["physics_replay_passed"]
+        results.append("full native physics replay")
     with tempfile.TemporaryDirectory() as directory:
         directory = Path(directory)
         def fresh(name):
@@ -119,17 +121,32 @@ def artifact_checks(fixture):
         result = verify_proof(fixture)
         assert not result["valid"] and any("Final proof requires a neural policy" in error for error in result["errors"])
         results.append("teacher cannot pass final neural gate")
+        if replay_physics:
+            path = fresh("edited_midpoint")
+            with np.load(path / "trajectory.npz") as archive:
+                arrays = {key: archive[key].copy() for key in archive.files}
+            arrays["qpos"][len(arrays["qpos"]) // 2, adr] += .001
+            np.savez_compressed(path / "trajectory.npz", **arrays)
+            update_hash(path, "trajectory.npz")
+            result = verify_proof(path, allow_teacher=True, replay_physics=True)
+            assert not result["valid"] and not result["physics_replayed"]
+            assert any("Physics replay qpos mismatch" in error for error in result["errors"]), result["errors"]
+            assert result["checks"]["replay_actions_completed"] == len(arrays["times"]) - 1
+            results.append("mid-trajectory pose forgery with refreshed hash fails full replay")
     return results
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--fixture", type=Path, help="Successful current-source teacher fixture for artifact tamper cases")
+    parser.add_argument("--replay-physics", action="store_true", help="Include native replay and a rehashed mid-trajectory pose forgery")
     args = parser.parse_args()
+    if args.replay_physics and not args.fixture:
+        parser.error("--replay-physics requires --fixture")
     torch.set_num_threads(2)
     checks = unit_checks()
     if args.fixture:
-        checks.extend(artifact_checks(args.fixture))
+        checks.extend(artifact_checks(args.fixture, args.replay_physics))
     print(json.dumps({"passed": True, "checks": checks, "artifact_fixture_tested": args.fixture is not None}))
 
 

@@ -19,3 +19,6 @@ jobs:
       - run: python -m pip install -r requirements-mujoco.txt
       - run: python -m unittest discover -s tests/mujoco -p 'test_*.py' -v
       - run: python scripts/validate_mujoco.py --seconds .02 --output /tmp/mujoco_validation.json
+      - run: python -m pip install 'torch>=2.6,<3' --index-url https://download.pytorch.org/whl/cpu
+      - run: python scripts/verify_swarm_policy.py
+      - run: python scripts/test_swarm_proof.py

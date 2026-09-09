@@ -1,0 +1,13 @@
+assets/trajectory.mp4
+assets/native-poster.png
+render-manifest.json
+source-report.json
+source-metadata.json
+source-training.json
+source-verification.json
+native-contact-sheet.png
+snapshots/
+renders/
+.hyperframes/
+.media/
+node_modules/

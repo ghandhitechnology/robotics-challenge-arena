@@ -10,6 +10,7 @@ import sys
 
 import mujoco
 import numpy as np
+import torch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -351,7 +352,86 @@ def audit_observation_geometry(trace, poses, phases, contacts, model, metadata, 
             "observation_fields_without_exact_pose_reconstruction": [8, 9, 10, 28, 29, 30, 31]}
 
 
-def verify_proof(directory, *, weights=None, training_report=None, allow_teacher=False, chunk_size=128):
+def audit_physics_replay(report, trajectory, trace, errors):
+    """Integrate every saved command without installing any recorded poses.
+
+    Source identity is checked by verify_proof before this function is reached.
+    Replay additionally requires the recorded MuJoCo version. Archived proofs
+    should be audited with their matching source revision and simulator version.
+    """
+    initial_errors = len(errors)
+    checks = {"physics_replay_passed": False, "replay_actions_completed": 0,
+              "replay_qpos_tolerance": 1e-7, "replay_observation_tolerance": 2e-5}
+    if not require(report.get("mujoco") == mujoco.__version__,
+                   "Physics replay requires the recorded MuJoCo version", errors):
+        return checks
+    env = SwarmVectorEnv(num_envs=1, num_robots=int(report["robot_count"]), num_objects=int(report["object_count"]),
+                         backend="native", device="cpu", native_workers=1, seed=int(report["seed"]),
+                         timestep=float(report["physics_timestep_s"]), episode_seconds=float(report["episode_seconds"]))
+    env.set_curriculum({"num_active_robots": int(report["robot_count"]),
+                        "num_active_objects": int(report["object_count"]), "difficulty": float(report["difficulty"])})
+    qpos_error = time_error = 0.
+    worst_frame = 0
+    observation_errors = {key: 0. for key in ("local", "neighbors", "neighbor_mask", "active")}
+    phase_mismatches = contact_mismatches = failure_steps = 0
+    first_success = None
+    hold_valid = True
+    try:
+        obs = env.reset()
+        initial = env.native_snapshot()
+        qpos_error = float(np.max(np.abs(initial.qpos - trajectory["qpos"][0])))
+        time_error = abs(float(initial.time) - float(trajectory["times"][0]))
+        for index, action in enumerate(trace["actions"]):
+            for key in observation_errors:
+                expected = trace[key][index].astype(np.float64)
+                actual = obs[key][0].detach().cpu().numpy().astype(np.float64)
+                observation_errors[key] = max(observation_errors[key], float(np.max(np.abs(actual-expected))))
+            obs, _, _, _, info = env.step(torch.as_tensor(action[None], dtype=torch.float32))
+            frame = index + 1
+            snapshot = env.native_snapshot()
+            frame_error = float(np.max(np.abs(snapshot.qpos - trajectory["qpos"][frame])))
+            if frame_error > qpos_error:
+                qpos_error, worst_frame = frame_error, frame
+            time_error = max(time_error, abs(float(snapshot.time) - float(trajectory["times"][frame])))
+            phase_mismatches += int(not np.array_equal(env.phase[0].numpy(), trajectory["object_phases"][frame]))
+            contact_mismatches += int(not np.array_equal(env.pad_contact[0].numpy(), trajectory["pad_contacts"][frame])
+                                      or not np.array_equal(env.object_floor_contact[0].numpy(), trajectory["object_floor_contacts"][frame]))
+            success = bool(info["success"][0])
+            failure_steps += int(info["failure"][0])
+            if success and first_success is None:
+                first_success = float(snapshot.time)
+            if first_success is not None:
+                hold_valid &= success
+            checks["replay_actions_completed"] = frame
+        require(qpos_error <= checks["replay_qpos_tolerance"],
+                f"Physics replay qpos mismatch at frame {worst_frame}: max error {qpos_error:.9g}", errors)
+        require(time_error <= 1e-9, f"Physics replay timestamp mismatch: {time_error:.9g} seconds", errors)
+        for key, maximum in observation_errors.items():
+            tolerance = 0. if key in ("neighbor_mask", "active") else checks["replay_observation_tolerance"]
+            require(maximum <= tolerance, f"Physics replay observation mismatch for {key}: {maximum:.9g}", errors)
+        require(phase_mismatches == 0 and contact_mismatches == 0,
+                f"Physics replay event mismatch: {phase_mismatches} phase frames, {contact_mismatches} contact frames", errors)
+        require(failure_steps == 0, f"Physics replay encountered {failure_steps} failed control steps", errors)
+        if require(first_success is not None, "Physics replay never completes every transport and formation task", errors):
+            require(abs(first_success - float(report["completion_time_s"])) <= 1e-7,
+                    "Physics replay completion time disagrees with the report", errors)
+            held = float(env.native_snapshot().time) - first_success
+            require(hold_valid and held >= max(5., float(report["requested_hold_seconds"])) - 1e-7,
+                    "Physics replay does not preserve successful formation and delivery throughout the final hold", errors)
+            checks["replay_final_hold_s"] = held
+        checks.update(replay_max_qpos_error=qpos_error, replay_worst_qpos_frame=worst_frame,
+                      replay_max_time_error_s=time_error, replay_observation_max_errors=observation_errors,
+                      replay_phase_mismatch_frames=phase_mismatches, replay_contact_mismatch_frames=contact_mismatches,
+                      replay_failure_control_steps=failure_steps, replay_first_success_s=first_success)
+        checks["physics_replay_passed"] = len(errors) == initial_errors and checks["replay_actions_completed"] == len(trace["actions"])
+    except (RuntimeError, ValueError, FloatingPointError) as error:
+        errors.append(f"Physics replay failed after {checks['replay_actions_completed']} actions: {type(error).__name__}: {error}")
+    finally:
+        env.close()
+    return checks
+
+
+def verify_proof(directory, *, weights=None, training_report=None, allow_teacher=False, chunk_size=128, replay_physics=False):
     directory = Path(directory)
     errors, checks = [], {}
     result = {"valid": False, "proof_directory": str(directory.resolve()), "physics_replayed": False,
@@ -479,6 +559,9 @@ def verify_proof(directory, *, weights=None, training_report=None, allow_teacher
         checks.update(audit_formation(times, poses, model, metadata, setup, report, errors))
         result["geometry_reconstructed"] = True
         checks.update(audit_observation_geometry(trace, poses, phases, trajectory["pad_contacts"], model, metadata, setup, errors, chunk_size))
+        if replay_physics:
+            checks.update(audit_physics_replay(report, trajectory, trace, errors))
+            result["physics_replayed"] = checks["physics_replay_passed"]
         if policy_type == "neural":
             weights = Path(weights) if weights else ROOT / "output/swarm/policy/weights.npz"
             training_report = Path(training_report) if training_report else weights.parent / "training.json"
@@ -526,13 +609,14 @@ def main():
     parser.add_argument("--weights", type=Path)
     parser.add_argument("--training-report", type=Path)
     parser.add_argument("--allow-teacher", action="store_true", help="Accept teacher pipeline fixtures, never a final neural proof")
+    parser.add_argument("--replay-physics", action="store_true", help="Replay every native physics action using the recorded source revision and MuJoCo version")
     parser.add_argument("--chunk-size", type=int, default=128)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     if args.chunk_size < 1:
         parser.error("--chunk-size must be positive")
     result = verify_proof(args.directory, weights=args.weights, training_report=args.training_report,
-                          allow_teacher=args.allow_teacher, chunk_size=args.chunk_size)
+                          allow_teacher=args.allow_teacher, chunk_size=args.chunk_size, replay_physics=args.replay_physics)
     text = json.dumps(result, indent=2, allow_nan=False) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
