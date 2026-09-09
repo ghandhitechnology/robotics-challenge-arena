@@ -217,12 +217,12 @@ class Mission:
             ('Cylinder_Red_05','left',[.12,.39],'left'),
             ('Cylinder_Red_07','left',[.12,.72],'left'),
             ('Cylinder_Red_08','right',[.12,.80],'left'),
-            ('Cylinder_Yellow_01','left',[.12,.08],'left'),
+            ('Cylinder_Yellow_01','left',[.12,.28],'left'),
             ('Cylinder_Yellow_11','left',[.12,.93],'left'),
-            ('Cylinder_Yellow_12','right',[.12,1.13],'left'),
+            ('Cylinder_Yellow_12','right',[.135,1.07],'left'),
             ('Cylinder_Green_03','left',[1.07,.91],'right'),
-            ('Cylinder_Green_09','left',[1.07,1.03],'right'),
-            ('Cylinder_Green_10','right',[1.07,1.13],'right'),
+            ('Cylinder_Green_09','left',[1.07,1.015],'right'),
+            ('Cylinder_Green_10','right',[1.07,1.08],'right'),
         ])
         return result
 
