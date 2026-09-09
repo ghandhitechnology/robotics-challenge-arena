@@ -1,10 +1,24 @@
 # 2026 로보틱스 챌린지 경기장
 
-2026 로보틱스 챌린지 문제해결 트랙의 경기장을 Blender로 재현했습니다. Blender 편집 파일, Isaac Sim용 USD 파일, 미리보기 이미지, 생성 스크립트와 치수 검증 자료를 제공합니다.
+2026 로보틱스 챌린지 문제해결 트랙의 경기장을 Blender로 재현했습니다. MuJoCo 실행 환경, Blender 편집 파일, 기존 USD 파일, 미리보기와 치수 검증 자료를 제공합니다.
 
 경기장 크기는 가로 1,143 mm × 세로 1,181 mm입니다. 검은 경계선은 폭 20 mm, 두께 0.15 mm의 테이프로 구현했습니다.
 
 ![경기장 전체 모습](output/arena_overview.png)
+
+## MuJoCo 실행
+
+실제 물리 실행과 강화학습은 MuJoCo 3.12.0을 사용합니다. 테이프는 두께 0.15 mm의 변형 가능한 PVC 셸과 아래쪽 접착 접촉으로 구성했습니다. 종이·PVC·나무·바퀴의 마찰, 네 벽의 마찰, 모터 한계와 명령 지연을 따로 설정할 수 있습니다.
+
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements-mujoco.txt
+.venv/bin/python -m arena_mujoco run --seconds 0.1
+```
+
+설치 후 Linux에서는 `.venv/bin/python -m arena_mujoco view`, macOS에서는 `.venv/bin/mjpython -m arena_mujoco view`로 경기장을 엽니다. [실행·Gymnasium 안내](docs/mujoco.md), [실물 측정과 보정](docs/mujoco_calibration.md), [Colab 실행 기록](docs/colab_runtime.md)을 확인할 수 있습니다. 기본 물성은 실측 전 초기값이며, 예제 로봇은 질량 1 kg의 차동 구동형입니다.
+
+![MuJoCo 경기장](output/mujoco/arena_overview.png)
 
 ## 다운로드
 
@@ -62,7 +76,7 @@ Isaac Sim의 **File → Open**에서 원하는 `_scene.usda` 파일을 선택합
 | 차단 빔 | 폭 60 × 길이 280 또는 250 × 높이 20 |
 | 선택형 나무 울타리 | 두께 20 × 높이 65 |
 
-실험실 구멍의 중심 간격 100 mm와 일부 물체의 초기 위치는 도면 비율로 정했습니다. 실험실 판은 양쪽 테이프에서 각각 18 mm 떨어져 있습니다. 왼쪽 아래 의료 구역의 길이 338 mm는 전체 길이와 나머지 표기 치수에서 계산한 값입니다. 나무 밀도, 마찰 계수와 바닥 아래 받침 두께는 `arena_spec.json`에서 조정할 수 있습니다.
+실험실 구멍의 중심 간격 100 mm와 일부 물체의 초기 위치는 도면 비율로 정했습니다. 실험실 판은 양쪽 테이프에서 각각 18 mm 떨어져 있습니다. 왼쪽 아래 의료 구역의 길이 338 mm는 전체 길이와 나머지 표기 치수에서 계산한 값입니다. 치수와 배치는 `arena_spec.json`에서 조정합니다. MuJoCo 물성은 별도의 JSON 프로필로 덮어쓸 수 있습니다.
 
 ## 치수 근거와 검증
 
@@ -81,7 +95,9 @@ Blender 메시와 USD 내보내기 결과는 1,055개 검사 항목을 통과했
 | --- | --- |
 | `output/` | Blender·USD 파일, 미리보기, 검증 결과와 전체 ZIP |
 | `arena_spec.json` | 치수, 배치 좌표, 물리 설정과 출처 |
-| `scripts/` | 경기장 생성, 검증, 렌더링과 압축 스크립트 |
+| `scripts/` | 경기장 생성, 검증, 보정, 렌더링과 압축 스크립트 |
+| `arena_mujoco/` | MuJoCo 모델 생성, 재질, 테이프 접착 이력, 로봇과 Gym 환경 |
+| `profiles/` | 실물 측정 입력 예시와 물성 프로필 |
 | `reference/` | 원본 PDF, 배치 사진과 치수 검토 자료 |
 | `docs/` | 형상 검토와 Isaac Sim 사용 안내 |
 

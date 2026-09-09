@@ -59,6 +59,7 @@ _DEFAULTS = {
     "rebond_gap_m": 0.0001,
     "rebond_max_slip_speed_m_s": 0.001,
     "rebond_damage": 0.25,
+    "max_valid_strain": 0.10,
 }
 _ALIASES = {
     "sigma_pa": "peak_traction_pa",
@@ -187,7 +188,7 @@ class TapeController:
             if vertex >= 0 and model.flex_vertbodyid[vertex] != body:
                 raise ValueError("vertex_id and body_name refer to different bodies")
         self._support_vertices = self._body_vertex[self.support_ids]
-        faces, groups = [], []
+        faces, groups, edges, rest_lengths = [], [], [], []
         for flex in range(model.nflex):
             if model.flex_dim[flex] != 2:
                 continue
@@ -195,6 +196,19 @@ class TapeController:
             triangle = model.flex_elem[start:start + 3 * count].reshape(-1, 3)
             faces.extend(triangle + model.flex_vertadr[flex])
             groups.extend([flex] * count)
+            vertex_start = model.flex_vertadr[flex]
+            belongs_to_tape = np.any((self.vertex_ids >= vertex_start)
+                                     & (self.vertex_ids < vertex_start + model.flex_vertnum[flex]))
+            if belongs_to_tape:
+                edge_start = model.flex_edgeadr[flex]
+                edge_end = edge_start + model.flex_edgenum[flex]
+                edges.extend(model.flex_edge[edge_start:edge_end] + vertex_start)
+                rest_lengths.extend(model.flexedge_length0[edge_start:edge_end])
+        self._strain_edges = np.asarray(edges, dtype=int).reshape(-1, 2)
+        self._strain_rest_lengths = np.asarray(rest_lengths)
+        if np.any(self._strain_rest_lengths <= 0):
+            raise ValueError("Tape flex reference edges must have positive lengths")
+        self._max_tensile_strain = 0.0
         self._triangles = np.asarray(faces, dtype=int).reshape(-1, 3)
         self._face_groups = np.asarray(groups, dtype=int)
         self._face_signs = np.ones(len(faces))
@@ -250,7 +264,7 @@ class TapeController:
             self.params[key] = value
         for key in ("peak_traction_pa", "fracture_energy_j_m2", "shear_strength_pa",
                     "shear_fracture_energy_j_m2", "capture_gap_m", "max_bond_gap_m",
-                    "reference_speed_m_s", "rebond_dwell_s"):
+                    "reference_speed_m_s", "rebond_dwell_s", "max_valid_strain"):
             if self.params[key] <= 0:
                 raise ValueError(f"{key} must be positive")
         if self.params["max_bond_gap_m"] < self.params["capture_gap_m"]:
@@ -268,6 +282,12 @@ class TapeController:
         mujoco.mj_kinematics(self.model, data)
         if self.model.nflex:
             mujoco.mj_flex(self.model, data)
+        if len(self._strain_edges):
+            points = data.flexvert_xpos[self._strain_edges]
+            lengths = np.linalg.norm(points[:, 1] - points[:, 0], axis=1)
+            self._max_tensile_strain = max(float(np.max(
+                lengths / self._strain_rest_lengths - 1,
+            )), 0.0)
 
     def _surface_frames(self, data: mujoco.MjData) -> tuple[np.ndarray, np.ndarray]:
         count = self.model.nflexvert
@@ -506,6 +526,8 @@ class TapeController:
             "tape_reach_limited_releases": int(self.reach_limited.sum()),
             "tape_orientation_releases": int(self.orientation_released.sum()),
             "tape_rebond_count": self.rebond_count,
+            "tape_max_tensile_strain": self._max_tensile_strain,
+            "tape_material_limit_exceeded": self._max_tensile_strain > self.params["max_valid_strain"],
         }
 
     def state_dict(self) -> dict[str, Any]:
@@ -519,7 +541,8 @@ class TapeController:
         return {"version": 1, "pair_names": self.pair_names.copy(), "params": self.params.copy(),
                 "arrays": {name: getattr(self, name).tolist() for name in names},
                 "last_time": self._last_time, "damage_energy_proxy_j": self.damage_energy_proxy_j,
-                "contact_work_proxy_j": self.contact_work_proxy_j, "rebond_count": self.rebond_count}
+                "contact_work_proxy_j": self.contact_work_proxy_j, "rebond_count": self.rebond_count,
+                "max_tensile_strain": self._max_tensile_strain}
 
     def load_state_dict(self, state: Mapping[str, Any]) -> None:
         """Restore controller history to a matching model and parameter set."""
@@ -549,7 +572,8 @@ class TapeController:
             if np.any((arrays[name] < 0) | (arrays[name] > 1)):
                 raise ValueError(f"Tape state {name} is outside [0,1]")
         scalars = {name: float(state[name]) for name in (
-            "last_time", "damage_energy_proxy_j", "contact_work_proxy_j", "rebond_count")}
+            "last_time", "damage_energy_proxy_j", "contact_work_proxy_j", "rebond_count",
+            "max_tensile_strain")}
         if not all(np.isfinite(value) and value >= 0 for value in scalars.values()):
             raise ValueError("Tape state scalar values must be finite and nonnegative")
         for name, value in arrays.items():
@@ -558,5 +582,6 @@ class TapeController:
         self.damage_energy_proxy_j = scalars["damage_energy_proxy_j"]
         self.contact_work_proxy_j = scalars["contact_work_proxy_j"]
         self.rebond_count = int(scalars["rebond_count"])
+        self._max_tensile_strain = scalars["max_tensile_strain"]
         self.initialized = True
         self._write_parameters(self.damage, self._enabled)

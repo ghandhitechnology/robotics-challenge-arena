@@ -16,9 +16,12 @@ def add_robot(worldbody: Element, actuator: Element, sensor: Element,
     torque = float(settings.get("max_motor_torque_nm", 0.12))
     torque *= float(settings.get("motor_strength_scale", 1.0))
     speed = float(settings.get("max_wheel_speed_rad_s", 20.0))
+    no_load_speed = float(settings.get("motor_no_load_speed_rad_s", 25.0))
     gain = float(settings.get("velocity_gain", 0.04))
-    if not all(math.isfinite(v) and v > 0 for v in (torque, speed, gain)):
+    if not all(math.isfinite(v) and v > 0 for v in (torque, speed, no_load_speed, gain)):
         raise ValueError("Robot torque, speed, and velocity gain must be positive and finite")
+    if no_load_speed < speed:
+        raise ValueError("motor_no_load_speed_rad_s must be at least max_wheel_speed_rad_s")
     root = SubElement(worldbody, "body", name="reference_robot", pos="1.02 0.78 0.045")
     SubElement(root, "freejoint", name="robot_free")
     SubElement(root, "geom", name="robot_chassis", type="box", size="0.06 0.07 0.018",
@@ -61,6 +64,7 @@ def add_robot(worldbody: Element, actuator: Element, sensor: Element,
         "wheel_track_m": 0.134, "wheel_joints": ["wheel_left", "wheel_right"],
         "motor_names": ["motor_left", "motor_right"], "wheel_direction_sign": -1.0,
         "max_motor_torque_nm": torque, "max_wheel_speed_rad_s": speed,
+        "motor_no_load_speed_rad_s": no_load_speed,
         "velocity_gain": gain, "colliders": colliders,
         "description": "Reference differential-drive robot; replace with measured competition hardware.",
     }

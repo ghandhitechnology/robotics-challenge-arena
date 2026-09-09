@@ -189,6 +189,8 @@ class ArenaEnv(gym.Env):
             reasons.append("robot_tipped")
         if info.get("tape_damage_fraction", 0.0) > self.max_tape_damage_fraction:
             reasons.append("tape_damage_limit")
+        if info.get("tape_material_limit_exceeded", False):
+            reasons.append("tape_material_limit")
         if self._steps * self.dt >= self.max_episode_seconds:
             reasons.append("time_limit")
         success = (finite and not reasons and info["target_distance_m"] < self.success_radius_m
@@ -226,6 +228,9 @@ class ArenaEnv(gym.Env):
                    [*state["queue"], state["filtered_action"], state["goal_xy"]]]
         if any(v.shape != (2,) or not np.isfinite(v).all() for v in vectors):
             raise ValueError("State contains an invalid action or goal vector")
+        if self._renderer is not None:
+            self._renderer.close()
+            self._renderer = None
         self.sim.set_state(copy.deepcopy(state["simulation"]))
         self._bind_model()
         self.np_random.bit_generator.state = copy.deepcopy(state["rng"])

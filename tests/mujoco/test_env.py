@@ -9,6 +9,7 @@ from gymnasium.utils.env_checker import check_env
 
 from arena_mujoco.env import ArenaEnv
 from arena_mujoco.robot import add_robot
+from arena_mujoco.runtime import ArenaSimulation
 
 
 class RobotTests(unittest.TestCase):
@@ -41,6 +42,18 @@ class RobotTests(unittest.TestCase):
         model = mujoco.MjModel.from_xml_string(tostring(root, encoding="unicode"))
         self.assertAlmostEqual(metadata["max_motor_torque_nm"], 0.08)
         np.testing.assert_allclose(model.actuator_ctrlrange, [[-0.08, 0.08]] * 2)
+
+    def test_motor_envelope_preserves_braking_above_no_load_speed(self):
+        sim = ArenaSimulation(tape_mode="none", profile={"robot": {
+            "max_motor_torque_nm": 0.10, "max_wheel_speed_rad_s": 20,
+            "motor_no_load_speed_rad_s": 30, "velocity_gain": 0.04}})
+        dofs = [sim.model.joint(name).dofadr[0] for name in ("wheel_left", "wheel_right")]
+        sim.data.qvel[dofs] = -15
+        sim._motors([1, 1])
+        np.testing.assert_allclose(sim.data.ctrl, [-0.05, -0.05])
+        sim.data.qvel[dofs] = -35
+        sim._motors([0, 0])
+        np.testing.assert_allclose(sim.data.ctrl, [0.10, 0.10])
 
 
 class EnvironmentTests(unittest.TestCase):
@@ -80,6 +93,11 @@ class EnvironmentTests(unittest.TestCase):
         np.testing.assert_array_equal(expected[0], actual[0])
         np.testing.assert_array_equal(expected_qpos, env.data.qpos)
         self.assertEqual(expected[1:], actual[1:])
+        env.reset(seed=92)
+        env.set_state(checkpoint)
+        restored = env.step([0.8, -0.3])
+        np.testing.assert_array_equal(expected[0], restored[0])
+        self.assertEqual(expected[1:], restored[1:])
 
     def test_flex_step_and_checkpoint(self):
         env = self.make_env(tape_mode="flex")
@@ -111,6 +129,15 @@ class EnvironmentTests(unittest.TestCase):
         self.assertFalse(truncated)
         self.assertTrue(info["is_success"])
         self.assertGreater(reward, 9)
+
+    def test_tape_material_validity_ends_episode(self):
+        env = self.make_env()
+        original_metrics = env.sim.tape.metrics
+        env.sim.tape.metrics = lambda: {**original_metrics(), "tape_material_limit_exceeded": True}
+        _, _, terminated, truncated, info = env.step([0, 0])
+        self.assertFalse(terminated)
+        self.assertTrue(truncated)
+        self.assertIn("tape_material_limit", info["truncation_reasons"])
 
 
 if __name__ == "__main__":

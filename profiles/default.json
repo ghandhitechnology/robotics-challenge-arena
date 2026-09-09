@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "status": "Uncalibrated priors; replace with measurements from the actual kit.",
+  "timestep_s": 0.0002,
+  "wood_density_kg_m3": 600.0,
+  "gravity_m_s2": 9.81,
+  "contact": {
+    "timeconst_s": 0.001,
+    "dampratio": 1.0,
+    "impedance": [
+      0.98,
+      0.999,
+      0.0001
+    ],
+    "slip_speed_m_s": 0.002
+  },
+  "materials": {
+    "wood_paper": [
+      0.55,
+      0.43,
+      0.0004,
+      2e-05
+    ],
+    "wood_vinyl": [
+      0.42,
+      0.32,
+      0.0004,
+      2e-05
+    ],
+    "wood_wood": [
+      0.5,
+      0.38,
+      0.0004,
+      2e-05
+    ],
+    "rubber_paper": [
+      0.95,
+      0.75,
+      0.0002,
+      3e-05
+    ],
+    "rubber_vinyl": [
+      0.85,
+      0.65,
+      0.0002,
+      3e-05
+    ],
+    "rubber_wood": [
+      0.85,
+      0.65,
+      0.0002,
+      3e-05
+    ],
+    "plastic_paper": [
+      0.35,
+      0.25,
+      0.0002,
+      1e-05
+    ],
+    "plastic_vinyl": [
+      0.3,
+      0.22,
+      0.0002,
+      1e-05
+    ],
+    "plastic_wood": [
+      0.35,
+      0.25,
+      0.0002,
+      1e-05
+    ],
+    "vinyl_vinyl": [
+      0.4,
+      0.3,
+      0.0001,
+      1e-05
+    ]
+  },
+  "wall_friction_scale": {
+    "west": 1.0,
+    "east": 1.0,
+    "south": 1.0,
+    "north": 1.0
+  },
+  "tape": {
+    "spacing_m": 0.01,
+    "joins": "butt",
+    "density_kg_m3": 1350.0,
+    "young_pa": 10000000.0,
+    "poisson": 0.45,
+    "rayleigh_damping_s": 1e-05,
+    "rest_curvature_m_inv": 0.0,
+    "edge_lift_m": 0.0,
+    "peak_traction_pa": 30000.0,
+    "fracture_energy_j_m2": 120.0,
+    "damage_onset_m": 5e-05,
+    "shear_weight": 0.5,
+    "adhesive_friction": 1.0,
+    "allow_rebond": false
+  },
+  "robot": {},
+  "randomization": {
+    "density_fraction": 0.15,
+    "friction_fraction": 0.2,
+    "adhesion_fraction": 0.3,
+    "young_fraction": 0.25,
+    "motor_fraction": 0.1
+  }
+}

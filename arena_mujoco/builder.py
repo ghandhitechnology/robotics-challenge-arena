@@ -28,6 +28,8 @@ def build_arena(config="senior_preliminary", *, tape_mode="flex", robot=True,
         raise ValueError("tape_mode must be flex, rigid or none")
     settings, dim, place = spec["configurations"][config], spec["dimensions"], spec["placements"]
     p, tape = profile, profile["tape"]
+    if tape["joins"] != "butt":
+        raise ValueError("The validated MuJoCo arena supports butt tape joins. Overlapping flex layers failed stability checks; see docs/mujoco_physics_sources.md.")
     width, height = dim["surface_x"]*.001, dim["surface_y"]*.001
     thickness, density = dim["tape_thickness"]*.001, p["wood_density_kg_m3"]
     root = ET.Element("mujoco", model="robotics_challenge_arena")
@@ -45,6 +47,9 @@ def build_arena(config="senior_preliminary", *, tape_mode="flex", robot=True,
     solimp = numbers(contact["impedance"])
     ET.SubElement(default, "geom", contype="1", conaffinity="3", condim="6", solref=solref, solimp=solimp, margin="0", gap="0")
     asset, world, contacts = [ET.SubElement(root, tag) for tag in ("asset", "worldbody", "contact")]
+    emblem=json.loads((Path(__file__).parent/"assets/biohazard.json").read_text())
+    ET.SubElement(asset,"mesh",name="biohazard",vertex=numbers(emblem["vertices"]),
+                  face=" ".join(map(str,np.asarray(emblem["triangles"]).ravel())))
     actuator, sensor = ET.SubElement(root, "actuator"), ET.SubElement(root, "sensor")
     ET.SubElement(world, "light", pos="0.4 0.1 2", dir="0 0 -1", diffuse="0.8 0.8 0.8")
     ET.SubElement(world, "light", pos="1.2 1.5 1.5", dir="-0.3 -0.3 -1", diffuse="0.4 0.4 0.4")
@@ -104,12 +109,16 @@ def build_arena(config="senior_preliminary", *, tape_mode="flex", robot=True,
                               pos=numbers([0,0,size[2]/2+.000002]),rgba="0.84 0.035 0.025 1",contype="0",conaffinity="0",mass="0",group="1")
     for i, xy in enumerate(place["samples"][:settings["samples"]]):
         radius, h = dim["sample_diameter"]*.0005, dim["sample_thickness"]*.001
-        body_piece(f"Biological_Sample_{i+1:02d}", [xy[0]*.001,xy[1]*.001,h/2+.00002],
+        b=body_piece(f"Biological_Sample_{i+1:02d}", [xy[0]*.001,xy[1]*.001,h/2+.00002],
                    "sample", math.pi*radius**2*h, [.98,.75,.06,1], "cylinder", [radius,h/2])
+        ET.SubElement(b,"geom",name=f"Sample_{i+1:02d}_biohazard",type="mesh",mesh="biohazard",
+                      pos=numbers([0,0,h/2+.00001]),rgba="1 1 1 1",contype="0",conaffinity="0",mass="0",group="1")
     for beam in place["containment_beams"][:settings["containment_beams"]]:
         size=np.array([dim["beam_width"],beam["length"],dim["beam_height"]])*.001
-        body_piece(beam["name"], [beam["center"][0]*.001,beam["center"][1]*.001,size[2]/2+.00002],
+        b=body_piece(beam["name"], [beam["center"][0]*.001,beam["center"][1]*.001,size[2]/2+.00002],
                    "containment_beam", float(np.prod(size)), [.87,.66,.32,1], "box", size/2)
+        ET.SubElement(b,"geom",name=f"{beam['name']}_biohazard",type="mesh",mesh="biohazard",
+                      pos=numbers([0,0,size[2]/2+.00001]),rgba="1 1 1 1",contype="0",conaffinity="0",mass="0",group="1")
     lab = ET.SubElement(world,"body",name="Laboratory")
     prisms = lab_prisms(spec)
     for prism in prisms:
@@ -139,6 +148,11 @@ def build_arena(config="senior_preliminary", *, tape_mode="flex", robot=True,
             values=material_pair(p,item["material"],"vinyl")
             element.set("friction",numbers([values[0],values[2],values[3]]))
             element.set("priority","1")
+    if tape_mode != "none":
+        _add_tape(root,world,contacts,spec,p,metadata,tape_mode)
+    if tape_mode == "rigid":
+        geoms.extend({"name":strip["name"],"material":"vinyl","body":"world","dynamic":False,"wall":None}
+                     for strip in metadata["tape_strips"])
     # Explicit rigid pairs preserve independently measured surface coefficients.
     # This also makes each wall tunable without engine max-friction mixing.
     for i,first in enumerate(geoms):
@@ -155,8 +169,6 @@ def build_arena(config="senior_preliminary", *, tape_mode="flex", robot=True,
             ET.SubElement(contacts,"pair",name=name,geom1=first["name"],geom2=second["name"],
                           condim="6",friction=numbers(friction5(values)),solref=solref,solimp=solimp,adhesion="0")
             pairs.append({"name":name,"geom1":first["name"],"geom2":second["name"],"parameters":values})
-    if tape_mode != "none":
-        _add_tape(root,world,contacts,spec,p,metadata,tape_mode)
     metadata["rigid_geoms"] = geoms
     ET.indent(root)
     return ET.tostring(root,encoding="unicode"), metadata
@@ -184,6 +196,7 @@ def _add_tape(root,world,contacts,spec,profile,metadata,mode):
         flat=grid["vertices"].copy()
         flat[:,2]=radius
         supports=[]
+        bridge_nodes=[]
         # Upper overlap nodes follow real lower bodies. No world welds through lower tape.
         for index,point in enumerate(flat):
             support=None
@@ -194,7 +207,19 @@ def _add_tape(root,world,contacts,spec,profile,metadata,mode):
                     support=min(lower,key=lambda x:np.linalg.norm(np.asarray(x["flat"])[:2]-point[:2]))
                     point[2]=support["flat"][2]+thickness
                     break
+            bridge=False
+            if support is None:
+                for region in strip["overlap_regions"]:
+                    x0,y0,x1,y1=region["bounds_m"]
+                    distance=math.hypot(max(x0-point[0],0,point[0]-x1),max(y0-point[1],0,point[1]-y1))
+                    if distance <= tape["spacing_m"]:
+                        # Lift the approach node before the support edge. A mesh
+                        # triangle sloping through the edge starts inside lower tape.
+                        point[2]=radius+thickness
+                        bridge=True
+                        break
             supports.append(support)
+            bridge_nodes.append(bridge)
         rest=flat.copy()
         axis=grid["length_axis"]
         curvature=float(tape["rest_curvature_m_inv"])
@@ -243,14 +268,18 @@ def _add_tape(root,world,contacts,spec,profile,metadata,mode):
             record={"body_name":body_name,"pair_name":pair,"area_m2":float(area),"flat":flat[i].tolist(),
                     "support_body_name":support_body,"support_anchor_local_m":support_anchor.tolist(),
                     "rest_relative_m":[0,0,radius],"strip_name":name,"vertex_index":i}
+            if bridge_nodes[i]:
+                record["initial_damage"]=1.0
+                record["unbonded_bridge"]=True
             metadata["tape_nodes"].append(record)
             records.append(record)
         strip_nodes[name]=records
         flex=ET.SubElement(deform,"flex",name=name,dim="2",body=" ".join(names),
                            vertex=numbers(np.zeros_like(rest)),element=" ".join(map(str,grid["triangles"].ravel())),
                            radius=str(radius),rgba=".012 .014 .018 1",flatskin="true")
+        vinyl=material_pair(profile,"vinyl","vinyl")
         ET.SubElement(flex,"contact",contype="2",conaffinity="2",condim="6",selfcollide="auto",internal="false",passive="false",
-                      friction=".4 .0001 .00001",solref=numbers([max(profile["timestep_s"]*2,.0005),1]),
+                      friction=numbers([vinyl[0],vinyl[2],vinyl[3]]),solref=numbers([max(profile["timestep_s"]*2,.0005),1]),
                       solimp=".99 .999 .00001",priority="0")
         ET.SubElement(flex,"elasticity",young=str(tape["young_pa"]),poisson=str(tape["poisson"]),
                       thickness=str(thickness),elastic2d="both",damping=str(tape["rayleigh_damping_s"]))
