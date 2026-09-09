@@ -10,7 +10,9 @@ Training starts with noisy demonstrations collected by stepping the same physics
 environment. Behavior cloning initializes the actor and briefly adapts it after
 each curriculum promotion. MAPPO then updates the actor
 and a centralized per-robot critic from its own sampled actions, measured rewards,
-and MuJoCo transitions. Demonstration labels are absent from the PPO objective.
+and MuJoCo transitions. Optional `--bc-anchor-coef 0.1` adds a small demonstration
+retention loss during PPO to preserve contact precision. It samples the current
+stage's physical demonstrations and logs its loss separately. The default is 0.
 The exported policy contains the trained attention network and no teacher fallback.
 
 ## Research choices
@@ -102,7 +104,8 @@ labels weight rare pickup and release phases inversely to their frequency, and
 carrier weights prevent queued robots from dominating the cloning loss. These
 weights do not alter the PPO objective. Promotion requires at least 20 PPO
 updates at the current stage and at least 70%
-success in a complete evaluation batch. A stalled stage remains active and is
+success in a complete evaluation batch. Stages 0–2 use eight evaluation episodes;
+stage 3 uses 32 by default. A stalled stage remains active and is
 reported as incomplete training.
 
 ## Running and inspecting a job
@@ -120,10 +123,18 @@ python scripts/train_swarm_policy.py --backend warp --num-envs 64 \
 ```
 
 The command rejects GPUs outside A100/H100 unless `--allow-other-gpu` is explicit.
+`--backend native` keeps physics on the CPU while training the actor on CUDA.
+The report records the physics backend and both devices. `--backend warp` runs
+physics and policy optimization on CUDA.
 `--cpu-smoke` selects the native backend and marks the result as a smoke check.
 `--time-budget-seconds` stops after an update boundary. `--resume checkpoint.pt`
 restores the model, optimizer, stage, and update counter. Set `--updates` to the
 desired total count when resuming. Physics states are reset on resume.
+An anchored resume collects fresh demonstrations for the restored stage.
+Two consecutive stage-3 validation passes with at least 32 episodes, 80% success,
+and a 60% Wilson lower bound stop optimization early. The unseen final audit still
+runs. `--eval-max-steps 0` automatically allows enough control steps to finish
+every requested episode; a positive value imposes an explicit cap.
 
 `python scripts/verify_swarm_policy.py` checks the reflection against named
 physical features, exact wheel exchange for 2, 8, and 40 robots, finite gradients,
@@ -148,3 +159,16 @@ zero baseline of more than 20 percentage points. CPU checks cannot pass it.
 The final evaluation belongs alongside native MuJoCo playback, contact and pickup
 evidence, and warmstart-versus-PPO comparisons. Training loss alone does not measure
 transport. No run is claimed as successful until its saved results pass the gate.
+
+`scripts/verify_swarm_proof.py` audits a saved native rollout. It validates source
+and artifact hashes, free-body topology, motor limits, seed-derived initial poses
+and goals, complete timestamps, physical pickup and supported transport, released
+payload rest, and formation arrival. It reconstructs every contact frame and
+recomputes every neural action in bounded batches. Pose-derived actor inputs are
+checked against geometry; instantaneous velocity inputs cannot be reconstructed
+exactly because the recording contains positions rather than velocities.
+
+The default verifier requires accepted A100/H100 training and matching weights.
+`--allow-teacher` permits a teacher pipeline fixture and labels it explicitly;
+it cannot produce `final_neural_proof=true`. Run the tamper checks with
+`python scripts/test_swarm_proof.py --fixture PATH_TO_TEACHER_PROOF`.

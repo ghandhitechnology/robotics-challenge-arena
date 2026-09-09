@@ -63,7 +63,7 @@ def make_env(args, device, seed, num_envs=None):
     module, factory = args.env_factory.split(":")
     return getattr(importlib.import_module(module), factory)(
         num_envs=num_envs or args.num_envs, num_robots=args.robots,
-        num_objects=args.objects, device=str(device), backend=args.backend, seed=seed,
+        num_objects=args.objects, device="cpu" if args.backend == "native" else str(device), backend=args.backend, seed=seed,
         episode_seconds=args.episode_seconds,
     )
 
@@ -75,18 +75,26 @@ def stage_spec(stage, args):
     return spec
 
 
+def full_stage_validation_pass(result, stage, success_threshold):
+    return (stage == 3 and result["complete"] and result["episodes"] >= 32
+            and result["success_rate"] >= success_threshold
+            and result["success_wilson_lower_95"] >= .6)
+
+
 @torch.no_grad()
 def evaluate(model, env, stage, args, device, policy="learned"):
+    required_episodes = args.eval_episodes if stage == 3 else args.stage_eval_episodes
     env.set_curriculum(stage_spec(stage, args))
     obs = tensor_obs(env.reset(), device)
     completed, successes, deliveries, returns = [], [], [], []
     episode_return = torch.zeros(obs["active"].shape[0], device=device)
     # A bounded evaluation must not hang if an environment fails to terminate.
-    limit = args.eval_max_steps
+    batches = (required_episodes + obs["active"].shape[0] - 1) // obs["active"].shape[0]
+    limit = args.eval_max_steps if args.eval_max_steps > 0 else batches * env.max_steps
     for step in range(limit):
         if step % 128 == 0:
             progress(args, {"phase": "evaluation", "policy": policy, "stage": stage,
-                            "control_step": step, "episodes": len(completed), "required_episodes": args.eval_episodes})
+                            "control_step": step, "episodes": len(completed), "required_episodes": required_episodes})
         if policy == "zero":
             actions = torch.zeros((*obs["active"].shape, model.config.action_dim), device=device)
         elif policy == "teacher":
@@ -103,13 +111,13 @@ def evaluate(model, env, stage, args, device, policy="learned"):
             success = torch.as_tensor(info["success"], device=device)
             delivered = torch.as_tensor(info["delivered"], device=device)
             for idx in torch.where(done)[0].tolist():
-                if len(completed) >= args.eval_episodes:
+                if len(completed) >= required_episodes:
                     break
                 completed.append(idx)
                 successes.append(float(success[idx]))
                 deliveries.append(float(delivered[idx]))
                 returns.append(float(episode_return[idx]))
-            if len(completed) >= args.eval_episodes:
+            if len(completed) >= required_episodes:
                 break
             episode_return[done] = 0
             obs = tensor_obs(env.reset_done(done), device)
@@ -122,7 +130,8 @@ def evaluate(model, env, stage, args, device, policy="learned"):
     lower = (p + z*z/(2*n) - z*np.sqrt(p*(1-p)/n + z*z/(4*n*n))) / (1 + z*z/n)
     return {"policy": policy, "stage": stage, "episodes": n, "success_rate": p,
             "success_wilson_lower_95": float(lower), "mean_delivered": float(np.mean(deliveries)),
-            "mean_return": float(np.mean(returns)), "complete": n == args.eval_episodes}
+            "mean_return": float(np.mean(returns)), "complete": n == required_episodes,
+            "required_episodes": required_episodes}
 
 
 def warmstart(model, optimizer, env, args, device, demo_steps=None, bc_updates=None):
@@ -168,12 +177,13 @@ def warmstart(model, optimizer, env, args, device, demo_steps=None, bc_updates=N
         if update % 100 == 0:
             progress(args, {"phase": "behavior_cloning", "update": update + 1,
                             "total_updates": bc_updates, "weighted_mse": last_loss})
-    return {"physics_control_steps": demo_steps * args.num_envs, "agent_examples": len(target),
-            "updates": bc_updates, "final_mse": last_loss,
-            "phase_balanced": "phase" in data, "carrier_weighted": "learning_weight" in data}
+    return {"report": {"physics_control_steps": demo_steps * args.num_envs, "agent_examples": len(target),
+                       "updates": bc_updates, "final_mse": last_loss,
+                       "phase_balanced": "phase" in data, "carrier_weighted": "learning_weight" in data},
+            "obs": data, "target": target, "weight": weight}
 
 
-def ppo_update(model, optimizer, rollout, args):
+def ppo_update(model, optimizer, rollout, args, anchor=None):
     actor_before = {name: value.detach().clone() for name, value in model.named_parameters()
                     if not name.startswith("critic_") and name != "log_std"}
     obs = {key: torch.stack([step["obs"][key] for step in rollout]).flatten(0, 1)
@@ -205,6 +215,14 @@ def ppo_update(model, optimizer, rollout, args):
                                                         (clipped_value - returns[idx]).square()), mask[idx])
             entropy_mean = masked_mean(entropy, mask[idx])
             loss = policy_loss + args.value_coef * value_loss - args.entropy_coef * entropy_mean
+            anchor_loss = torch.zeros((), device=loss.device)
+            anchor_coef = getattr(args, "bc_anchor_coef", 0.)
+            if anchor is not None and anchor_coef > 0:
+                sampled = torch.randint(len(anchor["target"]), (min(args.bc_anchor_batch_size, len(anchor["target"])),), device=loss.device)
+                anchor_obs = {key: value[sampled] for key, value in anchor["obs"].items()}
+                anchor_error = (torch.tanh(model.mean(anchor_obs)) - anchor["target"][sampled]).square().mean(-1)
+                anchor_loss = masked_mean(anchor_error, anchor["weight"][sampled])
+                loss = loss + anchor_coef * anchor_loss
             if not torch.isfinite(loss):
                 raise FloatingPointError("Non-finite PPO loss; inspect physics and reward magnitudes")
             optimizer.zero_grad(set_to_none=True)
@@ -215,6 +233,7 @@ def ppo_update(model, optimizer, rollout, args):
                 kl = masked_mean((ratio - 1) - log_ratio, mask[idx])
             for key, metric in {"policy_loss": policy_loss, "value_loss": value_loss,
                                 "entropy": entropy_mean, "approx_kl": kl, "grad_norm": grad_norm,
+                                "bc_anchor_loss": anchor_loss,
                                 "clip_fraction": masked_mean((abs(ratio - 1) > args.clip).float(), mask[idx])}.items():
                 stats[key].append(float(metric.detach()))
             if kl > args.target_kl:
@@ -223,6 +242,7 @@ def ppo_update(model, optimizer, rollout, args):
         if stop:
             break
     result = {key: float(np.mean(values)) for key, values in stats.items()}
+    result["bc_anchor_coef"] = getattr(args, "bc_anchor_coef", 0.)
     with torch.no_grad():
         result["actor_update_l2"] = float(sum((value - actor_before[name]).square().sum()
                                                for name, value in model.named_parameters()
@@ -249,6 +269,8 @@ def main():
     parser.add_argument("--bc-updates", type=int, default=500)
     parser.add_argument("--stage-bc-updates", type=int, default=150)
     parser.add_argument("--bc-batch-size", type=int, default=8192)
+    parser.add_argument("--bc-anchor-coef", type=float, default=0., help="Optional physical demonstration retention loss during PPO; try 0.1")
+    parser.add_argument("--bc-anchor-batch-size", type=int, default=2048)
     parser.add_argument("--ppo-epochs", type=int, default=4)
     parser.add_argument("--minibatch-size", type=int, default=256, help="Environment-time samples, each containing all robots")
     parser.add_argument("--learning-rate", type=float, default=3e-4)
@@ -263,8 +285,9 @@ def main():
     parser.add_argument("--hidden", type=int, default=64)
     parser.add_argument("--disable-reflection", action="store_true", help="Train without left/right reflection averaging for an ablation")
     parser.add_argument("--eval-episodes", type=int, default=32)
+    parser.add_argument("--stage-eval-episodes", type=int, default=8, help="Evaluation episodes for curriculum stages 0–2")
     parser.add_argument("--eval-interval", type=int, default=20)
-    parser.add_argument("--eval-max-steps", type=int, default=10000)
+    parser.add_argument("--eval-max-steps", type=int, default=0, help="Explicit evaluation control-step cap; 0 derives enough steps for every episode")
     parser.add_argument("--stage-success", type=float, default=.7)
     parser.add_argument("--min-stage-updates", type=int, default=20)
     parser.add_argument("--start-stage", type=int, choices=range(4), default=0)
@@ -273,11 +296,17 @@ def main():
     parser.add_argument("--seed", type=int, default=20260910)
     parser.add_argument("--resume", type=Path)
     args = parser.parse_args()
-    if min(args.num_envs, args.updates, args.horizon, args.eval_episodes, args.eval_interval,
+    if min(args.num_envs, args.updates, args.horizon, args.eval_episodes, args.stage_eval_episodes, args.eval_interval,
            args.minibatch_size, args.ppo_epochs) < 1:
         parser.error("Environment, rollout, update and evaluation sizes must be positive")
     if not 0 < args.gamma <= 1 or not 0 <= args.gae_lambda <= 1 or args.demo_steps < 0 or args.bc_updates < 0:
         parser.error("Invalid discount, GAE, or demonstration settings")
+    if args.bc_anchor_coef < 0 or args.bc_anchor_batch_size < 1:
+        parser.error("BC anchor coefficient must be nonnegative and its batch size positive")
+    if args.eval_max_steps < 0:
+        parser.error("Evaluation control-step cap must be nonnegative")
+    if args.bc_anchor_coef > 0 and (args.demo_steps < 1 or args.stage_demo_steps < 1):
+        parser.error("BC anchoring requires physical demonstrations at every curriculum stage")
     device = torch.device("cpu" if args.cpu_smoke else "cuda")
     if device.type == "cuda" and not torch.cuda.is_available():
         raise RuntimeError("CUDA required; --cpu-smoke is for implementation checks only")
@@ -319,6 +348,8 @@ def main():
     environment_steps = 0
     agent_steps = 0
     warmstart_report = None
+    anchor = None
+    full_stage_passes = 0
     cumulative_actor_update = 0.
     if args.resume:
         model.load_state_dict(checkpoint["model"])
@@ -327,15 +358,21 @@ def main():
         environment_steps = checkpoint["environment_steps"]
         agent_steps = checkpoint.get("agent_steps", 0)
         cumulative_actor_update = checkpoint.get("cumulative_actor_update_l2", 0.)
+        full_stage_passes = checkpoint.get("consecutive_full_stage_passes", 0)
         stage = checkpoint["stage"]
         env.set_curriculum(stage_spec(stage, args))
         obs = tensor_obs(env.reset(), device)
         if args.updates <= initial_update:
             parser.error("--updates must exceed the resumed checkpoint update")
+        if args.bc_anchor_coef > 0:
+            anchor = warmstart(model, optimizer, env, args, device, args.stage_demo_steps, 0)
+            obs = tensor_obs(env.reset(), device)
     else:
         warmstart_result = warmstart(model, optimizer, env, args, device)
         if warmstart_result:
-            warmstart_report = warmstart_result
+            warmstart_report = warmstart_result["report"]
+            if args.bc_anchor_coef > 0:
+                anchor = warmstart_result
             del warmstart_result
         export_policy(model, out / "warmstart.npz")
         obs = tensor_obs(env.reset(), device)
@@ -345,8 +382,9 @@ def main():
     evaluations = [baseline]
     stage_warmstarts = []
     best = (-1, -1.)
-    updates_at_stage = 0
+    updates_at_stage = checkpoint.get("updates_at_stage", 0) if checkpoint else 0
     history = []
+    stopping_reason = "update_budget_exhausted"
     for update in range(initial_update + 1, args.updates + 1):
         tick = time.monotonic()
         rollout = []
@@ -377,7 +415,7 @@ def main():
                     reward_sums[key] += masked_mean(component, saved_obs["active"]) if component.ndim == 2 else component.mean()
                 obs = tensor_obs(env.reset_done(done), device) if done.any() else terminal_obs
         model.train()
-        stats = ppo_update(model, optimizer, rollout, args)
+        stats = ppo_update(model, optimizer, rollout, args, anchor)
         cumulative_actor_update += stats["actor_update_l2"]
         environment_steps += args.horizon * args.num_envs
         agent_steps += int(active_agent_steps)
@@ -389,6 +427,7 @@ def main():
                   "reward_components": {key: float(val / args.horizon) for key, val in reward_sums.items()}, **stats}
         model.eval()
         advance = False
+        early_stop = False
         if update % args.eval_interval == 0 or update == args.updates:
             result = evaluate(model, validation_env, stage, args, device)
             result["update"] = update
@@ -400,6 +439,12 @@ def main():
                 export_policy(model, out / "best.npz")
             advance = (stage < 3 and result["complete"] and result["success_rate"] >= args.stage_success
                        and updates_at_stage >= args.min_stage_updates)
+            full_pass = full_stage_validation_pass(result, stage, args.final_success)
+            full_stage_passes = full_stage_passes + 1 if full_pass else 0
+            early_stop = full_stage_passes >= 2
+            record["consecutive_full_stage_passes"] = full_stage_passes
+            if early_stop:
+                record["early_stop_reason"] = "two_full_stage_validation_passes"
         history.append(record)
         with (out / "history.jsonl").open("a") as handle:
             handle.write(json.dumps(record, allow_nan=False) + "\n")
@@ -409,9 +454,14 @@ def main():
         torch.save({"config": asdict(config), "model": model.state_dict(), "optimizer": optimizer.state_dict(),
                     "update": update, "stage": stage, "environment_steps": environment_steps,
                     "agent_steps": agent_steps, "cumulative_actor_update_l2": cumulative_actor_update,
+                    "updates_at_stage": updates_at_stage, "consecutive_full_stage_passes": full_stage_passes,
                     "args": vars(args)}, out / "checkpoint.pt.tmp")
         (out / "checkpoint.pt.tmp").replace(out / "checkpoint.pt")
+        if early_stop:
+            stopping_reason = "two_full_stage_validation_passes"
+            break
         if args.time_budget_seconds and time.monotonic() - start >= args.time_budget_seconds:
+            stopping_reason = "wall_time_budget"
             break
         if advance:
             stage += 1
@@ -419,7 +469,9 @@ def main():
             env.set_curriculum(stage_spec(stage, args))
             stage_warmstart = warmstart(model, optimizer, env, args, device,
                                         args.stage_demo_steps, args.stage_bc_updates)
-            stage_warmstarts.append({"stage": stage, "warmstart": stage_warmstart})
+            stage_warmstarts.append({"stage": stage, "warmstart": stage_warmstart["report"] if stage_warmstart else None})
+            anchor = stage_warmstart if args.bc_anchor_coef > 0 else None
+            del stage_warmstart
             obs = tensor_obs(env.reset(), device)
     # Final audit uses a third, unseen seed range and the full deployment task.
     for instance in (env, validation_env):
@@ -453,9 +505,12 @@ def main():
               and final_eval["success_rate"] > zero_eval["success_rate"] + .2)
     report = {"method": "shared neighbor-attention MAPPO with physical demonstration warmstart",
               "gpu": gpu, "torch": torch.__version__, "cuda": torch.version.cuda, "seed": args.seed,
+              "policy_device": str(next(model.parameters()).device), "physics_device": str(env.device),
+              "cuda_optimization": next(model.parameters()).device.type == "cuda",
               "backend": args.backend, "config": asdict(config), "parameters": sum(p.numel() for p in model.parameters()),
               "warmstart": warmstart_report, "ppo_updates": len(history), "environment_steps": environment_steps,
               "stage_warmstarts": stage_warmstarts,
+              "bc_anchor_coef": args.bc_anchor_coef, "stopping_reason": stopping_reason,
               "agent_steps": agent_steps,
               "cumulative_ppo_actor_update_l2": cumulative_actor_update,
               "training_seconds": time.monotonic() - start, "final_stage": stage, "evaluations": evaluations,
