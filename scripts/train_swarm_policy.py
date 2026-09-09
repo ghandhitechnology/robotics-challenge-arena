@@ -65,6 +65,7 @@ def make_env(args, device, seed, num_envs=None):
         num_envs=num_envs or args.num_envs, num_robots=args.robots,
         num_objects=args.objects, device="cpu" if args.backend == "native" else str(device), backend=args.backend, seed=seed,
         episode_seconds=args.episode_seconds,
+        native_workers=args.native_workers,
     )
 
 
@@ -261,6 +262,7 @@ def main():
     parser.add_argument("--robots", type=int, default=40)
     parser.add_argument("--objects", type=int, default=4)
     parser.add_argument("--episode-seconds", type=float, default=40.)
+    parser.add_argument("--native-workers", type=int, default=1, help="Persistent native MuJoCo world workers; 1 keeps serial integration")
     parser.add_argument("--updates", type=int, default=1000)
     parser.add_argument("--horizon", type=int, default=128)
     parser.add_argument("--demo-steps", type=int, default=1800)
@@ -305,6 +307,8 @@ def main():
         parser.error("BC anchor coefficient must be nonnegative and its batch size positive")
     if args.eval_max_steps < 0:
         parser.error("Evaluation control-step cap must be nonnegative")
+    if args.native_workers < 1:
+        parser.error("Native worker count must be positive")
     if args.bc_anchor_coef > 0 and (args.demo_steps < 1 or args.stage_demo_steps < 1):
         parser.error("BC anchoring requires physical demonstrations at every curriculum stage")
     device = torch.device("cpu" if args.cpu_smoke else "cuda")
@@ -506,6 +510,7 @@ def main():
     report = {"method": "shared neighbor-attention MAPPO with physical demonstration warmstart",
               "gpu": gpu, "torch": torch.__version__, "cuda": torch.version.cuda, "seed": args.seed,
               "policy_device": str(next(model.parameters()).device), "physics_device": str(env.device),
+              "native_workers": env.native_workers,
               "cuda_optimization": next(model.parameters()).device.type == "cuda",
               "backend": args.backend, "config": asdict(config), "parameters": sum(p.numel() for p in model.parameters()),
               "warmstart": warmstart_report, "ppo_updates": len(history), "environment_steps": environment_steps,

@@ -21,13 +21,15 @@ def main():
     p.add_argument("--envs", type=int, default=4)
     p.add_argument("--steps", type=int, default=100)
     p.add_argument("--backend", choices=["native", "warp"], default="warp")
+    p.add_argument("--native-workers", type=int, default=1)
     p.add_argument("--output", default="output/swarm/benchmark.json")
     a = p.parse_args()
+    torch.set_num_threads(2)
     device = "cuda:0" if a.backend == "warp" else "cpu"
     start = time.perf_counter()
     print("BENCHMARK_START", json.dumps(vars(a)), flush=True)
     env = SwarmVectorEnv(num_envs=a.envs, num_robots=a.robots, num_objects=a.objects,
-                         device=device, backend=a.backend)
+                         device=device, backend=a.backend, native_workers=a.native_workers)
     prepared = time.perf_counter() - start
     print("BENCHMARK_MODEL_READY", json.dumps({"nq": env.model.nq, "nv": env.model.nv,
             "geoms": env.model.ngeom, "preparation_seconds": prepared}), flush=True)
@@ -67,6 +69,7 @@ def main():
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(report, indent=2) + "\n")
     print("BENCHMARK_COMPLETE", json.dumps(report), flush=True)
+    env.close()
 
 
 if __name__ == "__main__":

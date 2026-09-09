@@ -7,6 +7,7 @@ external object forces, and in-episode state edits are deliberately absent.
 from __future__ import annotations
 
 import copy
+from concurrent.futures import ThreadPoolExecutor, wait
 import math
 import xml.etree.ElementTree as ET
 
@@ -118,11 +119,13 @@ class SwarmVectorEnv:
 
     def __init__(self, num_envs=1, num_robots=40, num_objects=4, device="cpu",
                  backend="native", seed=0, timestep=.002, control_dt=.02,
-                 episode_seconds=40., start_mode="grasp", **kwargs):
+                 episode_seconds=40., start_mode="grasp", native_workers=1, **kwargs):
         if kwargs:
             raise TypeError(f"Unknown environment arguments: {sorted(kwargs)}")
         if backend not in {"native", "warp"}:
             raise ValueError("backend must be native or warp")
+        if not isinstance(native_workers, int) or isinstance(native_workers, bool) or native_workers < 1:
+            raise ValueError("native_workers must be a positive integer")
         self.device = torch.device(device)
         self.backend, self.num_envs = backend, int(num_envs)
         self.num_robots, self.num_objects = int(num_robots), int(num_objects)
@@ -130,6 +133,9 @@ class SwarmVectorEnv:
         self.substeps = round(self.dt / self.timestep)
         self.max_steps = round(episode_seconds / self.dt)
         self.start_mode = start_mode
+        self.native_workers = min(native_workers, self.num_envs) if backend == "native" else 1
+        self._native_pool = None
+        self._closed = False
         self.rng = torch.Generator(device=self.device).manual_seed(seed)
         self.seed = seed
         self.xml, self.metadata = build_swarm_scene(num_robots, num_objects, timestep)
@@ -140,6 +146,8 @@ class SwarmVectorEnv:
         self.lift_target = torch.zeros((num_envs, num_robots), device=self.device)
         self._init_physics()
         self.reset()
+        if self.backend == "native" and self.native_workers > 1:
+            self._native_pool = ThreadPoolExecutor(max_workers=self.native_workers, thread_name_prefix="swarm-native")
 
     def _tensor(self, value, dtype=torch.float32):
         return torch.as_tensor(value, dtype=dtype, device=self.device)
@@ -445,26 +453,43 @@ class SwarmVectorEnv:
         idle[..., 2] = -1
         return torch.where(self.active[..., None].bool(), action, idle)
 
+    def _step_native_world(self, world):
+        # Each worker owns one MjData and one lift-target row. The model and
+        # commands remain read-only until all workers finish this control step.
+        data = self.native_data[world]
+        actions = self.command.numpy()[world]
+        lift_target = self.lift_target.numpy()[world]
+        for _ in range(self.substeps):
+            wheel_velocity = data.qvel[self.wheel_dofs_np]
+            desired = -20 * actions[:, :2]
+            request = .00015 * (desired - wheel_velocity)
+            limit = np.where(request * wheel_velocity > 0, .002 * np.maximum(0, 1 - np.abs(wheel_velocity) / 26.1799388), .002)
+            data.ctrl[self.actuator_ids_np[:, :2]] = np.clip(request, -limit, limit)
+            wanted = .004 * (actions[:, 2] + 1)
+            lift_target += np.clip(wanted - lift_target, -.01 * self.timestep, .01 * self.timestep)
+            data.ctrl[self.actuator_ids_np[:, 2]] = lift_target
+            mujoco.mj_step(self.model, data)
+        mujoco.mj_forward(self.model, data)
+        if any(w.number for w in data.warning):
+            raise FloatingPointError(f"Native MuJoCo warning in swarm world {world}")
+
     def _step_physics(self):
+        if self._closed:
+            raise RuntimeError("Cannot step a closed swarm environment")
         if self.backend == "native":
-            actions = self.command.numpy()
-            lt = self.lift_target.numpy()
+            if self._native_pool is None:
+                for world in range(self.num_envs):
+                    self._step_native_world(world)
+            else:
+                futures = [self._native_pool.submit(self._step_native_world, world) for world in range(self.num_envs)]
+                # Wait for every world even if one raises, so reset/close cannot
+                # race with an unfinished integration on the exception path.
+                wait(futures)
+                for future in futures:
+                    future.result()
             for e, data in enumerate(self.native_data):
-                for _ in range(self.substeps):
-                    wheel_velocity = data.qvel[self.wheel_dofs_np]
-                    desired = -20 * actions[e, :, :2]
-                    request = .00015 * (desired - wheel_velocity)
-                    limit = np.where(request * wheel_velocity > 0, .002 * np.maximum(0, 1 - np.abs(wheel_velocity) / 26.1799388), .002)
-                    data.ctrl[self.actuator_ids_np[:, :2]] = np.clip(request, -limit, limit)
-                    wanted = .004 * (actions[e, :, 2] + 1)
-                    lt[e] += np.clip(wanted - lt[e], -.01 * self.timestep, .01 * self.timestep)
-                    data.ctrl[self.actuator_ids_np[:, 2]] = lt[e]
-                    mujoco.mj_step(self.model, data)
-                mujoco.mj_forward(self.model, data)
                 self.qpos[e] = self._tensor(data.qpos)
                 self.qvel[e] = self._tensor(data.qvel)
-                if any(w.number for w in data.warning):
-                    raise FloatingPointError("Native MuJoCo warning in swarm simulation")
         else:
             wp, mjw = self.wp, self.mjw
             with wp.ScopedDevice(self.wp_device):
@@ -614,4 +639,7 @@ class SwarmVectorEnv:
         return result
 
     def close(self):
-        pass
+        if self._native_pool is not None:
+            self._native_pool.shutdown(wait=True, cancel_futures=True)
+            self._native_pool = None
+        self._closed = True
