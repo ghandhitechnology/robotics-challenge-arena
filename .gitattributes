@@ -1,0 +1,3 @@
+output/mujoco/*.xml linguist-generated=true
+output/mujoco/*.json linguist-generated=true
+arena_mujoco/assets/*.json linguist-generated=true
