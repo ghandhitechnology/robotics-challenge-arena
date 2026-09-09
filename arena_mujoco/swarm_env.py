@@ -81,8 +81,8 @@ def build_swarm_scene(num_robots=40, num_objects=4, timestep=.002):
         size = np.fromstring(shape.get("size"), sep=" ")
         is_box = shape.get("type") == "box"
         radius, half_height = (size[1], size[2]) if is_box else (size[0], size[1])
-        x = .28 + (index % cols) * min(.23, .62 / max(1, cols - 1))
-        y = .28 + (index // cols) * min(.31, .65 / max(1, rows - 1))
+        x = .27 + (index % cols) * min(.34, .62 / max(1, cols - 1))
+        y = .27 + (index // cols) * min(.45, .57 / max(1, rows - 1))
         body.set("pos", numbers([x, y, half_height + .0001]))
         world.append(body)
         kind = "sample" if source.startswith("Biological") else ("kit" if is_box else "cylinder")
@@ -230,6 +230,8 @@ class SwarmVectorEnv:
         self.delivered = torch.zeros((E, O), dtype=torch.bool, device=self.device)
         self.supported_previous = torch.zeros((E, O), dtype=torch.bool, device=self.device)
         self.contact_hold = torch.zeros((E, O), dtype=torch.long, device=self.device)
+        self.settle_hold = torch.zeros((E, O), dtype=torch.long, device=self.device)
+        self.lost_support_hold = torch.zeros((E, O), dtype=torch.long, device=self.device)
         self.pad_contact = torch.zeros((E, N), device=self.device)
         self.robot_collisions = torch.zeros((E, N), device=self.device)
         self.object_floor_contact = torch.zeros((E, O), device=self.device)
@@ -291,7 +293,7 @@ class SwarmVectorEnv:
         self.command[ids, :, 2] = -1
         self.lift_target[ids] = 0
         self.previous_action[ids] = self.command[ids]
-        for name in ("steps", "phase", "phase_steps", "ever_lifted", "delivered", "supported_previous", "contact_hold", "pad_contact", "robot_collisions", "object_floor_contact"):
+        for name in ("steps", "phase", "phase_steps", "ever_lifted", "delivered", "supported_previous", "contact_hold", "settle_hold", "lost_support_hold", "pad_contact", "robot_collisions", "object_floor_contact"):
             getattr(self, name)[ids] = 0
         if self.backend == "native":
             for local, e in enumerate(ids.tolist()):
@@ -523,22 +525,30 @@ class SwarmVectorEnv:
         self.phase_steps += 1
         qr, qo, yaw, forward, right, velocity, object_velocity, lift = self._state()
         clearance = qo[..., 2] - self.object_half_height[None, :]
-        pair_contact = self.pad_contact[:, :2 * self.num_objects].reshape(self.num_envs, self.num_objects, 2).amin(-1).bool()
+        contacts_by_pair = self.pad_contact[:, :2 * self.num_objects].reshape(self.num_envs, self.num_objects, 2)
+        pair_contact = contacts_by_pair.amin(-1).bool()
+        any_pad_contact = contacts_by_pair.amax(-1).bool()
         supported = pair_contact & (clearance > .004) & (self.object_floor_contact == 0)
         self.contact_hold = torch.where(pair_contact, self.contact_hold + 1, torch.zeros_like(self.contact_hold))
         distance = torch.linalg.vector_norm(self.goals - qo[..., :2], dim=-1)
-        transition = ((self.phase == 0) & (self.contact_hold >= 8)) | ((self.phase == 1) & supported & (self.phase_steps > 50))
-        transition |= (self.phase == 2) & (distance < .008) & supported
         pair_lift = lift[:, :2 * self.num_objects].reshape(self.num_envs, self.num_objects, 2).amax(-1)
+        transition = ((self.phase == 0) & (self.contact_hold >= 8) & (pair_lift < .001)) | ((self.phase == 1) & supported & (self.phase_steps > 50))
+        transition |= (self.phase == 2) & (distance < .008) & supported
         transition |= (self.phase == 3) & (pair_lift < .001) & (clearance < .0015) & (self.phase_steps > 55)
-        transition |= (self.phase == 4) & (~pair_contact) & (self.phase_steps > 100)
+        transition |= (self.phase == 4) & (~any_pad_contact) & (self.phase_steps > 100)
         transition &= self.object_active
         self.phase = torch.where(transition, (self.phase + 1).clamp(max=5), self.phase)
         self.phase_steps = torch.where(transition, 0, self.phase_steps)
+        self.lost_support_hold = torch.where((old_phase == 2) & ~supported, self.lost_support_hold + 1, 0)
+        recover = (self.lost_support_hold >= 25) & (clearance < .003) & self.object_active
+        self.phase = torch.where(recover, 0, self.phase)
+        self.phase_steps = torch.where(recover, 0, self.phase_steps)
+        self.contact_hold = torch.where(recover, 0, self.contact_hold)
         pickup = supported & ~self.ever_lifted & self.object_active
         self.ever_lifted |= supported & self.object_active
-        settled = (self.phase == 5) & (distance < .012) & (clearance.abs() < .002) & (torch.linalg.vector_norm(object_velocity, dim=-1) < .01) & ~pair_contact
-        newly_delivered = settled & ~self.delivered & self.ever_lifted & self.object_active
+        settled = (self.phase == 5) & (distance < .012) & (clearance.abs() < .002) & (torch.linalg.vector_norm(object_velocity, dim=-1) < .01) & ~any_pad_contact
+        self.settle_hold = torch.where(settled, self.settle_hold + 1, 0)
+        newly_delivered = (self.settle_hold >= 50) & ~self.delivered & self.ever_lifted & self.object_active
         self.delivered |= newly_delivered
         dropped = self.supported_previous & ~supported & (old_phase == 2)
         self.supported_previous = supported.clone()

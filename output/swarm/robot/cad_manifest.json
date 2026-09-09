@@ -1,0 +1,181 @@
+{
+  "units": "millimeters",
+  "source": "arena_mujoco/swarm_robot.py",
+  "scope": "Solid native collision envelopes; assembly reference for detailed mechanical CAD",
+  "part_coordinates": "Assembly coordinates, +Y forward, +Z up, base at Z=7 mm",
+  "requires_engineering": [
+    "Shell cavities",
+    "Gear and axle bearings",
+    "Motor mounts",
+    "Transmission gears",
+    "Fasteners and tolerances",
+    "PCB and battery installation"
+  ],
+  "parts": [
+    {
+      "name": "swarm_00_shell_front",
+      "stl": "parts/swarm_00_shell_front_mm.stl",
+      "bounds_mm": [
+        [
+          -9.999999776482582,
+          7.000000216066837,
+          2.9999997932463884
+        ],
+        [
+          9.999999776482582,
+          27.000000700354576,
+          16.999999061226845
+        ]
+      ],
+      "sha256": "52b3b9508f0a0ca94ab9ae5815e970e7ef25c601a61078beeb18cfbce5133597"
+    },
+    {
+      "name": "swarm_00_shell_rear",
+      "stl": "parts/swarm_00_shell_rear_mm.stl",
+      "bounds_mm": [
+        [
+          -9.999999776482582,
+          -27.000000700354576,
+          2.9999997932463884
+        ],
+        [
+          9.999999776482582,
+          -7.000000216066837,
+          16.999999061226845
+        ]
+      ],
+      "sha256": "c7ce9425885606b4ba69ad437f965beaee0afcbc2cc0ddc89af783544f2c1561"
+    },
+    {
+      "name": "swarm_00_ball_housing",
+      "stl": "parts/swarm_00_ball_housing_mm.stl",
+      "bounds_mm": [
+        [
+          -7.999991066753864,
+          -7.999994792044163,
+          1.9999993965029716
+        ],
+        [
+          7.999998517334461,
+          8.00000037997961,
+          17.999999225139618
+        ]
+      ],
+      "sha256": "b63a5c509f071038364d48ad3753c8fe0c59ad99b94875e41037bd88ab1f49f2"
+    },
+    {
+      "name": "swarm_00_skid_front",
+      "stl": "parts/swarm_00_skid_front_mm.stl",
+      "bounds_mm": [
+        [
+          -1.5000001294538379,
+          18.50000023841858,
+          0.0
+        ],
+        [
+          1.5000001294538379,
+          21.49999886751175,
+          3.000000026077032
+        ]
+      ],
+      "sha256": "a656294581eb06af753e8312519ea15fdc43e44b1d7aa6ad03ebabb6a74ec5c3"
+    },
+    {
+      "name": "swarm_00_skid_rear",
+      "stl": "parts/swarm_00_skid_rear_mm.stl",
+      "bounds_mm": [
+        [
+          -1.5000001294538379,
+          -23.499999195337296,
+          0.0
+        ],
+        [
+          1.5000001294538379,
+          -20.500000566244125,
+          3.000000026077032
+        ]
+      ],
+      "sha256": "1d914bc4b211d45b7a49075cfc9d1a33b86f2614a0b39e5735841e5c17299057"
+    },
+    {
+      "name": "swarm_00_tire_left",
+      "stl": "parts/swarm_00_tire_left_mm.stl",
+      "bounds_mm": [
+        [
+          -12.000001035630703,
+          -7.000000216066837,
+          -1.1328609161864733e-06
+        ],
+        [
+          -8.999998681247234,
+          7.000000216066837,
+          14.00000136345625
+        ]
+      ],
+      "sha256": "96943a0ef0db565ad141121586a7dfa31fc8b8be78af5607a94fb09ec19cb257"
+    },
+    {
+      "name": "swarm_00_tire_right",
+      "stl": "parts/swarm_00_tire_right_mm.stl",
+      "bounds_mm": [
+        [
+          8.999998681247234,
+          -7.000000216066837,
+          -1.1328609161864733e-06
+        ],
+        [
+          12.000001035630703,
+          7.000000216066837,
+          14.00000136345625
+        ]
+      ],
+      "sha256": "efa93d3a1c72d694019c7c098570a907eba8d5eb0aa3c650cff3a1e6c8a4b75c"
+    },
+    {
+      "name": "swarm_00_pad",
+      "stl": "parts/swarm_00_pad_mm.stl",
+      "bounds_mm": [
+        [
+          -4.999999888241291,
+          26.000000536441803,
+          3.4000000450760126
+        ],
+        [
+          4.999999888241291,
+          28.00000086426735,
+          4.800000227987766
+        ]
+      ],
+      "sha256": "347efc84d4dadadbc38c6021dddb725c2676de425d124cbbd39b45fac41fcb4d"
+    },
+    {
+      "name": "swarm_00_pad_upper",
+      "stl": "parts/swarm_00_pad_upper_mm.stl",
+      "bounds_mm": [
+        [
+          -4.999999888241291,
+          26.000000536441803,
+          4.999999422580004
+        ],
+        [
+          4.999999888241291,
+          28.00000086426735,
+          13.000000268220901
+        ]
+      ],
+      "sha256": "69c46c950e436e04fef9c09dfb9da687a6d562001221fd2852f3a923ef077989"
+    }
+  ],
+  "assembly_bounds_mm": [
+    [
+      -12.000001035630703,
+      -27.000000700354576,
+      -1.1328609161864733e-06
+    ],
+    [
+      12.000001035630703,
+      28.00000086426735,
+      17.999999225139618
+    ]
+  ]
+}

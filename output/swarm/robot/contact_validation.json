@@ -1,0 +1,350 @@
+[
+  {
+    "kind": "cylinder",
+    "timestep_s": 0.001,
+    "duration_s": 29.0,
+    "minimum_bottom_during_carry_m": 0.007451937031626667,
+    "maximum_bottom_during_carry_m": 0.007738693222514435,
+    "translation_y_m": 0.21078867999424294,
+    "final_position_m": [
+      -6.0618702990948814e-05,
+      0.21078867999424294,
+      0.009947709897189013
+    ],
+    "both_modules_pad_contact_fraction": 1.0,
+    "payload_floor_contact_steps_during_carry": 0,
+    "maximum_wheel_torque_nm": 0.0007493559644164741,
+    "solver_warning_count": 0,
+    "external_forces": false,
+    "object_attachments": false,
+    "final_bottom_m": -5.229010281098713e-05,
+    "rest_drift_m": 1.8583443889083419e-10,
+    "controller": {
+      "inward_wheel_target_rad_s": -3.0,
+      "carry_velocity_m_s": 0.014,
+      "yaw_gain_s_inv": 8.0,
+      "max_yaw_rate_rad_s": 2.0,
+      "carry_interval_s": [
+        2.5,
+        20.0
+      ],
+      "lower_interval_s": [
+        20.0,
+        21.6
+      ],
+      "backoff_interval_s": [
+        22.0,
+        24.0
+      ],
+      "rest_interval_s": [
+        24.0,
+        29.0
+      ]
+    },
+    "initial_module_poses": [
+      [
+        0,
+        -0.04,
+        0.0072,
+        0
+      ],
+      [
+        0,
+        0.04,
+        0.0072,
+        3.141592653589793
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "kind": "kit",
+    "timestep_s": 0.001,
+    "duration_s": 29.0,
+    "minimum_bottom_during_carry_m": 0.0071826936552981235,
+    "maximum_bottom_during_carry_m": 0.0076573748578512,
+    "translation_y_m": 0.20917066446919008,
+    "final_position_m": [
+      -1.0205580010588605e-07,
+      0.20917066446919008,
+      0.009960725160155656
+    ],
+    "both_modules_pad_contact_fraction": 1.0,
+    "payload_floor_contact_steps_during_carry": 0,
+    "maximum_wheel_torque_nm": 0.0013888768035975085,
+    "solver_warning_count": 0,
+    "external_forces": false,
+    "object_attachments": false,
+    "final_bottom_m": -3.9274839844343976e-05,
+    "rest_drift_m": 1.5963558193008257e-11,
+    "controller": {
+      "inward_wheel_target_rad_s": -3.0,
+      "carry_velocity_m_s": 0.014,
+      "yaw_gain_s_inv": 8.0,
+      "max_yaw_rate_rad_s": 2.0,
+      "carry_interval_s": [
+        2.5,
+        20.0
+      ],
+      "lower_interval_s": [
+        20.0,
+        21.6
+      ],
+      "backoff_interval_s": [
+        22.0,
+        24.0
+      ],
+      "rest_interval_s": [
+        24.0,
+        29.0
+      ]
+    },
+    "initial_module_poses": [
+      [
+        0,
+        -0.042499999999999996,
+        0.0072,
+        0
+      ],
+      [
+        0,
+        0.042499999999999996,
+        0.0072,
+        3.141592653589793
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "kind": "disc",
+    "timestep_s": 0.001,
+    "duration_s": 29.0,
+    "minimum_bottom_during_carry_m": 0.006638573211559361,
+    "maximum_bottom_during_carry_m": 0.007607099351841803,
+    "translation_y_m": 0.20924198799397242,
+    "final_position_m": [
+      3.47871720291041e-05,
+      0.20924198799397242,
+      0.002447709897207138
+    ],
+    "both_modules_pad_contact_fraction": 1.0,
+    "payload_floor_contact_steps_during_carry": 0,
+    "maximum_wheel_torque_nm": 0.0014275030517835751,
+    "solver_warning_count": 0,
+    "external_forces": false,
+    "object_attachments": false,
+    "final_bottom_m": -5.229010279286187e-05,
+    "rest_drift_m": 9.507278778754471e-09,
+    "controller": {
+      "inward_wheel_target_rad_s": -3.0,
+      "carry_velocity_m_s": 0.014,
+      "yaw_gain_s_inv": 8.0,
+      "max_yaw_rate_rad_s": 2.0,
+      "carry_interval_s": [
+        2.5,
+        20.0
+      ],
+      "lower_interval_s": [
+        20.0,
+        21.6
+      ],
+      "backoff_interval_s": [
+        22.0,
+        24.0
+      ],
+      "rest_interval_s": [
+        24.0,
+        29.0
+      ]
+    },
+    "initial_module_poses": [
+      [
+        0,
+        -0.057999999999999996,
+        0.0072,
+        0
+      ],
+      [
+        0,
+        0.057999999999999996,
+        0.0072,
+        3.141592653589793
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "kind": "cylinder",
+    "timestep_s": 0.002,
+    "duration_s": 29.0,
+    "minimum_bottom_during_carry_m": 0.007438839954957104,
+    "maximum_bottom_during_carry_m": 0.007737505771930029,
+    "translation_y_m": 0.21076664923956587,
+    "final_position_m": [
+      -0.00010089608521282817,
+      0.21076664923956587,
+      0.00994770989718903
+    ],
+    "both_modules_pad_contact_fraction": 1.0,
+    "payload_floor_contact_steps_during_carry": 0,
+    "maximum_wheel_torque_nm": 0.0007496052395376166,
+    "solver_warning_count": 0,
+    "external_forces": false,
+    "object_attachments": false,
+    "final_bottom_m": -5.229010281096978e-05,
+    "rest_drift_m": 2.7803368089875115e-10,
+    "controller": {
+      "inward_wheel_target_rad_s": -3.0,
+      "carry_velocity_m_s": 0.014,
+      "yaw_gain_s_inv": 8.0,
+      "max_yaw_rate_rad_s": 2.0,
+      "carry_interval_s": [
+        2.5,
+        20.0
+      ],
+      "lower_interval_s": [
+        20.0,
+        21.6
+      ],
+      "backoff_interval_s": [
+        22.0,
+        24.0
+      ],
+      "rest_interval_s": [
+        24.0,
+        29.0
+      ]
+    },
+    "initial_module_poses": [
+      [
+        0,
+        -0.04,
+        0.0072,
+        0
+      ],
+      [
+        0,
+        0.04,
+        0.0072,
+        3.141592653589793
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "kind": "kit",
+    "timestep_s": 0.002,
+    "duration_s": 29.0,
+    "minimum_bottom_during_carry_m": 0.007182658095591701,
+    "maximum_bottom_during_carry_m": 0.007657337024925059,
+    "translation_y_m": 0.2091437171723409,
+    "final_position_m": [
+      -9.228036207664536e-05,
+      0.2091437171723409,
+      0.009960725160155644
+    ],
+    "both_modules_pad_contact_fraction": 1.0,
+    "payload_floor_contact_steps_during_carry": 0,
+    "maximum_wheel_torque_nm": 0.002,
+    "solver_warning_count": 0,
+    "external_forces": false,
+    "object_attachments": false,
+    "final_bottom_m": -3.927483984435612e-05,
+    "rest_drift_m": 3.7252759918762945e-11,
+    "controller": {
+      "inward_wheel_target_rad_s": -3.0,
+      "carry_velocity_m_s": 0.014,
+      "yaw_gain_s_inv": 8.0,
+      "max_yaw_rate_rad_s": 2.0,
+      "carry_interval_s": [
+        2.5,
+        20.0
+      ],
+      "lower_interval_s": [
+        20.0,
+        21.6
+      ],
+      "backoff_interval_s": [
+        22.0,
+        24.0
+      ],
+      "rest_interval_s": [
+        24.0,
+        29.0
+      ]
+    },
+    "initial_module_poses": [
+      [
+        0,
+        -0.042499999999999996,
+        0.0072,
+        0
+      ],
+      [
+        0,
+        0.042499999999999996,
+        0.0072,
+        3.141592653589793
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "kind": "disc",
+    "timestep_s": 0.002,
+    "duration_s": 29.0,
+    "minimum_bottom_during_carry_m": 0.0067032950257945485,
+    "maximum_bottom_during_carry_m": 0.0076079483589951095,
+    "translation_y_m": 0.20922682393990572,
+    "final_position_m": [
+      2.3851597990323325e-05,
+      0.20922682393990572,
+      0.0024477098978660516
+    ],
+    "both_modules_pad_contact_fraction": 1.0,
+    "payload_floor_contact_steps_during_carry": 0,
+    "maximum_wheel_torque_nm": 0.002,
+    "solver_warning_count": 0,
+    "external_forces": false,
+    "object_attachments": false,
+    "final_bottom_m": -5.229010213394841e-05,
+    "rest_drift_m": 1.892442614683575e-08,
+    "controller": {
+      "inward_wheel_target_rad_s": -3.0,
+      "carry_velocity_m_s": 0.014,
+      "yaw_gain_s_inv": 8.0,
+      "max_yaw_rate_rad_s": 2.0,
+      "carry_interval_s": [
+        2.5,
+        20.0
+      ],
+      "lower_interval_s": [
+        20.0,
+        21.6
+      ],
+      "backoff_interval_s": [
+        22.0,
+        24.0
+      ],
+      "rest_interval_s": [
+        24.0,
+        29.0
+      ]
+    },
+    "initial_module_poses": [
+      [
+        0,
+        -0.057999999999999996,
+        0.0072,
+        0
+      ],
+      [
+        0,
+        0.057999999999999996,
+        0.0072,
+        3.141592653589793
+      ]
+    ],
+    "passed": true
+  }
+]
