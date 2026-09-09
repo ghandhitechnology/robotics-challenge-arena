@@ -20,15 +20,30 @@ python3 -m venv .venv
 
 ![MuJoCo 경기장](output/mujoco/arena_overview.png)
 
+## 시니어 예선 로봇과 학습 정책
+
+폭 180 × 길이 200 mm, 질량 800 g의 4모터 로봇을 설계했습니다. 높이가 다른 집게 접촉면으로 원기둥, 의료 키트, 얇은 샘플 원판을 잡습니다. A100에서 학습한 신경망이 주행·회전·리프트·집게 속도를 제어합니다.
+
+검증 실행은 16개 운반 과제를 완료해 160/160점을 얻었고, 최종 배치를 5초간 유지했습니다. 완료 시간은 시뮬레이션 기준 738.76초로 공식 120초 제한을 넘었으며, 이번 결과는 예선 과제 수행 가능성을 확인한 기록입니다. A100 학습에는 12.84초가 걸렸습니다.
+
+![예선 로봇 설계](output/competition/robot/robot_overview.png)
+
+```sh
+.venv/bin/python scripts/run_competition.py --output output/competition/reproduction
+.venv/bin/python scripts/verify_competition_proof.py output/competition/reproduction
+```
+
+[과제 검증과 재현 방법](docs/competition_proof.md), [로봇 설계와 부품](docs/robot_design.md), [예선 규칙 검토](docs/competition_tasks.md), [A100 학습 기록](docs/colab_training.md)을 제공합니다. 전체 과제 검증은 시뮬레이터 상태 관측과 강체 테이프 설정을 사용하며, 완료 시간과 공식 120초 제한을 별도로 기록합니다.
+
 ## 다운로드
 
-**[전체 파일 ZIP 다운로드](https://github.com/ghandhitechnology/robotics-challenge-arena/releases/latest/download/robotics_challenge_arena.zip)**
+**[경기장 릴리스 ZIP 다운로드](https://github.com/ghandhitechnology/robotics-challenge-arena/releases/latest/download/robotics_challenge_arena.zip)**
 
 1. 위 링크에서 `robotics_challenge_arena.zip`을 내려받습니다.
 2. ZIP 파일의 압축을 풉니다.
 3. 압축을 푼 폴더 안의 `robotics_challenge_arena/output/`에서 아래 표에 맞는 파일을 엽니다.
 
-[릴리스 페이지](https://github.com/ghandhitechnology/robotics-challenge-arena/releases/latest)에서도 같은 ZIP과 다운로드 검증용 체크섬을 받을 수 있습니다. 저장소 상단의 **Code → Download ZIP**으로 내려받은 경우에는 압축을 푼 저장소의 `output/` 폴더를 사용합니다.
+[릴리스 페이지](https://github.com/ghandhitechnology/robotics-challenge-arena/releases/latest)에서도 같은 경기장 ZIP과 다운로드 검증용 체크섬을 받을 수 있습니다. 현재 브랜치의 로봇·정책·검증 자료는 저장소 상단의 **Code → Download ZIP**으로 받습니다. 압축을 푼 저장소의 `output/competition/` 폴더에 들어 있습니다.
 
 ### 어떤 파일을 열어야 하나요?
 

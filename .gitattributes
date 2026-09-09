@@ -1,3 +1,8 @@
 output/mujoco/*.xml linguist-generated=true
 output/mujoco/*.json linguist-generated=true
 arena_mujoco/assets/*.json linguist-generated=true
+output/competition/** linguist-generated=true
+videos/competition-proof/assets/** linguist-vendored=true
+videos/competition-proof/index.html linguist-generated=true
+videos/competition-pov/assets/** linguist-vendored=true
+videos/competition-pov/index.html linguist-generated=true

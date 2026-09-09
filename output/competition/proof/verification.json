@@ -1,0 +1,18 @@
+{
+  "valid": true,
+  "proof_directory": "/Users/pyu/projects/hackertons/robotics/output/competition/proof",
+  "physics_replayed": false,
+  "checks": {
+    "source_files_checked": 18,
+    "initial_setup_valid": true,
+    "declaration_task_score": 160,
+    "final_task_score": 160,
+    "declaration_time_s": 738.7599999894426,
+    "final_time_s": 743.7599999893243,
+    "final_view_trajectory_samples": 52,
+    "policy_calls_checked": 37188,
+    "maximum_network_action_error": 2.220446049250313e-16,
+    "verification_scope": "Artifact hashes, initial setup, neural actions, declaration score and sampled final-view stability"
+  },
+  "errors": []
+}

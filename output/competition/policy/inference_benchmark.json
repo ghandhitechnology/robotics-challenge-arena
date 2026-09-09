@@ -1,0 +1,8 @@
+{
+  "calls": 20000,
+  "wall_seconds": 0.05999145796522498,
+  "mean_microseconds_per_call": 2.999572898261249,
+  "platform": "macOS-26.4-arm64-arm-64bit",
+  "implementation": "NumPy dense exported network",
+  "control_hz": 50
+}

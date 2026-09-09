@@ -1,0 +1,283 @@
+{
+  "name": "competition_robot",
+  "scope": "senior_preliminary",
+  "footprint_m": [
+    0.18,
+    0.2
+  ],
+  "footprint_bounds_local_m": [
+    [
+      -0.09,
+      -0.075
+    ],
+    [
+      0.09,
+      0.125
+    ]
+  ],
+  "mass_kg": 0.8,
+  "wheel_radius_m": 0.02,
+  "wheel_track_m": 0.17,
+  "wheel_axle_y_m": 0.005,
+  "wheel_direction_sign": -1.0,
+  "max_motor_torque_nm": 0.025,
+  "max_wheel_speed_rad_s": 20.0,
+  "motor_no_load_speed_rad_s": 45.0294947014537,
+  "velocity_gain": 0.008,
+  "lift_range_m": [
+    0.0,
+    0.08
+  ],
+  "max_lift_speed_m_s": 0.08,
+  "max_lift_force_n": 4.0,
+  "jaw_joint_range_m": [
+    0.0,
+    0.025
+  ],
+  "jaw_aperture_range_m": [
+    0.018,
+    0.068
+  ],
+  "max_jaw_speed_m_s": 0.05,
+  "max_grip_generalized_force_n": 2.0,
+  "nominal_normal_force_per_jaw_n": 1.0,
+  "grasp_center_body_m": [
+    0.0,
+    0.105,
+    -0.0159
+  ],
+  "upper_grasp_center_body_m": [
+    0.0,
+    0.105,
+    -0.009
+  ],
+  "sample_pad_floor_heights_m": [
+    0.0034,
+    0.0048
+  ],
+  "upper_pad_floor_heights_m": [
+    0.006,
+    0.016
+  ],
+  "physical_motor_count": 4,
+  "hardware": {
+    "drive": "2 \u00d7 Pololu #5188, 75:1 HPCB 6V, 12 CPR encoder",
+    "wheel": "Pololu #1452, 40 \u00d7 7 mm silicone tire, 3 mm D shaft",
+    "lift_and_grip": "2 \u00d7 ROBOTIS XL330-M288-T, regulated 5 V"
+  },
+  "freejoint": "competition_robot_free",
+  "wheel_joints": [
+    "comp_wheel_left",
+    "comp_wheel_right"
+  ],
+  "motor_names": [
+    "comp_motor_left",
+    "comp_motor_right"
+  ],
+  "lift_joint": "comp_lift",
+  "lift_motor": "comp_lift_motor",
+  "jaw_joints": [
+    "comp_jaw_left",
+    "comp_jaw_right"
+  ],
+  "grip_motor": "comp_grip_motor",
+  "jaw_coupling": "comp_jaw_coupling",
+  "gripper_site": "gripper_center",
+  "upper_gripper_site": "gripper_upper_center",
+  "forward_axis": [
+    0,
+    1,
+    0
+  ],
+  "initial_position_m": [
+    1.02,
+    0.825,
+    0.02
+  ],
+  "colliders": [
+    {
+      "name": "robot_comp_deck",
+      "material": "plastic",
+      "body": "competition_robot",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_battery",
+      "material": "plastic",
+      "body": "competition_robot",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_controller",
+      "material": "plastic",
+      "body": "competition_robot",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_mast",
+      "material": "plastic",
+      "body": "competition_robot",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_guard_-1",
+      "material": "plastic",
+      "body": "competition_robot",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_guard_1",
+      "material": "plastic",
+      "body": "competition_robot",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_wheel_left",
+      "material": "rubber",
+      "body": "comp_wheel_left_body",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_wheel_right",
+      "material": "rubber",
+      "body": "comp_wheel_right_body",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_caster",
+      "material": "plastic",
+      "body": "comp_caster_body",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_crossbar",
+      "material": "plastic",
+      "body": "comp_lift_body",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_lift_servo",
+      "material": "plastic",
+      "body": "comp_lift_body",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_guide_carriage",
+      "material": "plastic",
+      "body": "comp_lift_body",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_finger_left",
+      "material": "plastic",
+      "body": "comp_jaw_left_body",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_slider_link_left",
+      "material": "plastic",
+      "body": "comp_jaw_left_body",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_pad_left_sample",
+      "material": "rubber",
+      "body": "comp_jaw_left_body",
+      "robot_part": true,
+      "grip_pad": true
+    },
+    {
+      "name": "robot_comp_sample_pad_support_left",
+      "material": "plastic",
+      "body": "comp_jaw_left_body",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_upper_pad_support_left",
+      "material": "plastic",
+      "body": "comp_jaw_left_body",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_pad_left_upper",
+      "material": "rubber",
+      "body": "comp_jaw_left_body",
+      "robot_part": true,
+      "grip_pad": true
+    },
+    {
+      "name": "robot_comp_finger_right",
+      "material": "plastic",
+      "body": "comp_jaw_right_body",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_slider_link_right",
+      "material": "plastic",
+      "body": "comp_jaw_right_body",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_pad_right_sample",
+      "material": "rubber",
+      "body": "comp_jaw_right_body",
+      "robot_part": true,
+      "grip_pad": true
+    },
+    {
+      "name": "robot_comp_sample_pad_support_right",
+      "material": "plastic",
+      "body": "comp_jaw_right_body",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_upper_pad_support_right",
+      "material": "plastic",
+      "body": "comp_jaw_right_body",
+      "robot_part": true,
+      "grip_pad": false
+    },
+    {
+      "name": "robot_comp_pad_right_upper",
+      "material": "rubber",
+      "body": "comp_jaw_right_body",
+      "robot_part": true,
+      "grip_pad": true
+    }
+  ],
+  "chassis_size_m": [
+    0.15,
+    0.12,
+    0.026
+  ],
+  "description": "Four-motor preliminary robot with symmetric stepped contact jaws.",
+  "center_of_mass_body_m": [
+    0.0,
+    -0.003368750000000002,
+    0.013876250000000003
+  ],
+  "sources": [
+    "https://www.pololu.com/product/5188/specs",
+    "https://www.pololu.com/product/1452",
+    "https://emanual.robotis.com/docs/en/dxl/x/xl330-m288/"
+  ]
+}

@@ -1,0 +1,721 @@
+{
+  "policy": "zero",
+  "seed": 0,
+  "randomize_physics": false,
+  "start_jitter_m": 0.0,
+  "completed_deliveries": 0,
+  "planned_deliveries": 16,
+  "failure": "Line failed at leave start: target=[0.835, 0.8], pos=[0.9899975121814071, 0.800000759389943], error=[-0.15499751218140712, -7.593899429281237e-07]",
+  "success": false,
+  "completion_seconds": null,
+  "final_view_valid": false,
+  "final_view_checks": [],
+  "final_view_seconds": 0,
+  "simulation_seconds": 21.000000000002682,
+  "wall_seconds": 9.047549790993799,
+  "travel_distance_m": 1.2119154943891615e-05,
+  "maximum_tilt_degrees": 0.0009637451981496192,
+  "policy_calls": 1050,
+  "maximum_normalized_wheel_command": 0.0,
+  "tape_mode": "rigid",
+  "timestep_s": 0.001,
+  "slip_friction_update_seconds": 0.01,
+  "events": [],
+  "diagnostics": {
+    "time_s": 21.000000000002682,
+    "contacts": 102,
+    "max_abs_qvel": 0.0009842695397357217,
+    "warnings": 0,
+    "tape_bond_count": 0,
+    "tape_bonded_count": 0,
+    "tape_bonded_area_m2": 0.0,
+    "tape_damage_fraction": 0.0,
+    "tape_wear_fraction": 0.0,
+    "tape_max_opening_m": 0.0,
+    "tape_max_slip_m": 0.0,
+    "tape_damage_energy_proxy_j": 0.0,
+    "tape_contact_work_proxy_j": 0.0,
+    "tape_reach_limited_releases": 0,
+    "tape_orientation_releases": 0,
+    "tape_rebond_count": 0,
+    "tape_max_tensile_strain": 0.0,
+    "tape_material_limit_exceeded": false
+  },
+  "score": {
+    "profile": "national_senior_preliminary",
+    "mode": "unlimited_feasibility",
+    "elapsed_seconds": 21.000000000002682,
+    "requested_time_limit_s": null,
+    "official_time_limit_s": 120.0,
+    "within_requested_time_limit": true,
+    "within_official_time": true,
+    "task_score": 0,
+    "penalty_points": 0,
+    "score": 0,
+    "maximum_score": 160,
+    "per_task": {
+      "samples": {
+        "scored_count": 0,
+        "required_count": 3,
+        "points": 0,
+        "maximum_points": 30
+      },
+      "kits": {
+        "scored_count": 0,
+        "required_count": 4,
+        "points": 0,
+        "maximum_points": 40
+      },
+      "red_patients": {
+        "scored_count": 0,
+        "required_count": 3,
+        "points": 0,
+        "maximum_points": 30
+      },
+      "yellow_patients": {
+        "scored_count": 0,
+        "required_count": 3,
+        "points": 0,
+        "maximum_points": 30
+      },
+      "green_patients": {
+        "scored_count": 0,
+        "required_count": 3,
+        "points": 0,
+        "maximum_points": 30
+      }
+    },
+    "all_tasks_complete": false,
+    "feasibility_success": false,
+    "official_success": false,
+    "success": false,
+    "official_score": null,
+    "sample_slot_assignments": {},
+    "kit_counts_by_zone": {
+      "hospital": 0,
+      "pcc_lower": 0,
+      "pcc_upper": 0
+    },
+    "yellow_counts_by_pcc": {
+      "pcc_lower": 0,
+      "pcc_upper": 0
+    },
+    "yellow_distribution_satisfied": false,
+    "contaminated_zones": {},
+    "objects": {
+      "Cylinder_Yellow_01": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 7.899529130711367e-06,
+        "angular_speed_rad_s": 0.0007579322764692617,
+        "bounds_xyz": [
+          [
+            0.44000000305342685,
+            0.13999927407467772,
+            -4.1779922201057307e-07
+          ],
+          [
+            0.4600001200490595,
+            0.16000000493585065,
+            0.020000322366982216
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.2800001200490595,
+          "pcc_lower": -0.2800001200490595,
+          "pcc_upper": -0.7410007259253223,
+          "recovery": -0.5610007259253222
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Yellow_02": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 8.617416671604028e-06,
+        "angular_speed_rad_s": 0.0007785623522381367,
+        "bounds_xyz": [
+          [
+            0.64000000697772,
+            0.1399989200736389,
+            -9.413124602182521e-07
+          ],
+          [
+            0.6600000286686155,
+            0.1599999942345932,
+            0.020000133067578255
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.4800000286686155,
+          "pcc_lower": -0.4800000286686155,
+          "pcc_upper": -0.7410010799263611,
+          "recovery": -0.5610010799263611
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Green_03": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 6.784156630442322e-06,
+        "angular_speed_rad_s": 0.0006638296478464454,
+        "bounds_xyz": [
+          [
+            0.4400000062166639,
+            0.23999916357431772,
+            -4.7428454619420635e-07
+          ],
+          [
+            0.46000020046435386,
+            0.2600000039483371,
+            0.020000388246396175
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.28000020046435387,
+          "pcc_lower": -0.28000020046435387,
+          "pcc_upper": -0.6410008364256823,
+          "recovery": -0.46100083642568224
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Green_04": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.9842099320594247e-05,
+        "angular_speed_rad_s": 0.0004299953729267229,
+        "bounds_xyz": [
+          [
+            0.6399995379414863,
+            0.23999910776293862,
+            -7.481389066692212e-07
+          ],
+          [
+            0.6600000037237378,
+            0.2600000008575349,
+            0.02000025911485494
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.4800000037237378,
+          "pcc_lower": -0.4800000037237378,
+          "pcc_upper": -0.6410008922370614,
+          "recovery": -0.4610008922370613
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_05": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 6.372061643878882e-06,
+        "angular_speed_rad_s": 0.0005194371572853557,
+        "bounds_xyz": [
+          [
+            0.44000000815746787,
+            0.33999948805228314,
+            -4.931785758284513e-07
+          ],
+          [
+            0.4600001496957853,
+            0.3600000036912901,
+            0.020000041532059053
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.2800001496957853,
+          "pcc_lower": -0.2800001496957853,
+          "pcc_upper": -0.5410005119477168,
+          "recovery": -0.4229999918425321
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_06": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.0327344837564463e-05,
+        "angular_speed_rad_s": 0.00026952752604669246,
+        "bounds_xyz": [
+          [
+            0.639998986260026,
+            0.33999984531024385,
+            -8.076009551192392e-07
+          ],
+          [
+            0.6599999895711287,
+            0.35999999806441096,
+            0.02000020727163817
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.4799999895711287,
+          "pcc_lower": -0.4799999895711287,
+          "pcc_upper": -0.5410001546897562,
+          "recovery": -0.3610001546897561
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_07": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 3.0010684614371052e-05,
+        "angular_speed_rad_s": 0.000404558465452016,
+        "bounds_xyz": [
+          [
+            0.44000001967541724,
+            0.8210000062883781,
+            -7.019266944300467e-07
+          ],
+          [
+            0.4600010110110051,
+            0.8410002404658684,
+            0.020000316690743924
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.2800010110110051,
+          "pcc_lower": -0.5030002404658684,
+          "pcc_upper": -0.2800010110110051,
+          "recovery": -0.42299998032458275
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_08": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 5.6183888529609894e-06,
+        "angular_speed_rad_s": 0.0004273022733026725,
+        "bounds_xyz": [
+          [
+            0.6399998517705772,
+            0.8209999912826743,
+            -5.56639952114385e-07
+          ],
+          [
+            0.6599999996843096,
+            0.8410005951851734,
+            0.02000006511211471
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.47999999968430956,
+          "pcc_lower": -0.5030005951851735,
+          "pcc_upper": -0.47999999968430956,
+          "recovery": -0.22300014822942282
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Green_09": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 5.86653587042456e-06,
+        "angular_speed_rad_s": 0.0005567288534555929,
+        "bounds_xyz": [
+          [
+            0.4399999744078924,
+            0.9210000101315688,
+            -9.143680340314986e-07
+          ],
+          [
+            0.4599999993075151,
+            0.9410011489024522,
+            0.020000224675090293
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.2799999993075151,
+          "pcc_lower": -0.6030011489024523,
+          "pcc_upper": -0.2799999993075151,
+          "recovery": -0.4230000255921076
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Green_10": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.2745212463918475e-05,
+        "angular_speed_rad_s": 0.0009583896222280367,
+        "bounds_xyz": [
+          [
+            0.6399989846725705,
+            0.9210004676920193,
+            -4.6757106587219655e-07
+          ],
+          [
+            0.6599992086768612,
+            0.9410012559687019,
+            0.020000351913693905
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.47999920867686124,
+          "pcc_lower": -0.6030012559687019,
+          "pcc_upper": -0.47999920867686124,
+          "recovery": -0.22300101532742944
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Yellow_11": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 9.436423280357932e-05,
+        "angular_speed_rad_s": 0.0009187814650131286,
+        "bounds_xyz": [
+          [
+            0.4399998863454704,
+            1.0209999990818783,
+            -8.165088209808463e-07
+          ],
+          [
+            0.4599999852788652,
+            1.0410011343947723,
+            0.020000323106453388
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.2799999852788652,
+          "pcc_lower": -0.7030011343947722,
+          "pcc_upper": -0.2799999852788652,
+          "recovery": -0.4230001136545296
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Yellow_12": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.999514274396765e-05,
+        "angular_speed_rad_s": 0.0010143623389284272,
+        "bounds_xyz": [
+          [
+            0.6399998380771549,
+            1.0210000093994163,
+            -5.903199377307877e-07
+          ],
+          [
+            0.6600000054746636,
+            1.0410005730185876,
+            0.01999999763113521
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.48000000547466365,
+          "pcc_lower": -0.7030005730185875,
+          "pcc_upper": -0.48000000547466365,
+          "recovery": -0.2230001619228451
+        },
+        "eligible_zones": []
+      },
+      "Medical_Kit_01": {
+        "kind": "medical_kit",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 8.239301272162834e-12,
+        "angular_speed_rad_s": 3.108754089811329e-08,
+        "bounds_xyz": [
+          [
+            0.894499999999994,
+            1.0404999999997415,
+            -2.0388018670720875e-07
+          ],
+          [
+            0.9195000000000119,
+            1.0655000000002979,
+            0.019999796120531058
+          ]
+        ],
+        "contained_zones": [
+          "recovery"
+        ],
+        "zone_clearance_m": {
+          "hospital": -0.7395000000000118,
+          "pcc_lower": -0.7395000000000118,
+          "pcc_upper": -0.7395000000000118,
+          "recovery": 0.03149999999999398
+        },
+        "eligible_zones": [
+          "recovery"
+        ]
+      },
+      "Medical_Kit_02": {
+        "kind": "medical_kit",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 5.591548229082997e-11,
+        "angular_speed_rad_s": 5.617221395761058e-09,
+        "bounds_xyz": [
+          [
+            0.9345000000000733,
+            1.0404999999997282,
+            -2.0388013682176576e-07
+          ],
+          [
+            0.9595000000003518,
+            1.065499999999944,
+            0.01999979612048117
+          ]
+        ],
+        "contained_zones": [
+          "recovery"
+        ],
+        "zone_clearance_m": {
+          "hospital": -0.7795000000003518,
+          "pcc_lower": -0.7795000000003518,
+          "pcc_upper": -0.7795000000003518,
+          "recovery": 0.07150000000007328
+        },
+        "eligible_zones": [
+          "recovery"
+        ]
+      },
+      "Medical_Kit_03": {
+        "kind": "medical_kit",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 8.16016556673405e-12,
+        "angular_speed_rad_s": 3.0497543722517035e-08,
+        "bounds_xyz": [
+          [
+            0.894499999999985,
+            1.0855000000001314,
+            -2.0388017562232574e-07
+          ],
+          [
+            0.9194999999999955,
+            1.1105000000006775,
+            0.01999979612051997
+          ]
+        ],
+        "contained_zones": [
+          "recovery"
+        ],
+        "zone_clearance_m": {
+          "hospital": -0.7394999999999956,
+          "pcc_lower": -0.7725000000006774,
+          "pcc_upper": -0.7394999999999956,
+          "recovery": 0.031499999999984984
+        },
+        "eligible_zones": [
+          "recovery"
+        ]
+      },
+      "Medical_Kit_04": {
+        "kind": "medical_kit",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 5.388902212200249e-11,
+        "angular_speed_rad_s": 5.413641017386954e-09,
+        "bounds_xyz": [
+          [
+            0.9345000000000306,
+            1.0854999999997792,
+            -2.0388012304979608e-07
+          ],
+          [
+            0.9595000000003103,
+            1.1104999999999718,
+            0.0199997961204674
+          ]
+        ],
+        "contained_zones": [
+          "recovery"
+        ],
+        "zone_clearance_m": {
+          "hospital": -0.7795000000003103,
+          "pcc_lower": -0.7795000000003103,
+          "pcc_upper": -0.7795000000003103,
+          "recovery": 0.0705000000000282
+        },
+        "eligible_zones": [
+          "recovery"
+        ]
+      },
+      "Biological_Sample_01": {
+        "kind": "sample",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 7.075595555280564e-06,
+        "angular_speed_rad_s": 0.0004085396978116953,
+        "bounds_xyz": [
+          [
+            0.9440000094920707,
+            0.11699982273656699,
+            -9.262132485764012e-07
+          ],
+          [
+            1.0000000640079147,
+            0.17299989065180027,
+            0.005000049245271105
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.8200000640079148,
+          "pcc_lower": -0.8200000640079148,
+          "pcc_upper": -0.8200000640079148,
+          "recovery": -0.584000177263433
+        },
+        "eligible_zones": [],
+        "slot_clearance_m": {
+          "lab_1": -0.26160258865810526,
+          "lab_2": -0.35658940335706435,
+          "lab_3": -0.45372622883994507
+        },
+        "seated": true,
+        "eligible_slots": []
+      },
+      "Biological_Sample_02": {
+        "kind": "sample",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 9.107292178250753e-06,
+        "angular_speed_rad_s": 0.00043708252382298405,
+        "bounds_xyz": [
+          [
+            1.0439999934208157,
+            0.1669999740927087,
+            -6.771465822933212e-07
+          ],
+          [
+            1.1000000463106057,
+            0.22299999409841706,
+            0.004999956214801859
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.9200000463106057,
+          "pcc_lower": -0.9200000463106057,
+          "pcc_upper": -0.9200000463106057,
+          "recovery": -0.5340000259072912
+        },
+        "eligible_zones": [],
+        "slot_clearance_m": {
+          "lab_1": -0.19354094328360336,
+          "lab_2": -0.2935270980497384,
+          "lab_3": -0.39352025341713925
+        },
+        "seated": true,
+        "eligible_slots": []
+      },
+      "Biological_Sample_03": {
+        "kind": "sample",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 0.0001635841154126962,
+        "angular_speed_rad_s": 0.0005017522978353314,
+        "bounds_xyz": [
+          [
+            1.044000101630128,
+            0.06700002088808579,
+            -6.793053576011412e-07
+          ],
+          [
+            1.1000001614779409,
+            0.12300008547841246,
+            0.005000306979637977
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.920000161477941,
+          "pcc_lower": -0.920000161477941,
+          "pcc_upper": -0.920000161477941,
+          "recovery": -0.6339999791119142
+        },
+        "eligible_zones": [],
+        "slot_clearance_m": {
+          "lab_1": -0.29352705281745817,
+          "lab_2": -0.39352020778887575,
+          "lab_3": -0.49351612546085555
+        },
+        "seated": true,
+        "eligible_slots": []
+      }
+    },
+    "inventory": {
+      "yellow_cylinder": 4,
+      "green_cylinder": 4,
+      "red_cylinder": 4,
+      "medical_kit": 4,
+      "sample": 3
+    },
+    "inventory_valid": true,
+    "event_history_complete": true,
+    "initial_setup_valid": true,
+    "human_intervention": false,
+    "robot_currently_outside": false,
+    "physics_warning_count": 0,
+    "robot_outside_count": 0,
+    "simulation_tolerances": {
+      "boundary_epsilon_m": 1e-09,
+      "release_contact_distance_m": 1e-06,
+      "linear_speed_m_s": 0.005,
+      "angular_speed_rad_s": 0.1,
+      "sample_seating_height_m": 0.0005
+    },
+    "scoring_interpretations": [
+      "Samples use distinct slots and must be seated near the hole floor.",
+      "Wrong-color contamination is evaluated from full containment, even if the wrong item is moving or held.",
+      "Yellow distribution uses eligible placements before zone contamination; only uncontaminated PCC patient points remain.",
+      "Stability is instantaneous; a held final view requires a separate time-history check."
+    ]
+  },
+  "physics_solver": {
+    "solver": "Newton",
+    "cone": "elliptic",
+    "impratio": 100.0
+  },
+  "controller": {
+    "network": "Four independent learned goal-feedback channels",
+    "planner": "Scripted geometric task and corridor planner",
+    "observations": "Exact simulator robot, joint and object poses; onboard perception is not implemented",
+    "wheel_servo": "Encoder PI with torque-speed and torque limits",
+    "control_dt_s": 0.02,
+    "event_sample_interval_s": 0.02
+  },
+  "scene_sha256": "fc116e4545f1e2894fd48f8442d410cc49c80f0b3b5bb420ca13307115e26fe8",
+  "source_commit": "67ff21efdbdb5732decc3b926ad6cd2a5eea559d",
+  "source_files_sha256": {
+    "arena_mujoco/__init__.py": "b4376821478873919730d45b8f6647d9daf24ec5486331e769179478d3fe3aec",
+    "arena_mujoco/__main__.py": "a6d621f3bddc04fba013395cc3ae12034a890603996b8b648459e4de3abd5dcd",
+    "arena_mujoco/builder.py": "172b4405c59b2ac6ef7142bde3e16bcf2697fe6dd2908fcff4c421007313e51b",
+    "arena_mujoco/competition_events.py": "f6841726d246047b8211bdb51a86964ee53630a21d59e9f9ef9f4e3ba4abb5e2",
+    "arena_mujoco/competition_mission.py": "5496fe380c30eedc20b026b0ee7284fd1b06a623b049ed551fb09534bcb720ae",
+    "arena_mujoco/competition_policy.py": "e55e4192a329cabed65c6af64093294a79676479f327fb7df3844784ddc3d569",
+    "arena_mujoco/competition_robot.py": "ad1045d570526b41582f19bf091111e039b5a516de65d1c706ee11e5b50c9773",
+    "arena_mujoco/competition_runtime.py": "641e0d50573ad2dc959c910baf5dfd90d6be69e44abf7ed96443c333b0df4448",
+    "arena_mujoco/competition_scoring.py": "f882c3a1a0510a2d02d66342ddaad68cf06556ae4ca9873feed2cc3cbfc740f4",
+    "arena_mujoco/env.py": "6089c67766701c21820947c5c38162d7de80132013f27d6e5ab9a65a6cc23c1d",
+    "arena_mujoco/geometry.py": "ecf1faf8282dacfb4da7c8fbc9624fb6b5e4dd66c5e2e08f362b433567bd2ff8",
+    "arena_mujoco/materials.py": "266e9b21c4179cda5b05058f88d328ffb69c6b18032f9dee7164e80a866bd2af",
+    "arena_mujoco/robot.py": "47f40a305cea6f26a3e9cd43fcbd2f44e599766e2e9cd84653fe9cd781fdea28",
+    "arena_mujoco/runtime.py": "ad13780b4411b9b844db2c7e19d7d22b60fa8559688138ba26530df7864806a8",
+    "arena_mujoco/tape.py": "316d7fdb2908ab44377e8ae49b7e343f4455916f317339b84c9d739c85b784d5",
+    "arena_spec.json": "26b10a4a5fc607ab58d1692d9fd9b4a2a466fd6bc789a7c9e7032066c5d4fbf1",
+    "competition_rules.json": "df44c749e89cdddb1e3d19535a4a13be4f7fb2623d7473dadfdd3d13be1fd1f0",
+    "robot_design.json": "d8439e26528fce03c04654ba222c326d337c1c83eb2e9181c17927606c0d96db"
+  },
+  "trajectory_sha256": "d3b307e673bd463b16203918659f6f354b174d519fed60c85652b9c1932012c0"
+}

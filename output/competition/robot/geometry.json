@@ -1,0 +1,930 @@
+{
+  "units": "meters",
+  "pose": {
+    "lift_m": 0.03,
+    "sample_aperture_m": 0.056
+  },
+  "robot": {
+    "name": "competition_robot",
+    "scope": "senior_preliminary",
+    "footprint_m": [
+      0.18,
+      0.2
+    ],
+    "footprint_bounds_local_m": [
+      [
+        -0.09,
+        -0.075
+      ],
+      [
+        0.09,
+        0.125
+      ]
+    ],
+    "mass_kg": 0.8,
+    "wheel_radius_m": 0.02,
+    "wheel_track_m": 0.17,
+    "wheel_axle_y_m": 0.005,
+    "wheel_direction_sign": -1.0,
+    "max_motor_torque_nm": 0.025,
+    "max_wheel_speed_rad_s": 20.0,
+    "motor_no_load_speed_rad_s": 45.0294947014537,
+    "velocity_gain": 0.008,
+    "lift_range_m": [
+      0.0,
+      0.08
+    ],
+    "max_lift_speed_m_s": 0.08,
+    "max_lift_force_n": 4.0,
+    "jaw_joint_range_m": [
+      0.0,
+      0.025
+    ],
+    "jaw_aperture_range_m": [
+      0.018,
+      0.068
+    ],
+    "max_jaw_speed_m_s": 0.05,
+    "max_grip_generalized_force_n": 2.0,
+    "nominal_normal_force_per_jaw_n": 1.0,
+    "grasp_center_body_m": [
+      0.0,
+      0.105,
+      -0.0159
+    ],
+    "upper_grasp_center_body_m": [
+      0.0,
+      0.105,
+      -0.009
+    ],
+    "sample_pad_floor_heights_m": [
+      0.0034,
+      0.0048
+    ],
+    "upper_pad_floor_heights_m": [
+      0.006,
+      0.016
+    ],
+    "physical_motor_count": 4,
+    "hardware": {
+      "drive": "2 \u00d7 Pololu #5188, 75:1 HPCB 6V, 12 CPR encoder",
+      "wheel": "Pololu #1452, 40 \u00d7 7 mm silicone tire, 3 mm D shaft",
+      "lift_and_grip": "2 \u00d7 ROBOTIS XL330-M288-T, regulated 5 V"
+    },
+    "freejoint": "competition_robot_free",
+    "wheel_joints": [
+      "comp_wheel_left",
+      "comp_wheel_right"
+    ],
+    "motor_names": [
+      "comp_motor_left",
+      "comp_motor_right"
+    ],
+    "lift_joint": "comp_lift",
+    "lift_motor": "comp_lift_motor",
+    "jaw_joints": [
+      "comp_jaw_left",
+      "comp_jaw_right"
+    ],
+    "grip_motor": "comp_grip_motor",
+    "jaw_coupling": "comp_jaw_coupling",
+    "gripper_site": "gripper_center",
+    "upper_gripper_site": "gripper_upper_center",
+    "forward_axis": [
+      0,
+      1,
+      0
+    ],
+    "initial_position_m": [
+      1.02,
+      0.825,
+      0.02
+    ],
+    "colliders": [
+      {
+        "name": "robot_comp_deck",
+        "material": "plastic",
+        "body": "competition_robot",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_battery",
+        "material": "plastic",
+        "body": "competition_robot",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_controller",
+        "material": "plastic",
+        "body": "competition_robot",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_mast",
+        "material": "plastic",
+        "body": "competition_robot",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_guard_-1",
+        "material": "plastic",
+        "body": "competition_robot",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_guard_1",
+        "material": "plastic",
+        "body": "competition_robot",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_wheel_left",
+        "material": "rubber",
+        "body": "comp_wheel_left_body",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_wheel_right",
+        "material": "rubber",
+        "body": "comp_wheel_right_body",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_caster",
+        "material": "plastic",
+        "body": "comp_caster_body",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_crossbar",
+        "material": "plastic",
+        "body": "comp_lift_body",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_lift_servo",
+        "material": "plastic",
+        "body": "comp_lift_body",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_guide_carriage",
+        "material": "plastic",
+        "body": "comp_lift_body",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_finger_left",
+        "material": "plastic",
+        "body": "comp_jaw_left_body",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_slider_link_left",
+        "material": "plastic",
+        "body": "comp_jaw_left_body",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_pad_left_sample",
+        "material": "rubber",
+        "body": "comp_jaw_left_body",
+        "robot_part": true,
+        "grip_pad": true
+      },
+      {
+        "name": "robot_comp_sample_pad_support_left",
+        "material": "plastic",
+        "body": "comp_jaw_left_body",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_upper_pad_support_left",
+        "material": "plastic",
+        "body": "comp_jaw_left_body",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_pad_left_upper",
+        "material": "rubber",
+        "body": "comp_jaw_left_body",
+        "robot_part": true,
+        "grip_pad": true
+      },
+      {
+        "name": "robot_comp_finger_right",
+        "material": "plastic",
+        "body": "comp_jaw_right_body",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_slider_link_right",
+        "material": "plastic",
+        "body": "comp_jaw_right_body",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_pad_right_sample",
+        "material": "rubber",
+        "body": "comp_jaw_right_body",
+        "robot_part": true,
+        "grip_pad": true
+      },
+      {
+        "name": "robot_comp_sample_pad_support_right",
+        "material": "plastic",
+        "body": "comp_jaw_right_body",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_upper_pad_support_right",
+        "material": "plastic",
+        "body": "comp_jaw_right_body",
+        "robot_part": true,
+        "grip_pad": false
+      },
+      {
+        "name": "robot_comp_pad_right_upper",
+        "material": "rubber",
+        "body": "comp_jaw_right_body",
+        "robot_part": true,
+        "grip_pad": true
+      }
+    ],
+    "chassis_size_m": [
+      0.15,
+      0.12,
+      0.026
+    ],
+    "description": "Four-motor preliminary robot with symmetric stepped contact jaws."
+  },
+  "geoms": [
+    {
+      "name": "robot_comp_deck",
+      "body": "competition_robot",
+      "type": "box",
+      "size_m": [
+        0.075,
+        0.06,
+        0.013
+      ],
+      "position_m": [
+        0.0,
+        -0.015,
+        0.021
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.11999999731779099,
+        0.1899999976158142,
+        0.25,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_battery",
+      "body": "competition_robot",
+      "type": "box",
+      "size_m": [
+        0.031,
+        0.023,
+        0.01
+      ],
+      "position_m": [
+        0.0,
+        -0.047,
+        0.044
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.07999999821186066,
+        0.10000000149011612,
+        0.11999999731779099,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_controller",
+      "body": "competition_robot",
+      "type": "box",
+      "size_m": [
+        0.024,
+        0.02,
+        0.003
+      ],
+      "position_m": [
+        0.0,
+        -0.03,
+        0.056999999999999995
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.11999999731779099,
+        0.41999998688697815,
+        0.3199999928474426,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_mast",
+      "body": "competition_robot",
+      "type": "box",
+      "size_m": [
+        0.032,
+        0.008,
+        0.055
+      ],
+      "position_m": [
+        0.0,
+        0.047,
+        0.09000000000000001
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.6200000047683716,
+        0.6700000166893005,
+        0.6899999976158142,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_guard_-1",
+      "body": "competition_robot",
+      "type": "box",
+      "size_m": [
+        0.002,
+        0.028,
+        0.003
+      ],
+      "position_m": [
+        -0.088,
+        0.005,
+        0.045
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.11999999731779099,
+        0.1899999976158142,
+        0.25,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_guard_1",
+      "body": "competition_robot",
+      "type": "box",
+      "size_m": [
+        0.002,
+        0.028,
+        0.003
+      ],
+      "position_m": [
+        0.088,
+        0.005,
+        0.045
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.11999999731779099,
+        0.1899999976158142,
+        0.25,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_wheel_left",
+      "body": "comp_wheel_left_body",
+      "type": "cylinder",
+      "size_m": [
+        0.02,
+        0.0035,
+        0.0
+      ],
+      "position_m": [
+        -0.085,
+        0.005,
+        0.02
+      ],
+      "quaternion_wxyz": [
+        0.7071067811865475,
+        0.0,
+        0.7071067811865475,
+        0.0
+      ],
+      "rgba": [
+        0.05999999865889549,
+        0.07000000029802322,
+        0.07999999821186066,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_wheel_right",
+      "body": "comp_wheel_right_body",
+      "type": "cylinder",
+      "size_m": [
+        0.02,
+        0.0035,
+        0.0
+      ],
+      "position_m": [
+        0.085,
+        0.005,
+        0.02
+      ],
+      "quaternion_wxyz": [
+        0.7071067811865475,
+        0.0,
+        0.7071067811865475,
+        0.0
+      ],
+      "rgba": [
+        0.05999999865889549,
+        0.07000000029802322,
+        0.07999999821186066,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_caster",
+      "body": "comp_caster_body",
+      "type": "sphere",
+      "size_m": [
+        0.006,
+        0.0,
+        0.0
+      ],
+      "position_m": [
+        0.0,
+        -0.055,
+        0.006
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.6499999761581421,
+        0.6700000166893005,
+        0.699999988079071,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_crossbar",
+      "body": "comp_lift_body",
+      "type": "box",
+      "size_m": [
+        0.044,
+        0.01,
+        0.01
+      ],
+      "position_m": [
+        0.0,
+        0.074,
+        0.062
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.8600000143051147,
+        0.5600000023841858,
+        0.17000000178813934,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_lift_servo",
+      "body": "comp_lift_body",
+      "type": "box",
+      "size_m": [
+        0.01,
+        0.013,
+        0.017
+      ],
+      "position_m": [
+        0.0,
+        0.074,
+        0.089
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.18000000715255737,
+        0.2199999988079071,
+        0.25,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_guide_carriage",
+      "body": "comp_lift_body",
+      "type": "box",
+      "size_m": [
+        0.02,
+        0.014,
+        0.008
+      ],
+      "position_m": [
+        0.0,
+        0.051,
+        0.07300000000000001
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.6200000047683716,
+        0.6700000166893005,
+        0.6899999976158142,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_finger_left",
+      "body": "comp_jaw_left_body",
+      "type": "box",
+      "size_m": [
+        0.002,
+        0.018,
+        0.012
+      ],
+      "position_m": [
+        -0.033,
+        0.105,
+        0.048
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.8600000143051147,
+        0.5600000023841858,
+        0.17000000178813934,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_slider_link_left",
+      "body": "comp_jaw_left_body",
+      "type": "box",
+      "size_m": [
+        0.003,
+        0.017,
+        0.003
+      ],
+      "position_m": [
+        -0.033,
+        0.08499999999999999,
+        0.059000000000000004
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.8600000143051147,
+        0.5600000023841858,
+        0.17000000178813934,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_pad_left_sample",
+      "body": "comp_jaw_left_body",
+      "type": "box",
+      "size_m": [
+        0.0005,
+        0.016,
+        0.0007
+      ],
+      "position_m": [
+        -0.0285,
+        0.105,
+        0.034100000000000005
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.18000000715255737,
+        0.25999999046325684,
+        0.28999999165534973,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_sample_pad_support_left",
+      "body": "comp_jaw_left_body",
+      "type": "box",
+      "size_m": [
+        0.0015,
+        0.015,
+        0.0016
+      ],
+      "position_m": [
+        -0.03,
+        0.105,
+        0.0364
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.6200000047683716,
+        0.6700000166893005,
+        0.6899999976158142,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_upper_pad_support_left",
+      "body": "comp_jaw_left_body",
+      "type": "box",
+      "size_m": [
+        0.002,
+        0.016,
+        0.005
+      ],
+      "position_m": [
+        -0.0305,
+        0.105,
+        0.041
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.8600000143051147,
+        0.5600000023841858,
+        0.17000000178813934,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_pad_left_upper",
+      "body": "comp_jaw_left_body",
+      "type": "box",
+      "size_m": [
+        0.0007,
+        0.016,
+        0.005
+      ],
+      "position_m": [
+        -0.0287,
+        0.105,
+        0.041
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.18000000715255737,
+        0.25999999046325684,
+        0.28999999165534973,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_finger_right",
+      "body": "comp_jaw_right_body",
+      "type": "box",
+      "size_m": [
+        0.002,
+        0.018,
+        0.012
+      ],
+      "position_m": [
+        0.033,
+        0.105,
+        0.048
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.8600000143051147,
+        0.5600000023841858,
+        0.17000000178813934,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_slider_link_right",
+      "body": "comp_jaw_right_body",
+      "type": "box",
+      "size_m": [
+        0.003,
+        0.017,
+        0.003
+      ],
+      "position_m": [
+        0.033,
+        0.08499999999999999,
+        0.059000000000000004
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.8600000143051147,
+        0.5600000023841858,
+        0.17000000178813934,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_pad_right_sample",
+      "body": "comp_jaw_right_body",
+      "type": "box",
+      "size_m": [
+        0.0005,
+        0.016,
+        0.0007
+      ],
+      "position_m": [
+        0.0285,
+        0.105,
+        0.034100000000000005
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.18000000715255737,
+        0.25999999046325684,
+        0.28999999165534973,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_sample_pad_support_right",
+      "body": "comp_jaw_right_body",
+      "type": "box",
+      "size_m": [
+        0.0015,
+        0.015,
+        0.0016
+      ],
+      "position_m": [
+        0.03,
+        0.105,
+        0.0364
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.6200000047683716,
+        0.6700000166893005,
+        0.6899999976158142,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_upper_pad_support_right",
+      "body": "comp_jaw_right_body",
+      "type": "box",
+      "size_m": [
+        0.002,
+        0.016,
+        0.005
+      ],
+      "position_m": [
+        0.0305,
+        0.105,
+        0.041
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.8600000143051147,
+        0.5600000023841858,
+        0.17000000178813934,
+        1.0
+      ]
+    },
+    {
+      "name": "robot_comp_pad_right_upper",
+      "body": "comp_jaw_right_body",
+      "type": "box",
+      "size_m": [
+        0.0007,
+        0.016,
+        0.005
+      ],
+      "position_m": [
+        0.0287,
+        0.105,
+        0.041
+      ],
+      "quaternion_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0.18000000715255737,
+        0.25999999046325684,
+        0.28999999165534973,
+        1.0
+      ]
+    }
+  ]
+}
