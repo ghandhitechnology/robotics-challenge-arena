@@ -1,0 +1,9 @@
+test_changed_actions_fail_exported_network_check (test_competition_proof.CompetitionProofTests.test_changed_actions_fail_exported_network_check) ... ok
+test_changed_source_hash_or_incomplete_view_fails (test_competition_proof.CompetitionProofTests.test_changed_source_hash_or_incomplete_view_fails) ... ok
+test_consistent_artifacts_pass_without_claiming_physics_replay (test_competition_proof.CompetitionProofTests.test_consistent_artifacts_pass_without_claiming_physics_replay) ... ok
+test_forged_success_cannot_override_declaration_geometry (test_competition_proof.CompetitionProofTests.test_forged_success_cannot_override_declaration_geometry) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 9.679s
+
+OK

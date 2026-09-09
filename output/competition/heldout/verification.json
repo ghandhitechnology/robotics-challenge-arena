@@ -1,0 +1,18 @@
+{
+  "valid": true,
+  "proof_directory": "/Users/pyu/projects/hackertons/robotics/output/competition/heldout",
+  "physics_replayed": false,
+  "checks": {
+    "source_files_checked": 18,
+    "initial_setup_valid": true,
+    "declaration_task_score": 160,
+    "final_task_score": 160,
+    "declaration_time_s": 731.4399999896157,
+    "final_time_s": 736.4399999894974,
+    "final_view_trajectory_samples": 52,
+    "policy_calls_checked": 36822,
+    "maximum_network_action_error": 3.3306690738754696e-16,
+    "verification_scope": "Artifact hashes, initial setup, neural actions, declaration score and sampled final-view stability"
+  },
+  "errors": []
+}
