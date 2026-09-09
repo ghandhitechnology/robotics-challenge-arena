@@ -1,0 +1,40 @@
+#usda 1.0
+(
+    defaultPrim = "World"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "World"
+{
+    def Xform "Arena" (
+        prepend references = @challenge_arena_senior.usdc@</Arena>
+    )
+    {
+    }
+
+    def PhysicsScene "PhysicsScene" (
+        apiSchemas = ["PhysxSceneAPI"]
+    )
+    {
+        vector3f physics:gravityDirection = (0, 0, -1)
+        float physics:gravityMagnitude = 9.81
+        bool physxScene:enableCCD = 1
+        token physxScene:solverType = "TGS"
+        uint physxScene:timeStepsPerSecond = 240
+    }
+
+    def DomeLight "PreviewDome"
+    {
+        float inputs:intensity = 700
+    }
+
+    def DistantLight "PreviewSun"
+    {
+        float inputs:intensity = 2000
+        float3 xformOp:rotateXYZ = (30, -25, -20)
+        uniform token[] xformOpOrder = ["xformOp:rotateXYZ"]
+    }
+}
+

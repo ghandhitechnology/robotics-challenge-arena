@@ -1,0 +1,437 @@
+{
+  "source_image": "reference/block_layout.png",
+  "source_size_px": [
+    408,
+    406
+  ],
+  "render_image": "output/arena_top.png",
+  "render_size_px": [
+    1500,
+    1500
+  ],
+  "source_inner_corners_px_tl_tr_br_bl": [
+    [
+      27.0,
+      37.0
+    ],
+    [
+      370.0,
+      38.0
+    ],
+    [
+      371.0,
+      369.0
+    ],
+    [
+      26.0,
+      369.0
+    ]
+  ],
+  "source_corner_basis": "Manual inner timber-edge observations in the original attachment; edges are blurred.",
+  "render_inner_corners_px_tl_tr_br_bl": [
+    [
+      110,
+      89
+    ],
+    [
+      1390,
+      89
+    ],
+    [
+      1390,
+      1411
+    ],
+    [
+      110,
+      1411
+    ]
+  ],
+  "physical_extent_mm": [
+    1143.0,
+    1181.0
+  ],
+  "coordinate_system": "Origin lower left, X right and Y up; source raster Y points down.",
+  "normalization": "Independent projective image registration to the chosen physical aspect ratio, only for this comparison; original images and Blender geometry are unchanged.",
+  "centroid_method": "Positive color-channel excess in manually anchored 15 x 15 windows, weighted above max(5, 35% of local peak). No snapping of measured centers.",
+  "source_precision": "Approximate raster observations, not physical ground truth. Original pixels correspond to about 3.3-3.6 mm; blur, corner choice and object height limit calibration.",
+  "illustrative_two_pixel_uncertainty_mm": 7.114457831325301,
+  "markers": [
+    {
+      "color": "yellow",
+      "manual_search_anchor_px": [
+        156,
+        79
+      ],
+      "search_window_px": [
+        149,
+        72,
+        164,
+        87
+      ],
+      "color_weighted_centroid_px": [
+        155.0892674616695,
+        79.52930153321977
+      ],
+      "selected_chromatic_pixels": 105,
+      "source_derived_xy_mm": [
+        426.13975384726785,
+        1030.1095420517345
+      ],
+      "model_xy_mm": [
+        450,
+        1031
+      ],
+      "source_minus_model_xy_mm": [
+        -23.860246152732145,
+        -0.8904579482655208
+      ],
+      "distance_mm": 23.87685619646352
+    },
+    {
+      "color": "yellow",
+      "manual_search_anchor_px": [
+        217,
+        79
+      ],
+      "search_window_px": [
+        210,
+        72,
+        225,
+        87
+      ],
+      "color_weighted_centroid_px": [
+        216.0012041974884,
+        79.4993979012558
+      ],
+      "selected_chromatic_pixels": 103,
+      "source_derived_xy_mm": [
+        628.9235410912489,
+        1030.7712833106232
+      ],
+      "model_xy_mm": [
+        650,
+        1031
+      ],
+      "source_minus_model_xy_mm": [
+        -21.07645890875108,
+        -0.22871668937682443
+      ],
+      "distance_mm": 21.07769986161375
+    },
+    {
+      "color": "green",
+      "manual_search_anchor_px": [
+        157,
+        109
+      ],
+      "search_window_px": [
+        150,
+        102,
+        165,
+        117
+      ],
+      "color_weighted_centroid_px": [
+        155.58701942951632,
+        110.00744109136006
+      ],
+      "selected_chromatic_pixels": 110,
+      "source_derived_xy_mm": [
+        427.87193679976383,
+        921.1609024474927
+      ],
+      "model_xy_mm": [
+        450,
+        931
+      ],
+      "source_minus_model_xy_mm": [
+        -22.12806320023617,
+        -9.839097552507269
+      ],
+      "distance_mm": 24.21691602251205
+    },
+    {
+      "color": "green",
+      "manual_search_anchor_px": [
+        217,
+        109
+      ],
+      "search_window_px": [
+        210,
+        102,
+        225,
+        117
+      ],
+      "color_weighted_centroid_px": [
+        217.03317182258667,
+        110.00372717107716
+      ],
+      "selected_chromatic_pixels": 145,
+      "source_derived_xy_mm": [
+        632.3274329247629,
+        921.6743231404373
+      ],
+      "model_xy_mm": [
+        650,
+        931
+      ],
+      "source_minus_model_xy_mm": [
+        -17.67256707523711,
+        -9.32567685956269
+      ],
+      "distance_mm": 19.98218896712114
+    },
+    {
+      "color": "red",
+      "manual_search_anchor_px": [
+        157,
+        138
+      ],
+      "search_window_px": [
+        150,
+        131,
+        165,
+        146
+      ],
+      "color_weighted_centroid_px": [
+        156.3251015942482,
+        137.2732103782432
+      ],
+      "selected_chromatic_pixels": 90,
+      "source_derived_xy_mm": [
+        430.3932439343022,
+        823.7954597551246
+      ],
+      "model_xy_mm": [
+        450,
+        831
+      ],
+      "source_minus_model_xy_mm": [
+        -19.606756065697823,
+        -7.204540244875375
+      ],
+      "distance_mm": 20.88852037746588
+    },
+    {
+      "color": "red",
+      "manual_search_anchor_px": [
+        217,
+        138
+      ],
+      "search_window_px": [
+        210,
+        131,
+        225,
+        146
+      ],
+      "color_weighted_centroid_px": [
+        215.73393282200476,
+        137.46945252578683
+      ],
+      "selected_chromatic_pixels": 126,
+      "source_derived_xy_mm": [
+        627.9739695800624,
+        823.5268464594905
+      ],
+      "model_xy_mm": [
+        650,
+        831
+      ],
+      "source_minus_model_xy_mm": [
+        -22.02603041993757,
+        -7.473153540509543
+      ],
+      "distance_mm": 23.25927857651749
+    },
+    {
+      "color": "red",
+      "manual_search_anchor_px": [
+        157,
+        268
+      ],
+      "search_window_px": [
+        150,
+        261,
+        165,
+        276
+      ],
+      "color_weighted_centroid_px": [
+        155.32280908822662,
+        268.0442608439068
+      ],
+      "selected_chromatic_pixels": 138,
+      "source_derived_xy_mm": [
+        427.3884236505143,
+        358.07551654524053
+      ],
+      "model_xy_mm": [
+        450,
+        350
+      ],
+      "source_minus_model_xy_mm": [
+        -22.611576349485688,
+        8.075516545240532
+      ],
+      "distance_mm": 24.010359274302292
+    },
+    {
+      "color": "red",
+      "manual_search_anchor_px": [
+        217,
+        268
+      ],
+      "search_window_px": [
+        210,
+        261,
+        225,
+        276
+      ],
+      "color_weighted_centroid_px": [
+        216.32276330690826,
+        269.19960362400906
+      ],
+      "selected_chromatic_pixels": 130,
+      "source_derived_xy_mm": [
+        629.7944669662096,
+        354.16077918543914
+      ],
+      "model_xy_mm": [
+        650,
+        350
+      ],
+      "source_minus_model_xy_mm": [
+        -20.205533033790402,
+        4.160779185439139
+      ],
+      "distance_mm": 20.62948493321098
+    },
+    {
+      "color": "green",
+      "manual_search_anchor_px": [
+        157,
+        298
+      ],
+      "search_window_px": [
+        150,
+        291,
+        165,
+        306
+      ],
+      "color_weighted_centroid_px": [
+        156.29516423357666,
+        299.1678832116788
+      ],
+      "selected_chromatic_pixels": 89,
+      "source_derived_xy_mm": [
+        430.68894710016343,
+        247.55169159314607
+      ],
+      "model_xy_mm": [
+        450,
+        250
+      ],
+      "source_minus_model_xy_mm": [
+        -19.311052899836568,
+        -2.4483084068539256
+      ],
+      "distance_mm": 19.4656358271534
+    },
+    {
+      "color": "green",
+      "manual_search_anchor_px": [
+        217,
+        298
+      ],
+      "search_window_px": [
+        210,
+        291,
+        225,
+        306
+      ],
+      "color_weighted_centroid_px": [
+        217.01615575807787,
+        299.13256006628
+      ],
+      "selected_chromatic_pixels": 155,
+      "source_derived_xy_mm": [
+        632.0637844616438,
+        247.80951269056996
+      ],
+      "model_xy_mm": [
+        650,
+        250
+      ],
+      "source_minus_model_xy_mm": [
+        -17.936215538356237,
+        -2.19048730943004
+      ],
+      "distance_mm": 18.06947875538046
+    },
+    {
+      "color": "yellow",
+      "manual_search_anchor_px": [
+        156,
+        326
+      ],
+      "search_window_px": [
+        149,
+        319,
+        164,
+        334
+      ],
+      "color_weighted_centroid_px": [
+        155.93108048021344,
+        326.7507781236105
+      ],
+      "selected_chromatic_pixels": 80,
+      "source_derived_xy_mm": [
+        429.5498448184155,
+        149.6988286954927
+      ],
+      "model_xy_mm": [
+        450,
+        150
+      ],
+      "source_minus_model_xy_mm": [
+        -20.450155181584478,
+        -0.30117130450730656
+      ],
+      "distance_mm": 20.45237275001473
+    },
+    {
+      "color": "yellow",
+      "manual_search_anchor_px": [
+        217,
+        326
+      ],
+      "search_window_px": [
+        210,
+        319,
+        225,
+        334
+      ],
+      "color_weighted_centroid_px": [
+        215.71483305966063,
+        326.5644955300128
+      ],
+      "selected_chromatic_pixels": 98,
+      "source_derived_xy_mm": [
+        627.7179867446866,
+        150.43848819423326
+      ],
+      "model_xy_mm": [
+        650,
+        150
+      ],
+      "source_minus_model_xy_mm": [
+        -22.28201325531336,
+        0.43848819423325835
+      ],
+      "distance_mm": 22.286327346748774
+    }
+  ],
+  "marker_error_summary_mm": {
+    "mean": 21.517926574042036,
+    "rms": 21.602304841827653,
+    "maximum": 24.21691602251205
+  }
+}

@@ -1,0 +1,2373 @@
+{
+  "schema_version": 2,
+  "units": "meters",
+  "up_axis": "Z",
+  "coordinate_system": "Photo orientation: origin at lower-left playing-surface corner, X right, Y up in the reference photograph, Z vertical. Blender and USD coordinates are meters.",
+  "surface_dimensions_m": [
+    1.143,
+    1.181
+  ],
+  "objects": [
+    {
+      "name": "Playing_Surface",
+      "role": "floor",
+      "category": "playing_surface",
+      "body_type": "static",
+      "dimensions_m": [
+        1.1430000066757202,
+        1.180999994277954,
+        0.009999999776482582
+      ],
+      "position_m": [
+        0.5715000033378601,
+        0.590499997138977,
+        -0.004999999888241291
+      ],
+      "source": "explicit_national_width1143_length1181"
+    },
+    {
+      "name": "Tape_Healthcare_PCC_H_PCC",
+      "role": "tape",
+      "category": "healthcare",
+      "body_type": "static",
+      "dimensions_m": [
+        0.20000000298023224,
+        1.180999994277954,
+        0.0001500000071246177
+      ],
+      "position_m": [
+        0.10000000149011612,
+        0.590499997138977,
+        7.500000356230885e-05
+      ],
+      "source": "explicit_detail_C"
+    },
+    {
+      "name": "Tape_Start_Recovery",
+      "role": "tape",
+      "category": "starting_recovery_zone",
+      "body_type": "static",
+      "dimensions_m": [
+        0.30000001192092896,
+        0.5,
+        0.0001500000071246177
+      ],
+      "position_m": [
+        0.9929999709129333,
+        0.9309999942779541,
+        7.500000356230885e-05
+      ],
+      "source": "explicit_detail_A"
+    },
+    {
+      "name": "Tape_Isolation",
+      "role": "tape",
+      "category": "isolation",
+      "body_type": "static",
+      "dimensions_m": [
+        0.30000001192092896,
+        0.30000001192092896,
+        0.0001500000071246177
+      ],
+      "position_m": [
+        0.9929999709129333,
+        0.15000000596046448,
+        7.500000356230885e-05
+      ],
+      "source": "explicit_detail_B"
+    },
+    {
+      "name": "Tape_Center_H",
+      "role": "tape",
+      "category": "center_divider",
+      "body_type": "static",
+      "dimensions_m": [
+        0.4399999976158142,
+        0.5,
+        0.0001500000071246177
+      ],
+      "position_m": [
+        0.550000011920929,
+        0.609499990940094,
+        7.500000356230885e-05
+      ],
+      "source": "international_p16_dimensions_national_edge_datums"
+    },
+    {
+      "name": "Zone_PCC_Lower",
+      "role": "zone_region",
+      "category": "PCC",
+      "body_type": "none",
+      "dimensions_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_m": [
+        0.09000000357627869,
+        0.16899999976158142,
+        0.0
+      ],
+      "source": "dimensioned_zone_bounds"
+    },
+    {
+      "name": "Zone_H",
+      "role": "zone_region",
+      "category": "H",
+      "body_type": "none",
+      "dimensions_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_m": [
+        0.09000000357627869,
+        0.609499990940094,
+        0.0
+      ],
+      "source": "dimensioned_zone_bounds"
+    },
+    {
+      "name": "Zone_PCC_Upper",
+      "role": "zone_region",
+      "category": "PCC",
+      "body_type": "none",
+      "dimensions_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_m": [
+        0.09000000357627869,
+        1.031000018119812,
+        0.0
+      ],
+      "source": "dimensioned_zone_bounds"
+    },
+    {
+      "name": "Zone_Start_Recovery",
+      "role": "zone_region",
+      "category": "starting_recovery",
+      "body_type": "none",
+      "dimensions_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_m": [
+        1.003000020980835,
+        0.9409999847412109,
+        0.0
+      ],
+      "source": "dimensioned_zone_bounds"
+    },
+    {
+      "name": "Zone_Isolation",
+      "role": "zone_region",
+      "category": "isolation",
+      "body_type": "none",
+      "dimensions_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_m": [
+        1.003000020980835,
+        0.14000000059604645,
+        0.0
+      ],
+      "source": "dimensioned_zone_bounds"
+    },
+    {
+      "name": "Zone_Laboratory",
+      "role": "zone_region",
+      "category": "laboratory",
+      "body_type": "none",
+      "dimensions_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_m": [
+        1.0679999589920044,
+        0.49050000309944153,
+        0.0
+      ],
+      "source": "dimensioned_zone_bounds"
+    },
+    {
+      "name": "Mark_Block_Yellow_R1_C1",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.15000000596046448,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Yellow_R1_C1",
+      "role": "movable",
+      "category": "observation",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.15000000596046448,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Yellow_R1_C2",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.15000000596046448,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Yellow_R1_C2",
+      "role": "movable",
+      "category": "observation",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.15000000596046448,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Green_R2_C1",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.25,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Green_R2_C1",
+      "role": "movable",
+      "category": "low_risk",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.25,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Green_R2_C2",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.25,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Green_R2_C2",
+      "role": "movable",
+      "category": "low_risk",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.25,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Red_R3_C1",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.3499999940395355,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Red_R3_C1",
+      "role": "movable",
+      "category": "patient",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.3499999940395355,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Red_R3_C2",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.3499999940395355,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Red_R3_C2",
+      "role": "movable",
+      "category": "patient",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.3499999940395355,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Red_R4_C1",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.8309999704360962,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Red_R4_C1",
+      "role": "movable",
+      "category": "patient",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.8309999704360962,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Red_R4_C2",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.8309999704360962,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Red_R4_C2",
+      "role": "movable",
+      "category": "patient",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.8309999704360962,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Green_R5_C1",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.9309999942779541,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Green_R5_C1",
+      "role": "movable",
+      "category": "low_risk",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.9309999942779541,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Green_R5_C2",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.9309999942779541,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Green_R5_C2",
+      "role": "movable",
+      "category": "low_risk",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.9309999942779541,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Yellow_R6_C1",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.44999998807907104,
+        1.031000018119812,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Yellow_R6_C1",
+      "role": "movable",
+      "category": "observation",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.44999998807907104,
+        1.031000018119812,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Yellow_R6_C2",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.6499999761581421,
+        1.031000018119812,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Yellow_R6_C2",
+      "role": "movable",
+      "category": "observation",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.6499999761581421,
+        1.031000018119812,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Medical_Kit_R1_C1",
+      "role": "movable",
+      "category": "medical_kit",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.02500000037252903,
+        0.02500000037252903,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.9070000052452087,
+        0.9179999828338623,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.0075000000000000015,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Medical_Kit_R1_C1_cross",
+      "role": "cross",
+      "category": "medical_kit_cross",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.0
+      ],
+      "position_m": [
+        0.9070000052452087,
+        0.9179999828338623,
+        0.020010000094771385
+      ],
+      "source": "explicit_20mm_cross_5mm_stroke",
+      "parent": "Medical_Kit_R1_C1"
+    },
+    {
+      "name": "Medical_Kit_R1_C2",
+      "role": "movable",
+      "category": "medical_kit",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.02500000037252903,
+        0.02500000037252903,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.9470000267028809,
+        0.9179999828338623,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.0075000000000000015,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Medical_Kit_R1_C2_cross",
+      "role": "cross",
+      "category": "medical_kit_cross",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.0
+      ],
+      "position_m": [
+        0.9470000267028809,
+        0.9179999828338623,
+        0.020010000094771385
+      ],
+      "source": "explicit_20mm_cross_5mm_stroke",
+      "parent": "Medical_Kit_R1_C2"
+    },
+    {
+      "name": "Medical_Kit_R2_C1",
+      "role": "movable",
+      "category": "medical_kit",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.02500000037252903,
+        0.02500000037252903,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.9070000052452087,
+        0.9629999995231628,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.0075000000000000015,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Medical_Kit_R2_C1_cross",
+      "role": "cross",
+      "category": "medical_kit_cross",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.0
+      ],
+      "position_m": [
+        0.9070000052452087,
+        0.9629999995231628,
+        0.020010000094771385
+      ],
+      "source": "explicit_20mm_cross_5mm_stroke",
+      "parent": "Medical_Kit_R2_C1"
+    },
+    {
+      "name": "Medical_Kit_R2_C2",
+      "role": "movable",
+      "category": "medical_kit",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.02500000037252903,
+        0.02500000037252903,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.9470000267028809,
+        0.9629999995231628,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.0075000000000000015,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Medical_Kit_R2_C2_cross",
+      "role": "cross",
+      "category": "medical_kit_cross",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.0
+      ],
+      "position_m": [
+        0.9470000267028809,
+        0.9629999995231628,
+        0.020010000094771385
+      ],
+      "source": "explicit_20mm_cross_5mm_stroke",
+      "parent": "Medical_Kit_R2_C2"
+    },
+    {
+      "name": "Medical_Kit_R3_C1",
+      "role": "movable",
+      "category": "medical_kit",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.02500000037252903,
+        0.02500000037252903,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.9070000052452087,
+        1.0080000162124634,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.0075000000000000015,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Medical_Kit_R3_C1_cross",
+      "role": "cross",
+      "category": "medical_kit_cross",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.0
+      ],
+      "position_m": [
+        0.9070000052452087,
+        1.0080000162124634,
+        0.020010000094771385
+      ],
+      "source": "explicit_20mm_cross_5mm_stroke",
+      "parent": "Medical_Kit_R3_C1"
+    },
+    {
+      "name": "Medical_Kit_R3_C2",
+      "role": "movable",
+      "category": "medical_kit",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.02500000037252903,
+        0.02500000037252903,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.9470000267028809,
+        1.0080000162124634,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.0075000000000000015,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Medical_Kit_R3_C2_cross",
+      "role": "cross",
+      "category": "medical_kit_cross",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.0
+      ],
+      "position_m": [
+        0.9470000267028809,
+        1.0080000162124634,
+        0.020010000094771385
+      ],
+      "source": "explicit_20mm_cross_5mm_stroke",
+      "parent": "Medical_Kit_R3_C2"
+    },
+    {
+      "name": "Medical_Kit_R4_C1",
+      "role": "movable",
+      "category": "medical_kit",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.02500000037252903,
+        0.02500000037252903,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.9070000052452087,
+        1.0529999732971191,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.0075000000000000015,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Medical_Kit_R4_C1_cross",
+      "role": "cross",
+      "category": "medical_kit_cross",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.0
+      ],
+      "position_m": [
+        0.9070000052452087,
+        1.0529999732971191,
+        0.020010000094771385
+      ],
+      "source": "explicit_20mm_cross_5mm_stroke",
+      "parent": "Medical_Kit_R4_C1"
+    },
+    {
+      "name": "Medical_Kit_R4_C2",
+      "role": "movable",
+      "category": "medical_kit",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.02500000037252903,
+        0.02500000037252903,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.9470000267028809,
+        1.0529999732971191,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.0075000000000000015,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Medical_Kit_R4_C2_cross",
+      "role": "cross",
+      "category": "medical_kit_cross",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.0
+      ],
+      "position_m": [
+        0.9470000267028809,
+        1.0529999732971191,
+        0.020010000094771385
+      ],
+      "source": "explicit_20mm_cross_5mm_stroke",
+      "parent": "Medical_Kit_R4_C2"
+    },
+    {
+      "name": "Medical_Kit_R5_C1",
+      "role": "movable",
+      "category": "medical_kit",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.02500000037252903,
+        0.02500000037252903,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.9070000052452087,
+        1.0980000495910645,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.0075000000000000015,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Medical_Kit_R5_C1_cross",
+      "role": "cross",
+      "category": "medical_kit_cross",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.0
+      ],
+      "position_m": [
+        0.9070000052452087,
+        1.0980000495910645,
+        0.020010000094771385
+      ],
+      "source": "explicit_20mm_cross_5mm_stroke",
+      "parent": "Medical_Kit_R5_C1"
+    },
+    {
+      "name": "Medical_Kit_R5_C2",
+      "role": "movable",
+      "category": "medical_kit",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.02500000037252903,
+        0.02500000037252903,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.9470000267028809,
+        1.0980000495910645,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.0075000000000000015,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Medical_Kit_R5_C2_cross",
+      "role": "cross",
+      "category": "medical_kit_cross",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.0
+      ],
+      "position_m": [
+        0.9470000267028809,
+        1.0980000495910645,
+        0.020010000094771385
+      ],
+      "source": "explicit_20mm_cross_5mm_stroke",
+      "parent": "Medical_Kit_R5_C2"
+    },
+    {
+      "name": "Sample_01",
+      "role": "movable",
+      "category": "sample",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.0560000017285347,
+        0.0560000017285347,
+        0.004999999888241291
+      ],
+      "position_m": [
+        0.972000002861023,
+        0.14499999582767487,
+        0.0024999999441206455
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.007389025921243194,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Sample_01_biohazard",
+      "role": "biohazard",
+      "category": "sample_biohazard",
+      "body_type": "none",
+      "dimensions_m": [
+        0.03099999949336052,
+        0.029301799833774567,
+        9.999999747378752e-06
+      ],
+      "position_m": [
+        0.972000002861023,
+        0.14499999582767487,
+        0.005009999964386225
+      ],
+      "source": "image_measured",
+      "parent": "Sample_01"
+    },
+    {
+      "name": "Sample_02",
+      "role": "movable",
+      "category": "sample",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.0560000017285347,
+        0.0560000017285347,
+        0.004999999888241291
+      ],
+      "position_m": [
+        1.0720000267028809,
+        0.19499999284744263,
+        0.0024999999441206455
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.007389025921243194,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Sample_02_biohazard",
+      "role": "biohazard",
+      "category": "sample_biohazard",
+      "body_type": "none",
+      "dimensions_m": [
+        0.03099999949336052,
+        0.029301799833774567,
+        9.999999747378752e-06
+      ],
+      "position_m": [
+        1.0720000267028809,
+        0.19499999284744263,
+        0.005009999964386225
+      ],
+      "source": "image_measured",
+      "parent": "Sample_02"
+    },
+    {
+      "name": "Sample_03",
+      "role": "movable",
+      "category": "sample",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.0560000017285347,
+        0.0560000017285347,
+        0.004999999888241291
+      ],
+      "position_m": [
+        1.0720000267028809,
+        0.0949999988079071,
+        0.0024999999441206455
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.007389025921243194,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Sample_03_biohazard",
+      "role": "biohazard",
+      "category": "sample_biohazard",
+      "body_type": "none",
+      "dimensions_m": [
+        0.03099999949336052,
+        0.029301799833774567,
+        9.999999747378752e-06
+      ],
+      "position_m": [
+        1.0720000267028809,
+        0.0949999988079071,
+        0.005009999964386225
+      ],
+      "source": "image_measured",
+      "parent": "Sample_03"
+    },
+    {
+      "name": "Laboratory_Plate",
+      "role": "lab_plate",
+      "category": "laboratory",
+      "body_type": "static",
+      "dimensions_m": [
+        0.15000000596046448,
+        0.3450000286102295,
+        0.003000000026077032
+      ],
+      "position_m": [
+        1.0679999589920044,
+        0.49050000309944153,
+        0.001500000013038516
+      ],
+      "source": "national_outer_dimensions_international_60mm_holes_inferred_pitch"
+    },
+    {
+      "name": "Containment_Beam_280",
+      "role": "movable",
+      "category": "containment_beam",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.05999999865889549,
+        0.2800000011920929,
+        0.019999999552965164
+      ],
+      "position_m": [
+        1.0110000371932983,
+        1.0019999742507935,
+        0.009999999776482582
+      ],
+      "source": "explicit_international_beam_size_photo_position",
+      "mass_kg": 0.2016,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Containment_Beam_280_biohazard",
+      "role": "biohazard",
+      "category": "beam_biohazard",
+      "body_type": "none",
+      "dimensions_m": [
+        0.03099999949336052,
+        0.029301799833774567,
+        9.999999747378752e-06
+      ],
+      "position_m": [
+        1.0110000371932983,
+        1.0019999742507935,
+        0.020010000094771385
+      ],
+      "source": "image_measured",
+      "parent": "Containment_Beam_280"
+    },
+    {
+      "name": "Containment_Beam_250",
+      "role": "movable",
+      "category": "containment_beam",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.05999999865889549,
+        0.25,
+        0.019999999552965164
+      ],
+      "position_m": [
+        1.0880000591278076,
+        1.0169999599456787,
+        0.009999999776482582
+      ],
+      "source": "explicit_international_beam_size_photo_position",
+      "mass_kg": 0.18000000000000002,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Containment_Beam_250_biohazard",
+      "role": "biohazard",
+      "category": "beam_biohazard",
+      "body_type": "none",
+      "dimensions_m": [
+        0.03099999949336052,
+        0.029301799833774567,
+        9.999999747378752e-06
+      ],
+      "position_m": [
+        1.0880000591278076,
+        1.0169999599456787,
+        0.020010000094771385
+      ],
+      "source": "image_measured",
+      "parent": "Containment_Beam_250"
+    }
+  ],
+  "optional_frame_objects": [
+    {
+      "name": "Frame_Left",
+      "role": "fence",
+      "category": "optional_reference_frame",
+      "body_type": "static",
+      "dimensions_m": [
+        0.019999999552965164,
+        1.2209999561309814,
+        0.06499999761581421
+      ],
+      "position_m": [
+        -0.009999999776482582,
+        0.590499997138977,
+        0.032499998807907104
+      ],
+      "source": "international_20x65_wall_section_adapted_single_field_lengths"
+    },
+    {
+      "name": "Frame_Right",
+      "role": "fence",
+      "category": "optional_reference_frame",
+      "body_type": "static",
+      "dimensions_m": [
+        0.019999999552965164,
+        1.2209999561309814,
+        0.06499999761581421
+      ],
+      "position_m": [
+        1.152999997138977,
+        0.590499997138977,
+        0.032499998807907104
+      ],
+      "source": "international_20x65_wall_section_adapted_single_field_lengths"
+    },
+    {
+      "name": "Frame_Bottom",
+      "role": "fence",
+      "category": "optional_reference_frame",
+      "body_type": "static",
+      "dimensions_m": [
+        1.1430000066757202,
+        0.019999999552965164,
+        0.06499999761581421
+      ],
+      "position_m": [
+        0.5715000033378601,
+        -0.009999999776482582,
+        0.032499998807907104
+      ],
+      "source": "international_20x65_wall_section_adapted_single_field_lengths"
+    },
+    {
+      "name": "Frame_Top",
+      "role": "fence",
+      "category": "optional_reference_frame",
+      "body_type": "static",
+      "dimensions_m": [
+        1.1430000066757202,
+        0.019999999552965164,
+        0.06499999761581421
+      ],
+      "position_m": [
+        0.5715000033378601,
+        1.190999984741211,
+        0.032499998807907104
+      ],
+      "source": "international_20x65_wall_section_adapted_single_field_lengths"
+    }
+  ],
+  "zones": [
+    {
+      "name": "Zone_PCC_Lower",
+      "category": "PCC",
+      "bounds_xy_m": [
+        0.0,
+        0.0,
+        0.18,
+        0.338
+      ]
+    },
+    {
+      "name": "Zone_H",
+      "category": "H",
+      "bounds_xy_m": [
+        0.0,
+        0.358,
+        0.18,
+        0.861
+      ]
+    },
+    {
+      "name": "Zone_PCC_Upper",
+      "category": "PCC",
+      "bounds_xy_m": [
+        0.0,
+        0.881,
+        0.18,
+        1.181
+      ]
+    },
+    {
+      "name": "Zone_Start_Recovery",
+      "category": "starting_recovery",
+      "bounds_xy_m": [
+        0.863,
+        0.7010000000000001,
+        1.143,
+        1.181
+      ]
+    },
+    {
+      "name": "Zone_Isolation",
+      "category": "isolation",
+      "bounds_xy_m": [
+        0.863,
+        0.0,
+        1.143,
+        0.28
+      ]
+    },
+    {
+      "name": "Zone_Laboratory",
+      "category": "laboratory",
+      "bounds_xy_m": [
+        0.993,
+        0.318,
+        1.143,
+        0.663
+      ]
+    }
+  ],
+  "senior_objects": [
+    {
+      "name": "Playing_Surface",
+      "role": "floor",
+      "category": "playing_surface",
+      "body_type": "static",
+      "dimensions_m": [
+        1.1430000066757202,
+        1.180999994277954,
+        0.009999999776482582
+      ],
+      "position_m": [
+        0.5715000033378601,
+        0.590499997138977,
+        -0.004999999888241291
+      ],
+      "source": "explicit_national_width1143_length1181"
+    },
+    {
+      "name": "Tape_Healthcare_PCC_H_PCC",
+      "role": "tape",
+      "category": "healthcare",
+      "body_type": "static",
+      "dimensions_m": [
+        0.20000000298023224,
+        1.180999994277954,
+        0.0001500000071246177
+      ],
+      "position_m": [
+        0.10000000149011612,
+        0.590499997138977,
+        7.500000356230885e-05
+      ],
+      "source": "explicit_detail_C"
+    },
+    {
+      "name": "Tape_Start_Recovery",
+      "role": "tape",
+      "category": "starting_recovery_zone",
+      "body_type": "static",
+      "dimensions_m": [
+        0.30000001192092896,
+        0.5,
+        0.0001500000071246177
+      ],
+      "position_m": [
+        0.9929999709129333,
+        0.9309999942779541,
+        7.500000356230885e-05
+      ],
+      "source": "explicit_detail_A"
+    },
+    {
+      "name": "Tape_Isolation",
+      "role": "tape",
+      "category": "isolation",
+      "body_type": "static",
+      "dimensions_m": [
+        0.30000001192092896,
+        0.30000001192092896,
+        0.0001500000071246177
+      ],
+      "position_m": [
+        0.9929999709129333,
+        0.15000000596046448,
+        7.500000356230885e-05
+      ],
+      "source": "explicit_detail_B"
+    },
+    {
+      "name": "Tape_Center_H",
+      "role": "tape",
+      "category": "center_divider",
+      "body_type": "static",
+      "dimensions_m": [
+        0.4399999976158142,
+        0.5,
+        0.0001500000071246177
+      ],
+      "position_m": [
+        0.550000011920929,
+        0.609499990940094,
+        7.500000356230885e-05
+      ],
+      "source": "international_p16_dimensions_national_edge_datums"
+    },
+    {
+      "name": "Zone_PCC_Lower",
+      "role": "zone_region",
+      "category": "PCC",
+      "body_type": "none",
+      "dimensions_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_m": [
+        0.09000000357627869,
+        0.16899999976158142,
+        0.0
+      ],
+      "source": "dimensioned_zone_bounds"
+    },
+    {
+      "name": "Zone_H",
+      "role": "zone_region",
+      "category": "H",
+      "body_type": "none",
+      "dimensions_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_m": [
+        0.09000000357627869,
+        0.609499990940094,
+        0.0
+      ],
+      "source": "dimensioned_zone_bounds"
+    },
+    {
+      "name": "Zone_PCC_Upper",
+      "role": "zone_region",
+      "category": "PCC",
+      "body_type": "none",
+      "dimensions_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_m": [
+        0.09000000357627869,
+        1.031000018119812,
+        0.0
+      ],
+      "source": "dimensioned_zone_bounds"
+    },
+    {
+      "name": "Zone_Start_Recovery",
+      "role": "zone_region",
+      "category": "starting_recovery",
+      "body_type": "none",
+      "dimensions_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_m": [
+        1.003000020980835,
+        0.9409999847412109,
+        0.0
+      ],
+      "source": "dimensioned_zone_bounds"
+    },
+    {
+      "name": "Zone_Isolation",
+      "role": "zone_region",
+      "category": "isolation",
+      "body_type": "none",
+      "dimensions_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_m": [
+        1.003000020980835,
+        0.14000000059604645,
+        0.0
+      ],
+      "source": "dimensioned_zone_bounds"
+    },
+    {
+      "name": "Zone_Laboratory",
+      "role": "zone_region",
+      "category": "laboratory",
+      "body_type": "none",
+      "dimensions_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "position_m": [
+        1.0679999589920044,
+        0.49050000309944153,
+        0.0
+      ],
+      "source": "dimensioned_zone_bounds"
+    },
+    {
+      "name": "Mark_Block_Yellow_R1_C1",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.15000000596046448,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Yellow_R1_C1",
+      "role": "movable",
+      "category": "observation",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.15000000596046448,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Yellow_R1_C2",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.15000000596046448,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Yellow_R1_C2",
+      "role": "movable",
+      "category": "observation",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.15000000596046448,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Green_R2_C1",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.25,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Green_R2_C1",
+      "role": "movable",
+      "category": "low_risk",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.25,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Green_R2_C2",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.25,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Green_R2_C2",
+      "role": "movable",
+      "category": "low_risk",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.25,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Red_R3_C1",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.3499999940395355,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Red_R3_C1",
+      "role": "movable",
+      "category": "patient",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.3499999940395355,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Red_R3_C2",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.3499999940395355,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Red_R3_C2",
+      "role": "movable",
+      "category": "patient",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.3499999940395355,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Red_R4_C1",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.8309999704360962,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Red_R4_C1",
+      "role": "movable",
+      "category": "patient",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.8309999704360962,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Red_R4_C2",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.8309999704360962,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Red_R4_C2",
+      "role": "movable",
+      "category": "patient",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.8309999704360962,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Green_R5_C1",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.9309999942779541,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Green_R5_C1",
+      "role": "movable",
+      "category": "low_risk",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.44999998807907104,
+        0.9309999942779541,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Green_R5_C2",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.9309999942779541,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Green_R5_C2",
+      "role": "movable",
+      "category": "low_risk",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.6499999761581421,
+        0.9309999942779541,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Yellow_R6_C1",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.44999998807907104,
+        1.031000018119812,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Yellow_R6_C1",
+      "role": "movable",
+      "category": "observation",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.44999998807907104,
+        1.031000018119812,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Mark_Block_Yellow_R6_C2",
+      "role": "marking",
+      "category": "printed_block_position",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        1.9999999494757503e-05
+      ],
+      "position_m": [
+        0.6499999761581421,
+        1.031000018119812,
+        9.999999747378752e-06
+      ],
+      "source": "image_measured"
+    },
+    {
+      "name": "Block_Yellow_R6_C2",
+      "role": "movable",
+      "category": "observation",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.6499999761581421,
+        1.031000018119812,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.003769911184307752,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Medical_Kit_R4_C1",
+      "role": "movable",
+      "category": "medical_kit",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.02500000037252903,
+        0.02500000037252903,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.9070000052452087,
+        1.0529999732971191,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.0075000000000000015,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Medical_Kit_R4_C1_cross",
+      "role": "cross",
+      "category": "medical_kit_cross",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.0
+      ],
+      "position_m": [
+        0.9070000052452087,
+        1.0529999732971191,
+        0.020010000094771385
+      ],
+      "source": "explicit_20mm_cross_5mm_stroke",
+      "parent": "Medical_Kit_R4_C1"
+    },
+    {
+      "name": "Medical_Kit_R4_C2",
+      "role": "movable",
+      "category": "medical_kit",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.02500000037252903,
+        0.02500000037252903,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.9470000267028809,
+        1.0529999732971191,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.0075000000000000015,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Medical_Kit_R4_C2_cross",
+      "role": "cross",
+      "category": "medical_kit_cross",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.0
+      ],
+      "position_m": [
+        0.9470000267028809,
+        1.0529999732971191,
+        0.020010000094771385
+      ],
+      "source": "explicit_20mm_cross_5mm_stroke",
+      "parent": "Medical_Kit_R4_C2"
+    },
+    {
+      "name": "Medical_Kit_R5_C1",
+      "role": "movable",
+      "category": "medical_kit",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.02500000037252903,
+        0.02500000037252903,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.9070000052452087,
+        1.0980000495910645,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.0075000000000000015,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Medical_Kit_R5_C1_cross",
+      "role": "cross",
+      "category": "medical_kit_cross",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.0
+      ],
+      "position_m": [
+        0.9070000052452087,
+        1.0980000495910645,
+        0.020010000094771385
+      ],
+      "source": "explicit_20mm_cross_5mm_stroke",
+      "parent": "Medical_Kit_R5_C1"
+    },
+    {
+      "name": "Medical_Kit_R5_C2",
+      "role": "movable",
+      "category": "medical_kit",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.02500000037252903,
+        0.02500000037252903,
+        0.019999999552965164
+      ],
+      "position_m": [
+        0.9470000267028809,
+        1.0980000495910645,
+        0.009999999776482582
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.0075000000000000015,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Medical_Kit_R5_C2_cross",
+      "role": "cross",
+      "category": "medical_kit_cross",
+      "body_type": "none",
+      "dimensions_m": [
+        0.019999999552965164,
+        0.019999999552965164,
+        0.0
+      ],
+      "position_m": [
+        0.9470000267028809,
+        1.0980000495910645,
+        0.020010000094771385
+      ],
+      "source": "explicit_20mm_cross_5mm_stroke",
+      "parent": "Medical_Kit_R5_C2"
+    },
+    {
+      "name": "Sample_01",
+      "role": "movable",
+      "category": "sample",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.0560000017285347,
+        0.0560000017285347,
+        0.004999999888241291
+      ],
+      "position_m": [
+        0.972000002861023,
+        0.14499999582767487,
+        0.0024999999441206455
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.007389025921243194,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Sample_01_biohazard",
+      "role": "biohazard",
+      "category": "sample_biohazard",
+      "body_type": "none",
+      "dimensions_m": [
+        0.03099999949336052,
+        0.029301799833774567,
+        9.999999747378752e-06
+      ],
+      "position_m": [
+        0.972000002861023,
+        0.14499999582767487,
+        0.005009999964386225
+      ],
+      "source": "image_measured",
+      "parent": "Sample_01"
+    },
+    {
+      "name": "Sample_02",
+      "role": "movable",
+      "category": "sample",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.0560000017285347,
+        0.0560000017285347,
+        0.004999999888241291
+      ],
+      "position_m": [
+        1.0720000267028809,
+        0.19499999284744263,
+        0.0024999999441206455
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.007389025921243194,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Sample_02_biohazard",
+      "role": "biohazard",
+      "category": "sample_biohazard",
+      "body_type": "none",
+      "dimensions_m": [
+        0.03099999949336052,
+        0.029301799833774567,
+        9.999999747378752e-06
+      ],
+      "position_m": [
+        1.0720000267028809,
+        0.19499999284744263,
+        0.005009999964386225
+      ],
+      "source": "image_measured",
+      "parent": "Sample_02"
+    },
+    {
+      "name": "Sample_03",
+      "role": "movable",
+      "category": "sample",
+      "body_type": "dynamic",
+      "dimensions_m": [
+        0.0560000017285347,
+        0.0560000017285347,
+        0.004999999888241291
+      ],
+      "position_m": [
+        1.0720000267028809,
+        0.0949999988079071,
+        0.0024999999441206455
+      ],
+      "source": "explicit_size_image_placement",
+      "mass_kg": 0.007389025921243194,
+      "mass_source": "assumed_600_kg_m3_wood",
+      "collision": "convexHull"
+    },
+    {
+      "name": "Sample_03_biohazard",
+      "role": "biohazard",
+      "category": "sample_biohazard",
+      "body_type": "none",
+      "dimensions_m": [
+        0.03099999949336052,
+        0.029301799833774567,
+        9.999999747378752e-06
+      ],
+      "position_m": [
+        1.0720000267028809,
+        0.0949999988079071,
+        0.005009999964386225
+      ],
+      "source": "image_measured",
+      "parent": "Sample_03"
+    },
+    {
+      "name": "Laboratory_Plate",
+      "role": "lab_plate",
+      "category": "laboratory",
+      "body_type": "static",
+      "dimensions_m": [
+        0.15000000596046448,
+        0.3450000286102295,
+        0.003000000026077032
+      ],
+      "position_m": [
+        1.0679999589920044,
+        0.49050000309944153,
+        0.001500000013038516
+      ],
+      "source": "national_outer_dimensions_international_60mm_holes_inferred_pitch"
+    }
+  ],
+  "configurations": {
+    "photo_reference": {
+      "kits": 10,
+      "samples": 3,
+      "cylinders": 12,
+      "containment_beams": 2,
+      "fence": false
+    },
+    "framed_reference": {
+      "kits": 10,
+      "samples": 3,
+      "cylinders": 12,
+      "containment_beams": 2,
+      "fence": true
+    },
+    "senior_preliminary": {
+      "kits": 4,
+      "samples": 3,
+      "cylinders": 12,
+      "containment_beams": 0,
+      "fence": false,
+      "kit_rows": [
+        4,
+        5
+      ]
+    },
+    "junior_preliminary_guidance": {
+      "kits": 2,
+      "samples": 0,
+      "cylinders": 12,
+      "containment_beams": 0,
+      "fence": false,
+      "exported": false
+    }
+  },
+  "sources": {
+    "primary": "reference/challenge_2026_full.pdf",
+    "original_excerpt": "reference/challenge_2026.pdf",
+    "placement_photo": "reference/block_layout.png",
+    "supplemental_international": "reference/challenge_2026_international.pdf",
+    "international_url": "https://robotics-2026.web.app/files/intl-rulebook-en.pdf"
+  },
+  "evidence": {
+    "explicit": [
+      "Korean full guide printed p10 and p17: photo-oriented width1143 and length1181",
+      "Detail A clear480x280",
+      "Detail B clear280x280",
+      "Detail C clear180 depth,503 middle length,300 upper-end length",
+      "20mm tape width; user-specified0.15mm thickness",
+      "Cylinder diameter20 and height20",
+      "Kit marked face25x25, depth20, cross20 with5 stroke",
+      "Sample diameter56 and thickness5",
+      "National lab345x150x3",
+      "National preliminary: senior4 kits, junior2 kits; no fence or containment beams"
+    ],
+    "supplemental_international": [
+      "Official international rulebook p16: center bars500 long,400 clear gap,20 tape,330 near-edge datum,571.5 centerline offset from schematic right edge",
+      "International p16: cylinder rows450 and650 from healthcare-side board edge;150 outer-row offset and100 pitch",
+      "International p9: laboratory slots60mm",
+      "International p10: wood containment beams280x60x20 and250x60x20",
+      "International p7: perimeter long-wall section20mm thick and65mm high, adapted to all four rails of the single-field reference frame"
+    ],
+    "derived": [
+      "Healthcare lower clear length1181-300-20-503-20=338",
+      "Center crossbar Y1181-571.5=609.5; bar endpoints359.5,859.5",
+      "Center bar X340 and760 from330 near edge,20 tape,400 clear gap",
+      "Upper cylinder rows1181-150/250/350; lower rows150/250/350",
+      "Start/isolation X boundary863 follows280 clear depth",
+      "Lab345 centered between tape edgesY300 and681 gives18mm gaps",
+      "Opposite cylinder group mirrors the150mm edge offset and100mm spacing across the national field"
+    ],
+    "image_measured": [
+      "Original photo arrangement:12 cylinders,10 kits,3 samples,2 beams",
+      "Kit/sample/beam positions within their zones; kit rows retain45mm photo-derived pitch",
+      "Kits and biohazard faces point upward",
+      "Lab hole pitch100 and equal72.5mm end-center offsets",
+      "Beam biohazard emblem size and rotation"
+    ],
+    "simulation_assumptions": [
+      "10mm support slab lies belowZ0",
+      "Printed position marks have no collision; tape uses exact0.15mm static mesh collision",
+      "Wood density/friction are unmeasured defaults",
+      "Optional frame uses international20x65mm perimeter section on four rails; lengths are adapted to the national single field, without the two-field shared divider"
+    ],
+    "source_conflict": "The full national guide repeatedly labels photo-oriented X1143,Y1181. Those explicit axes replace the earlier inferred transpose. Detail C labels only the upper300mm compartment; the lower compartment is derived338mm. The international rulebook states its illustrations may not be to scale. Its missing H/marker dimensions are applied from their labeled edge datums to the national field, without scaling physical parts. National lab345mm overrides international440mm. Photo object counts remain in reference scenes; the separate senior scene follows the national4-kit preliminary rules. See reference/full_document_audit.md and reference/international_dimension_audit.md."
+  },
+  "physics_assumptions": {
+    "wood_density_kg_m3": 600.0,
+    "static_friction": 0.6,
+    "dynamic_friction": 0.5,
+    "restitution": 0.0,
+    "contact_offset_m": 0.0005,
+    "rest_offset_m": 0.0,
+    "standalone_steps_per_second": 240
+  }
+}

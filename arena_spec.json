@@ -1,0 +1,225 @@
+{
+  "schema_version": 2,
+  "units": "millimeters",
+  "coordinate_system": "Photo orientation: origin at lower-left playing-surface corner, X right, Y up in the reference photograph, Z vertical. Blender and USD coordinates are meters.",
+  "dimensions": {
+    "surface_x": 1143.0,
+    "surface_y": 1181.0,
+    "support_thickness": 10.0,
+    "tape_width": 20.0,
+    "tape_thickness": 0.15,
+    "healthcare_clear_depth": 180.0,
+    "healthcare_middle_clear_length": 503.0,
+    "start_clear_depth": 280.0,
+    "start_clear_length": 480.0,
+    "isolation_clear_side": 280.0,
+    "center_bar_x": [
+      340.0,
+      760.0
+    ],
+    "center_bar_y_limits": [
+      359.5,
+      859.5
+    ],
+    "center_crossbar_y": 609.5,
+    "cylinder_diameter": 20.0,
+    "cylinder_height": 20.0,
+    "kit_marked_face": 25.0,
+    "kit_height_as_placed": 20.0,
+    "kit_cross_span": 20.0,
+    "kit_cross_stroke": 5.0,
+    "sample_diameter": 56.0,
+    "sample_thickness": 5.0,
+    "lab_width": 150.0,
+    "lab_length": 345.0,
+    "lab_thickness": 3.0,
+    "lab_hole_diameter": 60.0,
+    "lab_hole_pitch": 100.0,
+    "frame_thickness": 20.0,
+    "frame_height": 65.0,
+    "healthcare_upper_clear_length": 300.0,
+    "healthcare_lower_clear_length": 338.0,
+    "beam_width": 60.0,
+    "beam_height": 20.0
+  },
+  "placements": {
+    "cylinder_x": [
+      450.0,
+      650.0
+    ],
+    "cylinder_rows": [
+      {
+        "y": 150.0,
+        "color": "yellow",
+        "category": "observation"
+      },
+      {
+        "y": 250.0,
+        "color": "green",
+        "category": "low_risk"
+      },
+      {
+        "y": 350.0,
+        "color": "red",
+        "category": "patient"
+      },
+      {
+        "y": 831.0,
+        "color": "red",
+        "category": "patient"
+      },
+      {
+        "y": 931.0,
+        "color": "green",
+        "category": "low_risk"
+      },
+      {
+        "y": 1031.0,
+        "color": "yellow",
+        "category": "observation"
+      }
+    ],
+    "kit_x": [
+      907.0,
+      947.0
+    ],
+    "kit_y": [
+      918.0,
+      963.0,
+      1008.0,
+      1053.0,
+      1098.0
+    ],
+    "samples": [
+      [
+        972.0,
+        145.0
+      ],
+      [
+        1072.0,
+        195.0
+      ],
+      [
+        1072.0,
+        95.0
+      ]
+    ],
+    "lab_center": [
+      1068.0,
+      490.5
+    ],
+    "containment_beams": [
+      {
+        "name": "Containment_Beam_280",
+        "center": [
+          1011.0,
+          1002.0
+        ],
+        "length": 280.0
+      },
+      {
+        "name": "Containment_Beam_250",
+        "center": [
+          1088.0,
+          1017.0
+        ],
+        "length": 250.0
+      }
+    ]
+  },
+  "physics": {
+    "wood_density_kg_m3": 600.0,
+    "static_friction": 0.6,
+    "dynamic_friction": 0.5,
+    "restitution": 0.0,
+    "contact_offset_m": 0.0005,
+    "rest_offset_m": 0.0,
+    "standalone_steps_per_second": 240
+  },
+  "evidence": {
+    "explicit": [
+      "Korean full guide printed p10 and p17: photo-oriented width1143 and length1181",
+      "Detail A clear480x280",
+      "Detail B clear280x280",
+      "Detail C clear180 depth,503 middle length,300 upper-end length",
+      "20mm tape width; user-specified0.15mm thickness",
+      "Cylinder diameter20 and height20",
+      "Kit marked face25x25, depth20, cross20 with5 stroke",
+      "Sample diameter56 and thickness5",
+      "National lab345x150x3",
+      "National preliminary: senior4 kits, junior2 kits; no fence or containment beams"
+    ],
+    "supplemental_international": [
+      "Official international rulebook p16: center bars500 long,400 clear gap,20 tape,330 near-edge datum,571.5 centerline offset from schematic right edge",
+      "International p16: cylinder rows450 and650 from healthcare-side board edge;150 outer-row offset and100 pitch",
+      "International p9: laboratory slots60mm",
+      "International p10: wood containment beams280x60x20 and250x60x20",
+      "International p7: perimeter long-wall section20mm thick and65mm high, adapted to all four rails of the single-field reference frame"
+    ],
+    "derived": [
+      "Healthcare lower clear length1181-300-20-503-20=338",
+      "Center crossbar Y1181-571.5=609.5; bar endpoints359.5,859.5",
+      "Center bar X340 and760 from330 near edge,20 tape,400 clear gap",
+      "Upper cylinder rows1181-150/250/350; lower rows150/250/350",
+      "Start/isolation X boundary863 follows280 clear depth",
+      "Lab345 centered between tape edgesY300 and681 gives18mm gaps",
+      "Opposite cylinder group mirrors the150mm edge offset and100mm spacing across the national field"
+    ],
+    "image_measured": [
+      "Original photo arrangement:12 cylinders,10 kits,3 samples,2 beams",
+      "Kit/sample/beam positions within their zones; kit rows retain45mm photo-derived pitch",
+      "Kits and biohazard faces point upward",
+      "Lab hole pitch100 and equal72.5mm end-center offsets",
+      "Beam biohazard emblem size and rotation"
+    ],
+    "simulation_assumptions": [
+      "10mm support slab lies belowZ0",
+      "Printed position marks have no collision; tape uses exact0.15mm static mesh collision",
+      "Wood density/friction are unmeasured defaults",
+      "Optional frame uses international20x65mm perimeter section on four rails; lengths are adapted to the national single field, without the two-field shared divider"
+    ],
+    "source_conflict": "The full national guide repeatedly labels photo-oriented X1143,Y1181. Those explicit axes replace the earlier inferred transpose. Detail C labels only the upper300mm compartment; the lower compartment is derived338mm. The international rulebook states its illustrations may not be to scale. Its missing H/marker dimensions are applied from their labeled edge datums to the national field, without scaling physical parts. National lab345mm overrides international440mm. Photo object counts remain in reference scenes; the separate senior scene follows the national4-kit preliminary rules. See reference/full_document_audit.md and reference/international_dimension_audit.md."
+  },
+  "sources": {
+    "primary": "reference/challenge_2026_full.pdf",
+    "original_excerpt": "reference/challenge_2026.pdf",
+    "placement_photo": "reference/block_layout.png",
+    "supplemental_international": "reference/challenge_2026_international.pdf",
+    "international_url": "https://robotics-2026.web.app/files/intl-rulebook-en.pdf"
+  },
+  "configurations": {
+    "photo_reference": {
+      "kits": 10,
+      "samples": 3,
+      "cylinders": 12,
+      "containment_beams": 2,
+      "fence": false
+    },
+    "framed_reference": {
+      "kits": 10,
+      "samples": 3,
+      "cylinders": 12,
+      "containment_beams": 2,
+      "fence": true
+    },
+    "senior_preliminary": {
+      "kits": 4,
+      "samples": 3,
+      "cylinders": 12,
+      "containment_beams": 0,
+      "fence": false,
+      "kit_rows": [
+        4,
+        5
+      ]
+    },
+    "junior_preliminary_guidance": {
+      "kits": 2,
+      "samples": 0,
+      "cylinders": 12,
+      "containment_beams": 0,
+      "fence": false,
+      "exported": false
+    }
+  }
+}
