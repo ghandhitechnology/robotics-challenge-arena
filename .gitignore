@@ -4,4 +4,4 @@ __pycache__/
 *.blend1
 tmp/
 .DS_Store
-
+MUJOCO_LOG.TXT

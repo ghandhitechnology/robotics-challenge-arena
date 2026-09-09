@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "conditions": {
+    "date": null,
+    "temperature_c": null,
+    "humidity_percent": null,
+    "wood_finish": null,
+    "map_paper": null,
+    "tape_product": null,
+    "tape_application_dwell_s": null,
+    "surface_cleaning": null
+  },
+  "contacts": [
+    {
+      "pair": "wood_paper",
+      "static_incline_deg": null,
+      "kinetic_pull": {
+        "mass_kg": null,
+        "force_n": null
+      }
+    },
+    {
+      "pair": "wood_vinyl",
+      "static_incline_deg": null,
+      "kinetic_pull": {
+        "mass_kg": null,
+        "force_n": null
+      }
+    },
+    {
+      "pair": "rubber_paper",
+      "static_incline_deg": null,
+      "kinetic_pull": {
+        "mass_kg": null,
+        "force_n": null
+      }
+    },
+    {
+      "pair": "rubber_vinyl",
+      "static_incline_deg": null,
+      "kinetic_pull": {
+        "mass_kg": null,
+        "force_n": null
+      }
+    },
+    {
+      "pair": "wood_wood",
+      "static_incline_deg": null,
+      "kinetic_pull": {
+        "mass_kg": null,
+        "force_n": null
+      }
+    }
+  ],
+  "walls": [
+    {
+      "side": "west",
+      "pair": "wood_wood",
+      "static_incline_deg": null,
+      "kinetic_pull": {
+        "normal_force_n": null,
+        "force_n": null
+      }
+    },
+    {
+      "side": "east",
+      "pair": "wood_wood",
+      "static_incline_deg": null,
+      "kinetic_pull": {
+        "normal_force_n": null,
+        "force_n": null
+      }
+    },
+    {
+      "side": "south",
+      "pair": "wood_wood",
+      "static_incline_deg": null,
+      "kinetic_pull": {
+        "normal_force_n": null,
+        "force_n": null
+      }
+    },
+    {
+      "side": "north",
+      "pair": "wood_wood",
+      "static_incline_deg": null,
+      "kinetic_pull": {
+        "normal_force_n": null,
+        "force_n": null
+      }
+    }
+  ],
+  "densities": [
+    {
+      "material": "wood",
+      "label": "cylinder",
+      "mass_kg": null,
+      "geometry": {
+        "shape": "cylinder",
+        "diameter_m": 0.02,
+        "height_m": 0.02
+      }
+    },
+    {
+      "material": "wood",
+      "label": "laboratory",
+      "mass_kg": null,
+      "geometry": {
+        "shape": "perforated_plate",
+        "size_m": [
+          0.15,
+          0.345,
+          0.003
+        ],
+        "holes": [
+          {
+            "diameter_m": 0.06,
+            "count": 3
+          }
+        ]
+      }
+    },
+    {
+      "material": "vinyl",
+      "label": "tape coupon",
+      "mass_kg": null,
+      "geometry": {
+        "shape": "box",
+        "size_m": [
+          0.02,
+          1.0,
+          0.00015
+        ]
+      }
+    }
+  ],
+  "drops": [
+    {
+      "label": "wood cylinder on paper",
+      "drop_height_m": null,
+      "rebound_height_m": null
+    }
+  ],
+  "tape": {
+    "tensile": {
+      "width_m": 0.02,
+      "thickness_m": 0.00015,
+      "gauge_length_m": 0.1,
+      "samples": [
+        {
+          "extension_m": 0.0,
+          "force_n": 0.0
+        },
+        {
+          "extension_m": null,
+          "force_n": null
+        }
+      ]
+    },
+    "curl_radius_m": null,
+    "curl_sign": 1,
+    "peel": [
+      {
+        "angle_deg": 90,
+        "width_m": 0.02,
+        "force_n": null,
+        "speed_m_s": null,
+        "support": "actual map paper"
+      },
+      {
+        "angle_deg": 180,
+        "width_m": 0.02,
+        "force_n": null,
+        "speed_m_s": null,
+        "support": "actual map paper"
+      }
+    ]
+  },
+  "robot": {
+    "max_motor_torque_nm": null,
+    "max_wheel_speed_rad_s": null,
+    "motor_no_load_speed_rad_s": null,
+    "velocity_gain": null
+  }
+}

@@ -15,8 +15,8 @@ checksums = [f"{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.relative_to(OUT)
              for p in deliverables]
 (OUT / "SHA256SUMS").write_text("\n".join(checksums) + "\n")
 
-files = [ROOT / name for name in ("README.md", "arena_spec.json", "requirements-qa.txt")]
-for directory in ("scripts", "reference", "docs", "output"):
+files = [ROOT / name for name in ("README.md", "arena_spec.json", "requirements-qa.txt", "requirements-mujoco.txt")]
+for directory in ("scripts", "reference", "docs", "output", "arena_mujoco", "tests/mujoco", "profiles"):
     files.extend(p for p in (ROOT / directory).rglob("*") if p.is_file()
                  and "__pycache__" not in p.parts and p.suffix not in {".zip", ".pyc"}
                  and not p.name.endswith(".blend1"))
