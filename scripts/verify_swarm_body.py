@@ -504,6 +504,8 @@ def verify_body(directory, *, weights=None, training_report=None, allow_teacher=
             if not weights.is_file() or not training_report.is_file():
                 return result
             weight_hash = digest(weights)
+            checks["weights_sha256"] = weight_hash
+            checks["training_report_sha256"] = digest(training_report)
             require(report.get("weights_sha256") == weight_hash, "Proof weights SHA-256 mismatch", errors)
             require(report.get("training_report_sha256") == digest(training_report), "Proof training-report SHA-256 mismatch", errors)
             policy = NumpySwarmPolicy(weights)
