@@ -23,6 +23,8 @@ class FlowConfig:
     alignment_gain: float = .35
     separation_gain: float = 1.3
     shape_gain: float = .20
+    obstacle_margin: float = .055
+    consensus_steps: int = 5
     heading_gain: float = 5.
     max_yaw_rate: float = 1.2
     steering_full_speed: float = .015
@@ -118,7 +120,7 @@ def local_velocity_field(positions, velocities, yaw, waypoint, *, links=None,
                + cfg.separation_gain * separation + cfg.shape_gain * shape)
     # Steer along obstacle edges as well as away from them. The finite support
     # keeps distant objects from changing the field throughout the arena.
-    margin = .055
+    margin = cfg.obstacle_margin
     for obstacle in obstacles:
         lower, upper = np.asarray(obstacle[:2], float), np.asarray(obstacle[2:], float)
         nearest_point = np.clip(pos, lower, upper)
@@ -140,7 +142,17 @@ def local_velocity_field(positions, velocities, yaw, waypoint, *, links=None,
     safe = .034
     desired[:, 0] += .8 * (np.maximum(xmin + safe - pos[:, 0], 0) - np.maximum(pos[:, 0] - xmax + safe, 0))
     desired[:, 1] += .8 * (np.maximum(ymin + safe - pos[:, 1], 0) - np.maximum(pos[:, 1] - ymax + safe, 0))
-    return _clip_length(desired, cfg.speed)
+    desired = _clip_length(desired, cfg.speed)
+    # Neighbor communication spreads obstacle and boundary steering through the
+    # measured magnetic graph before wheel conversion. Five local exchanges
+    # reduce differential steering that otherwise peels perimeter rows away.
+    if cfg.consensus_steps and graph.any():
+        weights = graph.astype(float)
+        np.fill_diagonal(weights, 2.)
+        weights /= weights.sum(axis=-1, keepdims=True)
+        for _ in range(cfg.consensus_steps):
+            desired = weights @ desired
+    return desired
 
 
 def velocity_actions(desired_velocity, yaw, *, links=None, lift=-1., config=None,
@@ -340,6 +352,8 @@ class DockingState:
         self.stage = np.full(self.count, -1, int)
         self.offset = np.zeros(self.count)
         self.waiting = np.zeros(self.count, bool)
+        self.release_steps = np.zeros(self.count, int)
+        self.release_direction = np.ones(self.count)
 
     def _ids(self, n, module_ids):
         ids = np.arange(n) if module_ids is None else np.asarray(module_ids, int)
@@ -355,6 +369,12 @@ class DockingState:
         result = dict(positions=pos.copy(), yaw=yaw.copy(), active=self.waiting[ids].copy(),
                       stage=np.where(self.waiting[ids], -2, -1), final_positions=pos.copy(),
                       neighbor=np.full(len(pos), -1, int), port=self.port[ids].copy())
+        releasing = self.release_steps[ids] > 0
+        forward, _ = _axes(yaw)
+        result['positions'][releasing] += (.025*self.release_direction[ids[releasing], None]
+                                           *forward[releasing])
+        result['active'][releasing], result['stage'][releasing] = True, -3
+        result['release'] = releasing.copy()
         for i, robot in enumerate(ids):
             destination = local.get(int(self.neighbor[robot]))
             if self.stage[robot] < 0 or destination is None:
@@ -388,9 +408,26 @@ class DockingState:
         present = np.zeros(self.count, bool)
         present[ids] = True
         self.stage[~present] = -1
+        self.release_steps[~present] = 0
+        self.release_steps = np.maximum(self.release_steps-1, 0)
         self.waiting[:] = False
+        labels, _ = connected_components(graph)
+        counts = np.bincount(labels)
+        largest = int(np.argmax(counts)) if len(counts) else -1
+        detached_group = (labels != largest) & (counts[labels] > 1)
+        forward, right = _axes(yaw)
+        for label in np.unique(labels[detached_group]):
+            group = labels == label
+            delta = pos[group]-pos[group].mean(axis=0)
+            along = np.sum(delta*forward[group], axis=-1)
+            side = np.sum(delta*right[group], axis=-1)
+            direction = np.where(np.abs(along) > .001, along, side)
+            self.release_direction[ids[group]] = np.where(direction >= 0., 1., -1.)
+            self.release_steps[ids[group]] = 70
         for i, robot in enumerate(ids):
-            if graph[i].any() or int(self.neighbor[robot]) not in local:
+            destination = local.get(int(self.neighbor[robot]))
+            if (graph[i].any() or destination is None or labels[destination] != largest
+                    or self.release_steps[robot] > 0):
                 self.stage[robot] = -1
                 self.neighbor[robot] = -1
         guidance = self.guidance(pos, yaw, module_ids=ids)
@@ -414,7 +451,7 @@ class DockingState:
         labels, _ = connected_components(graph)
         for i in np.flatnonzero(choices['active']):
             robot = ids[i]
-            if self.stage[robot] >= 0:
+            if self.stage[robot] >= 0 or self.release_steps[robot] > 0:
                 continue
             destination = choices['neighbor'][i]
             _, ar = _axes(yaw[destination:destination+1])
@@ -456,6 +493,7 @@ def _staged_docking_actions(positions, yaw, guidance):
     """Approach, align in open space, then roll parallel to a shoulder port."""
     actions = _docking_actions(positions, yaw, guidance['positions'], guidance['yaw'])
     stage = guidance['stage']
+    actions[stage == -3, 3] = -1.
     target_yaw = guidance['yaw']
     heading = np.arctan2(np.sin(target_yaw-yaw), np.cos(target_yaw-yaw))
     forward, right = _axes(target_yaw)
@@ -534,7 +572,7 @@ def flow_actions(positions, velocities, yaw, waypoint, **kwargs):
                     pos[robot:robot+1], np.zeros((1, 2)), heading[robot:robot+1],
                     guidance['positions'][robot], obstacles=kwargs['obstacles'],
                     arena_bounds=kwargs.get('arena_bounds', (0., 0., 1.143, 1.181)),
-                    config=FlowConfig(speed=.030))[0]
+                    config=FlowConfig(speed=.030, obstacle_margin=.020))[0]
                 guidance['positions'][robot] = pos[robot]+navigation/.8
                 if np.linalg.norm(navigation) > 1e-5:
                     angle = math.atan2(-navigation[0], navigation[1])

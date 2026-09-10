@@ -8,7 +8,7 @@ import unittest
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from arena_mujoco.swarm_flow import (DockingState, body_telemetry, compact_packing, flow_actions,
+from arena_mujoco.swarm_flow import (DockingState, FlowConfig, body_telemetry, compact_packing, flow_actions,
                                      local_velocity_field, velocity_actions)
 
 
@@ -157,6 +157,41 @@ class SwarmFlowTests(unittest.TestCase):
         links[3, neighbor] = links[neighbor, 3] = True
         state.update(pos, yaw, links)
         self.assertFalse(state.guidance(pos, yaw)['active'][3])
+
+    def test_linked_velocity_exchange_reduces_local_steering_disagreement(self):
+        poses = compact_packing(4)
+        pos, yaw = poses[:, :2], poses[:, 3]
+        graph = np.ones((4, 4), bool)
+        np.fill_diagonal(graph, False)
+        velocity = np.array([[0., .03], [0., 0.], [0., -.03], [0., 0.]])
+        raw = local_velocity_field(pos, velocity, yaw, [.72, .78], links=graph,
+                                   config=FlowConfig(consensus_steps=0))
+        shared = local_velocity_field(pos, velocity, yaw, [.72, .78], links=graph)
+        self.assertLess(np.ptp(shared[:, 1]), np.ptp(raw[:, 1])*.01)
+        # Disconnected robots retain their own local navigation directive.
+        separate = local_velocity_field(pos, velocity, yaw, [.72, .78])
+        separate_raw = local_velocity_field(pos, velocity, yaw, [.72, .78],
+                                             config=FlowConfig(consensus_steps=0))
+        np.testing.assert_allclose(separate, separate_raw)
+
+    def test_detached_pair_releases_while_largest_core_stays_enabled(self):
+        pos = np.array([[.5, .5], [.5248, .528], [.5496, .5], [.63, .553], [.6548, .553]])
+        yaw = np.zeros(5)
+        graph = np.array([[0, 1, 0, 0, 0], [1, 0, 1, 0, 0], [0, 1, 0, 0, 0],
+                          [0, 0, 0, 0, 1], [0, 0, 0, 1, 0]], bool)
+        state = DockingState(5)
+        state.update(pos, yaw, graph)
+        before = state.release_steps.copy()
+        actions, _, guide = flow_actions(pos, np.zeros_like(pos), yaw, pos.mean(0),
+                                        links=graph, docking=True, docking_state=state,
+                                        return_guidance=True)
+        np.testing.assert_array_equal(guide['release'], [False, False, False, True, True])
+        np.testing.assert_array_equal(guide['stage'][3:], [-3, -3])
+        self.assertTrue(np.all(actions[:3, 3] == 1))
+        self.assertTrue(np.all(actions[3:, 3] == -1))
+        self.assertLess(actions[3, :2].mean(), 0.)
+        self.assertGreater(actions[4, :2].mean(), 0.)
+        np.testing.assert_array_equal(state.release_steps, before)
 
 
 if __name__ == '__main__':
