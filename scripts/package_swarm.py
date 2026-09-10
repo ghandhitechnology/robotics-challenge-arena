@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PROOF_NAMES = ("scene.xml", "metadata.json", "trajectory.npz", "policy_trace.npz")
 POLICY_NAMES = ("checkpoint.pt", "weights.npz", "warmstart.npz", "history.jsonl", "training.json")
 OPTIONAL_POLICY_NAMES = ("bc_initial.npz", "best.npz", "dagger.json", "dagger.npz", "progress.json",
-                         "demonstration_summary.json", "run_manifest.json")
+                         "demonstration_summary.json", "run_manifest.json", "training.pending.json")
 VIDEO_PROJECT_FILES = (
     "BRIEF.md",
     "README.md",
@@ -97,7 +97,7 @@ BODY_SOURCE_FILES = (
     "arena_mujoco/swarm_body_env.py", "arena_mujoco/swarm_flow.py", "arena_mujoco/swarm_magnets.py",
     "scripts/run_swarm_body.py", "scripts/verify_swarm_body.py", "scripts/render_swarm_body_video.py",
     "scripts/test_swarm_body.py", "scripts/test_swarm_body_proof.py", "scripts/test_swarm_flow.py",
-    "scripts/test_swarm_magnets.py",
+    "scripts/test_swarm_magnets.py", "scripts/evaluate_swarm_training.py",
 )
 BODY_CAD_FILES = tuple(name for name in CAD_FILES if name != "swarm_module.blend") + (
     "swarm_body_robot.blend", "swarm_body_robot_design.json", "magnetic_validation.json", "bundle_manifest.json",

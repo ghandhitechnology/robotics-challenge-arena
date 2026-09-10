@@ -28,12 +28,16 @@ from scripts.verify_swarm_proof import (
 
 ARTIFACTS = {"scene.xml", "metadata.json", "trajectory.npz", "policy_trace.npz"}
 SOURCES = {
+    "arena_mujoco/__init__.py", "arena_mujoco/geometry.py",
+    "arena_mujoco/assets/biohazard.json", "profiles/default.json",
+    "requirements-mujoco.txt", "requirements-swarm.txt",
     "arena_mujoco/swarm_env.py", "arena_mujoco/swarm_body_env.py",
     "arena_mujoco/swarm_flow.py", "arena_mujoco/swarm_magnets.py",
     "arena_mujoco/swarm_robot.py", "arena_mujoco/swarm_policy.py",
     "arena_mujoco/builder.py", "arena_mujoco/materials.py", "arena_spec.json",
     "scripts/run_swarm_body.py", "scripts/verify_swarm_body.py",
     "scripts/verify_swarm_proof.py", "scripts/train_swarm_policy.py",
+    "scripts/evaluate_swarm_training.py",
 }
 OBSERVATIONS = ("local", "neighbors", "neighbor_mask", "active", "global")
 TASK = "magnetic_swarm_body_transport"

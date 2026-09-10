@@ -31,6 +31,9 @@ STAGES = [
 
 ACTION_NAMES = ("left_wheel", "right_wheel", "lift", "magnet_enable")
 TRAINING_SOURCES = (
+    "arena_mujoco/__init__.py", "arena_mujoco/geometry.py",
+    "arena_mujoco/assets/biohazard.json", "profiles/default.json",
+    "requirements-mujoco.txt", "requirements-swarm.txt",
     "arena_mujoco/swarm_env.py", "arena_mujoco/swarm_body_env.py",
     "arena_mujoco/swarm_flow.py", "arena_mujoco/swarm_magnets.py",
     "arena_mujoco/swarm_robot.py", "arena_mujoco/swarm_policy.py",
