@@ -138,7 +138,7 @@ class SwarmVectorEnv:
         self._closed = False
         self.rng = torch.Generator(device=self.device).manual_seed(seed)
         self.seed = seed
-        self.xml, self.metadata = build_swarm_scene(num_robots, num_objects, timestep)
+        self.xml, self.metadata = self._build_scene(num_robots, num_objects, timestep)
         self.model = mujoco.MjModel.from_xml_string(self.xml)
         self._bind()
         self.curriculum = {"num_active_robots": num_robots, "num_active_objects": num_objects, "difficulty": 1.}
@@ -151,6 +151,9 @@ class SwarmVectorEnv:
 
     def _tensor(self, value, dtype=torch.float32):
         return torch.as_tensor(value, dtype=dtype, device=self.device)
+
+    def _build_scene(self, num_robots, num_objects, timestep):
+        return build_swarm_scene(num_robots, num_objects, timestep)
 
     def _bind(self):
         m = self.model

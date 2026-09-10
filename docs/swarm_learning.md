@@ -1,5 +1,54 @@
 # Learning cooperative transport
 
+## Magnetic swarm body
+
+`arena_mujoco.swarm_body_env:SwarmBodyEnv` adds the connected-body task. All forty
+modules start in a staggered packing inside the start zone. Four shoulder
+electropermanent-magnet ports per module apply finite-range, equal-and-opposite
+forces. Each port has a 0.15 N peak force, 3 mm capture gap, one partner, and a
+coordinated release command. Collision housings supply contact and friction.
+Payload bodies receive no applied magnetic force.
+
+The body uses a shared flow goal with local cohesion, velocity alignment,
+separation, and obstacle deflection. Boundary modules release their connections
+to approach two payloads. Both grippers must reach and align at their pregrasp
+poses before either presses inward. The remaining modules keep a connected core;
+after delivery, all modules return to the body. These task transitions and flow
+subgoals are explicit environment code. The attention actor commands every wheel,
+lift, and magnetic switch.
+
+The body contract has 40 local features, 12 neighbor features, 88 critic features,
+and four outputs: left wheel, right wheel, lift, and magnet enable. The added
+features describe the body goal, magnetic state, degree, and component membership.
+Reflection exchanges the wheel outputs, preserves lift and magnet enable, and
+also negates the body-relative lateral features. Both the actor export and the
+trainer support this contract alongside the original transport contract.
+
+Magnetic connectivity uses measured pair force of at least 2 mN. Close docking
+faces and active magnetic interactions are recorded separately. Navigation uses
+a motor speed-feedback gain of 0.00045; aligned pinching retains 0.00015. Both use
+the same 0.002 N m motor torque limit and torque-speed envelope. Reverse motion
+allows the compact group to correct its position without turning every module.
+Ordinary robot contacts are allowed. The body reward penalizes deep penetration,
+disconnection, actuator effort, and abrupt commands, and rewards supported
+transport and progress of the body. Every reward term is logged separately.
+
+The coupling model follows the hardware direction of
+[Robot Pebbles](https://cba.mit.edu/docs/papers/10.05.knaian.ICRA.pdf).
+[Granulobot](https://arxiv.org/html/2304.03125v2) motivates loose, detachable
+connections that permit deformation; its demonstrated rotating modules use
+different mechanics. The force envelope and 40 g packaging remain design
+assumptions for this module.
+
+Current checks cover bounded coupling forces, balanced wrenches, untouched
+payload loads, joining and release, all-forty packing, four-action policy export,
+and partial reset isolation. Connected deployment has been exercised with the
+demonstration controller. Full magnetic-body transport, GPU training, and final
+held-out acceptance are still in progress. The earlier four-object transport
+run is retained under `output/swarm/transport_baseline` as a separate baseline.
+
+## Original transport baseline
+
 The swarm controller uses one shared attention policy for every robot. It emits
 normalized left wheel velocity, right wheel velocity, and lift position targets.
 A geometric allocator assigns pairs and supplies grasp and transport goals. The

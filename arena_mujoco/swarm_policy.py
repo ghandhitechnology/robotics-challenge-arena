@@ -22,7 +22,8 @@ def mirror_observation(obs):
     for key in ("local", "neighbors"):
         value = obs[key]
         result[key] = value.clone() if hasattr(value, "clone") else np.array(value, copy=True)
-    result["local"][..., MIRROR_LOCAL_NEGATE] *= -1
+    negate = MIRROR_LOCAL_NEGATE + ([32, 34] if obs["local"].shape[-1] == 40 else [])
+    result["local"][..., negate] *= -1
     result["local"][..., [22, 23]] = obs["local"][..., [23, 22]]
     result["neighbors"][..., MIRROR_NEIGHBOR_NEGATE] *= -1
     return result
@@ -41,8 +42,8 @@ class PolicyConfig:
     def __post_init__(self):
         if self.hidden % self.heads:
             raise ValueError("hidden must be divisible by heads")
-        if self.mirror and (self.local_dim, self.neighbor_dim, self.action_dim) != (32, 8, 3):
-            raise ValueError("Reflection requires the 32 local / 8 neighbor / 3 actuator feature contract")
+        if self.mirror and (self.local_dim, self.neighbor_dim, self.action_dim) not in {(32, 8, 3), (40, 12, 4)}:
+            raise ValueError("Reflection requires a supported transport or magnetic-body feature contract")
 
 
 def make_actor_critic(config):
@@ -91,7 +92,7 @@ def make_actor_critic(config):
             raw = self.raw_mean(obs)
             if config.mirror:
                 reflected = self.raw_mean(mirror_observation(obs))
-                raw = .5 * (raw + reflected[..., MIRROR_ACTION_ORDER])
+                raw = .5 * (raw + reflected[..., [1, 0, *range(2, config.action_dim)]])
             return raw
 
         def value(self, obs):
@@ -164,7 +165,7 @@ class NumpySwarmPolicy:
         raw = self.raw_mean(obs)
         if self.config.mirror:
             reflected = self.raw_mean(mirror_observation(obs))
-            raw = .5 * (raw + reflected[..., MIRROR_ACTION_ORDER])
+            raw = .5 * (raw + reflected[..., [1, 0, *range(2, self.config.action_dim)]])
         action = np.tanh(raw) * np.asarray(obs["active"])[..., None]
         self.calls += 1
         return action

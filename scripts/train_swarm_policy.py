@@ -27,6 +27,8 @@ STAGES = [
     {"num_active_robots": 40, "num_active_objects": 4, "difficulty": 1.0},
 ]
 
+ACTION_NAMES = ("left_wheel", "right_wheel", "lift", "magnet_enable")
+
 
 def tensor_obs(obs, device):
     return {key: torch.as_tensor(value, device=device, dtype=torch.float32) for key, value in obs.items()}
@@ -95,6 +97,9 @@ def evaluate(model, env, stage, args, device, policy="learned"):
               for world in range(world_count)]
     counted = [0] * world_count
     episode_return = torch.zeros(obs["active"].shape[0], device=device)
+    episode_control_steps = torch.zeros(world_count, dtype=torch.long, device=device)
+    peak_component = torch.full((world_count,), -float("inf"), device=device)
+    body_episodes = defaultdict(list)
     # A bounded evaluation must not hang if an environment fails to terminate.
     batches = (required_episodes + obs["active"].shape[0] - 1) // obs["active"].shape[0]
     limit = args.eval_max_steps if args.eval_max_steps > 0 else batches * env.max_steps
@@ -114,9 +119,22 @@ def evaluate(model, env, stage, args, device, policy="learned"):
         reward = torch.as_tensor(reward, device=device)
         done = torch.as_tensor(terminated, device=device).bool() | torch.as_tensor(truncated, device=device).bool()
         episode_return += (reward * active).sum(-1) / active.sum(-1).clamp_min(1)
+        episode_control_steps += 1
+        component = None
+        if "largest_magnetic_component" in info:
+            component = torch.as_tensor(info["largest_magnetic_component"], device=device)
+            peak_component = torch.maximum(peak_component, component)
         if done.any():
             success = torch.as_tensor(info["success"], device=device)
             delivered = torch.as_tensor(info["delivered"], device=device)
+            terminal_metrics = {
+                "connected_control_steps": info.get("connected_control_steps"),
+                "terminal_all_robot_min_travel_m": info.get("all_robot_min_travel"),
+                "magnetic_link_formations": info.get("magnetic_link_formations"),
+                "magnetic_link_releases": info.get("magnetic_link_releases"),
+            }
+            terminal_metrics = {name: torch.as_tensor(value, device=device)
+                                for name, value in terminal_metrics.items() if value is not None}
             for idx in torch.where(done)[0].tolist():
                 if counted[idx] >= quotas[idx]:
                     continue
@@ -125,9 +143,19 @@ def evaluate(model, env, stage, args, device, policy="learned"):
                 successes.append(float(success[idx]))
                 deliveries.append(float(delivered[idx]))
                 returns.append(float(episode_return[idx]))
+                if component is not None:
+                    body_episodes["peak_largest_magnetic_component"].append(float(peak_component[idx]))
+                for name, values in terminal_metrics.items():
+                    body_episodes[name].append(float(values[idx]))
+                if "connected_control_steps" in terminal_metrics:
+                    connected_steps = float(terminal_metrics["connected_control_steps"][idx])
+                    body_episodes["connected_control_fraction"].append(
+                        connected_steps / max(int(episode_control_steps[idx]), 1))
             if counted == quotas:
                 break
             episode_return[done] = 0
+            episode_control_steps[done] = 0
+            peak_component[done] = -float("inf")
             obs = tensor_obs(env.reset_done(done), device)
     if not completed:
         raise RuntimeError(f"No evaluation episode terminated within {limit} physics control steps")
@@ -136,11 +164,18 @@ def evaluate(model, env, stage, args, device, policy="learned"):
     # Wilson lower bound prevents a single lucky episode from passing the gate.
     z = 1.96
     lower = (p + z*z/(2*n) - z*np.sqrt(p*(1-p)/n + z*z/(4*n*n))) / (1 + z*z/n)
-    return {"policy": policy, "stage": stage, "episodes": n, "success_rate": p,
-            "success_wilson_lower_95": float(lower), "mean_delivered": float(np.mean(deliveries)),
-            "mean_return": float(np.mean(returns)), "complete": counted == quotas,
-            "required_episodes": required_episodes, "episode_quotas": quotas,
-            "episodes_per_world": counted}
+    result = {"policy": policy, "stage": stage, "episodes": n, "success_rate": p,
+              "success_wilson_lower_95": float(lower), "mean_delivered": float(np.mean(deliveries)),
+              "mean_return": float(np.mean(returns)), "complete": counted == quotas,
+              "required_episodes": required_episodes, "episode_quotas": quotas,
+              "episodes_per_world": counted}
+    if body_episodes:
+        result["magnetic_body"] = {
+            "episode_counts": {name: len(values) for name, values in body_episodes.items()},
+            **{f"mean_episode_{name}": float(np.mean(values))
+               for name, values in body_episodes.items()},
+        }
+    return result
 
 
 MAX_DEMO_SAMPLES = 2_000_000
@@ -149,8 +184,8 @@ MAX_DEMO_SAMPLES = 2_000_000
 def demo_weights(data, balance_roles=False):
     weight = data.get("learning_weight", torch.ones(len(data["local"]), device=data["local"].device)).clone()
     if balance_roles:
-        if data["local"].shape[-1] != 32 or "phase" not in data:
-            raise ValueError("Role balancing requires the swarm's 32-feature observation and phase labels")
+        if data["local"].shape[-1] not in (32, 40) or "phase" not in data:
+            raise ValueError("Role balancing requires a swarm observation and phase labels")
         carrier = data["local"][:, 15] > .5
         weight.zero_()
         if carrier.any():
@@ -228,7 +263,7 @@ def demonstration_errors(model, dataset, batch_size):
         weight = dataset["weight"][start:start + batch_size]
         weighted_error += (error.mean(-1) * weight).sum()
         groups = {"all": torch.ones(len(error), dtype=torch.bool, device=error.device)}
-        if batch["local"].shape[-1] == 32 and "phase" in batch:
+        if batch["local"].shape[-1] in (32, 40) and "phase" in batch:
             carrier = batch["local"][:, 15] > .5
             groups["formation"] = ~carrier
             for phase in torch.unique(batch["phase"][carrier]).tolist():
@@ -241,8 +276,11 @@ def demonstration_errors(model, dataset, batch_size):
                 continue
             count, summed = totals.get(name, (0, torch.zeros(error.shape[-1], device=error.device)))
             totals[name] = (count + int(mask.sum()), summed + error[mask].sum(0))
+    action_dim = dataset["target"].shape[-1]
+    action_order = list(ACTION_NAMES[:action_dim])
+    action_order.extend(f"action_{index}" for index in range(len(action_order), action_dim))
     return {"weighted_mse": float(weighted_error / dataset["weight"].sum()),
-            "action_order": ["left_wheel", "right_wheel", "lift"],
+            "action_order": action_order,
             "groups": {name: {"examples": count, "per_action_mse": (summed / count).tolist()}
                        for name, (count, summed) in totals.items()}}
 
@@ -489,7 +527,8 @@ def main():
     obs = tensor_obs(env.reset(), device)
     config = PolicyConfig(local_dim=obs["local"].shape[-1], neighbor_dim=obs["neighbors"].shape[-1],
                           global_dim=obs["global"].shape[-1], hidden=args.hidden,
-                          mirror=obs["local"].shape[-1] == 32 and not args.disable_reflection)
+                          action_dim=getattr(env, "action_dim", 3),
+                          mirror=obs["local"].shape[-1] in (32, 40) and not args.disable_reflection)
     checkpoint = None
     if args.resume:
         checkpoint = torch.load(args.resume, map_location=device, weights_only=False)
