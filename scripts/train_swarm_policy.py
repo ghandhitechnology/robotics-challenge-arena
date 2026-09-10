@@ -13,6 +13,7 @@ import subprocess
 import sys
 import time
 
+import mujoco
 import numpy as np
 import torch
 
@@ -109,8 +110,9 @@ def acceptance_passed(args, stage, cumulative_actor_update, final_eval, zero_eva
     return (not args.cpu_smoke and args.robots == 40 and args.objects >= 2 and stage == 3
             and cumulative_actor_update > 1e-6
             and final_eval["complete"] and final_eval["episodes"] >= 32
-            and final_eval["success_rate"] >= args.final_success
+            and final_eval["success_rate"] >= max(args.final_success, .8)
             and final_eval["success_wilson_lower_95"] >= .6
+            and zero_eval["complete"] and zero_eval["episodes"] >= 32
             and final_eval["success_rate"] > zero_eval["success_rate"] + .2)
 
 
@@ -332,7 +334,7 @@ def collect_demonstrations(model, env, args, device, steps, teacher_prob=1., dag
 
 @torch.no_grad()
 def demonstration_errors(model, dataset, batch_size):
-    """Measure all retained samples, separating carriers' phases from formation."""
+    """Measure retained samples by role, carrier phase, and body stages."""
     totals = {}
     weighted_error = torch.zeros((), device=dataset["target"].device)
     for start in range(0, len(dataset["target"]), batch_size):
@@ -346,6 +348,13 @@ def demonstration_errors(model, dataset, batch_size):
             groups["formation"] = ~carrier
             for phase in torch.unique(batch["phase"][carrier]).tolist():
                 groups[f"carrier_phase_{int(phase)}"] = carrier & (batch["phase"] == phase)
+            if batch["local"].shape[-1] == 42:
+                approach_stage = (batch["local"][:, 40] * 5).round().long()
+                docking_stage = (batch["local"][:, 41] * 3).round().long()
+                for stage in torch.unique(approach_stage[carrier]).tolist():
+                    groups[f"approach_stage_{int(stage)}"] = carrier & (approach_stage == stage)
+                for stage in torch.unique(docking_stage).tolist():
+                    groups[f"docking_stage_{int(stage)}"] = docking_stage == stage
         elif "phase" in batch:
             groups.update({f"phase_{int(phase)}": batch["phase"] == phase
                            for phase in torch.unique(batch["phase"]).tolist()})
@@ -427,6 +436,13 @@ def dagger(model, optimizer, env, args, device, dataset):
         report = {"round": round_index + 1, "collection": incoming["report"],
                   "dataset": dataset["report"],
                   "fit": fit_demonstrations(model, optimizer, dataset, args, args.dagger_updates, round_index + 1)}
+        actor_path = Path(args.output) / f"dagger_round_{round_index + 1}.npz"
+        suffix = 1
+        while actor_path.exists():
+            actor_path = Path(args.output) / f"dagger_round_{round_index + 1}_{suffix}.npz"
+            suffix += 1
+        export_policy(model, actor_path)
+        report["actor_export"] = actor_path.name
         reports.append(report)
         save_json(Path(args.output) / "dagger.json", {"rounds": reports})
         progress(args, {"phase": "dagger_round_complete", **report})
@@ -667,6 +683,9 @@ def main():
         obs = tensor_obs(env.reset(), device)
     demo_data, dagger_reports = dagger(model, optimizer, env, args, device, demo_data)
     if dagger_reports:
+        for dagger_report in dagger_reports:
+            imitation_exports[dagger_report["actor_export"]] = (
+                f"post_dagger_round_{dagger_report['round']}_pre_ppo")
         if args.resume and (out / "warmstart.npz").exists():
             stem = f"warmstart_before_dagger_resume_{initial_update}"
             previous = out / f"{stem}.npz"
@@ -798,7 +817,8 @@ def main():
             instance.close()
     weight_digest = file_sha256(out / "weights.npz")
     report = {"method": "shared neighbor-attention MAPPO with physical demonstration warmstart",
-              "gpu": gpu, "torch": torch.__version__, "cuda": torch.version.cuda, "seed": args.seed,
+              "gpu": gpu, "torch": torch.__version__, "cuda": torch.version.cuda,
+              "mujoco": mujoco.__version__, "seed": args.seed,
               "cuda_matmul_allow_tf32": torch.backends.cuda.matmul.allow_tf32,
               "policy_device": str(next(model.parameters()).device), "physics_device": str(env.device),
               "native_workers": env.native_workers,

@@ -10,6 +10,7 @@ from types import SimpleNamespace
 import sys
 import time
 
+import mujoco
 import numpy as np
 import torch
 
@@ -46,6 +47,16 @@ def verify_immutable_inputs(directory, pending):
             "Deferred report does not bind the final actor weights")
 
 
+def verify_training_runtime(pending):
+    require(any(name in str(pending.get("gpu", "")) for name in ("A100", "H100"))
+            and pending.get("cuda_optimization") is True
+            and str(pending.get("policy_device", "")).startswith("cuda")
+            and isinstance(pending.get("cuda"), str) and pending["cuda"],
+            "Deferred report lacks A100/H100 CUDA training provenance")
+    require(pending.get("mujoco") == mujoco.__version__,
+            "Native MuJoCo version differs from deferred training")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("policy_dir", type=Path)
@@ -67,11 +78,7 @@ def main():
             and stored_args.get("robots") == 40 and stored_args.get("objects") == 2
             and stored_args.get("cpu_smoke") is False,
             "Deferred report is not a full native magnetic-body training run")
-    require("A100" in str(pending.get("gpu", ""))
-            and pending.get("cuda_optimization") is True
-            and str(pending.get("policy_device", "")).startswith("cuda")
-            and isinstance(pending.get("cuda"), str) and pending["cuda"],
-            "Deferred report lacks A100 CUDA training provenance")
+    verify_training_runtime(pending)
     verify_immutable_inputs(directory, pending)
 
     evaluation_args = SimpleNamespace(**stored_args)
@@ -112,6 +119,7 @@ def main():
             "processor": platform.processor(),
             "numpy": np.__version__,
             "torch": torch.__version__,
+            "mujoco": mujoco.__version__,
             "episodes_per_policy": 32,
             "seed": evaluation_args.seed + 200000,
             "native_workers": evaluation_args.native_workers,

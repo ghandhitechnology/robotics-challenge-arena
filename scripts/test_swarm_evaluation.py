@@ -6,9 +6,11 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
+import mujoco
 import numpy as np
 
-from evaluate_swarm_training import ARTIFACTS, verify_immutable_inputs
+from evaluate_swarm_training import (ARTIFACTS, verify_immutable_inputs,
+                                       verify_training_runtime)
 from train_swarm_policy import (ROOT, TRAINING_SOURCES, acceptance_passed, evaluate,
                                 file_sha256, full_stage_validation_pass,
                                 training_source_provenance)
@@ -114,27 +116,34 @@ class AcceptanceTests(unittest.TestCase):
         result.update(overrides)
         return result
 
+    def zero_result(self, **overrides):
+        result = {"complete": True, "episodes": 32, "success_rate": .5}
+        result.update(overrides)
+        return result
+
     def test_accepts_complete_full_scale_heldout_improvement(self):
         args = SimpleNamespace(cpu_smoke=False, robots=40, objects=2,
                                final_success=.8)
 
         self.assertTrue(acceptance_passed(
-            args, 3, 1.000001e-6, self.result(), {"success_rate": .5}))
+            args, 3, 1.000001e-6, self.result(), self.zero_result()))
 
     def test_rejects_each_failed_acceptance_condition(self):
         valid_args = {"cpu_smoke": False, "robots": 40, "objects": 2,
                       "final_success": .8}
         cases = [
-            ("cpu smoke", {"cpu_smoke": True}, 3, 2e-6, {}, {"success_rate": .5}),
-            ("wrong robot count", {"robots": 39}, 3, 2e-6, {}, {"success_rate": .5}),
-            ("too few objects", {"objects": 1}, 3, 2e-6, {}, {"success_rate": .5}),
-            ("not final stage", {}, 2, 2e-6, {}, {"success_rate": .5}),
-            ("actor update at floor", {}, 3, 1e-6, {}, {"success_rate": .5}),
-            ("incomplete heldout", {}, 3, 2e-6, {"complete": False}, {"success_rate": .5}),
-            ("too few heldout episodes", {}, 3, 2e-6, {"episodes": 31}, {"success_rate": .5}),
-            ("below final success", {}, 3, 2e-6, {"success_rate": .79}, {"success_rate": .5}),
+            ("cpu smoke", {"cpu_smoke": True}, 3, 2e-6, {}, {}),
+            ("wrong robot count", {"robots": 39}, 3, 2e-6, {}, {}),
+            ("too few objects", {"objects": 1}, 3, 2e-6, {}, {}),
+            ("not final stage", {}, 2, 2e-6, {}, {}),
+            ("actor update at floor", {}, 3, 1e-6, {}, {}),
+            ("incomplete heldout", {}, 3, 2e-6, {"complete": False}, {}),
+            ("too few heldout episodes", {}, 3, 2e-6, {"episodes": 31}, {}),
+            ("below final success", {}, 3, 2e-6, {"success_rate": .79}, {}),
             ("below Wilson floor", {}, 3, 2e-6,
-             {"success_wilson_lower_95": .599999}, {"success_rate": .5}),
+             {"success_wilson_lower_95": .599999}, {}),
+            ("incomplete zero baseline", {}, 3, 2e-6, {}, {"complete": False}),
+            ("too few zero episodes", {}, 3, 2e-6, {}, {"episodes": 31}),
             ("only matches zero margin", {}, 3, 2e-6,
              {"success_rate": .8}, {"success_rate": .6}),
         ]
@@ -143,7 +152,16 @@ class AcceptanceTests(unittest.TestCase):
             with self.subTest(name=name):
                 args = SimpleNamespace(**(valid_args | arg_changes))
                 self.assertFalse(acceptance_passed(
-                    args, stage, actor_update, self.result(**final_changes), zero_eval))
+                    args, stage, actor_update, self.result(**final_changes),
+                    self.zero_result(**zero_eval)))
+
+    def test_fixed_success_floor_cannot_be_lowered_by_argument(self):
+        args = SimpleNamespace(cpu_smoke=False, robots=40, objects=2,
+                               final_success=.7)
+
+        self.assertFalse(acceptance_passed(
+            args, 3, 2e-6, self.result(success_rate=.79),
+            self.zero_result(success_rate=.5)))
 
 
 class DeferredEvaluationArtifactTests(unittest.TestCase):
@@ -173,6 +191,15 @@ class DeferredEvaluationArtifactTests(unittest.TestCase):
                 (directory / "weights.npz").write_bytes(b"changed")
                 with self.assertRaisesRegex(ValueError, "artifacts changed"):
                     verify_immutable_inputs(directory, pending)
+
+    def test_runtime_accepts_h100_and_requires_matching_mujoco(self):
+        pending = {"gpu": "NVIDIA H100 80GB HBM3", "cuda_optimization": True,
+                   "policy_device": "cuda:0", "cuda": "12.8",
+                   "mujoco": mujoco.__version__}
+        verify_training_runtime(pending)
+        pending["mujoco"] = "different"
+        with self.assertRaisesRegex(ValueError, "MuJoCo version"):
+            verify_training_runtime(pending)
 
 
 if __name__ == "__main__":

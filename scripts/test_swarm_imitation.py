@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Check DAgger state labeling, role weights, aggregation, and saved exploration."""
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
@@ -7,8 +9,9 @@ from unittest.mock import patch
 import torch
 
 from train_swarm_policy import (
-    collect_demonstrations, configure_initial_action_std, dagger_teacher_probability,
-    demo_weights, demonstration_errors, fit_demonstrations, merge_demonstrations,
+    PolicyConfig, collect_demonstrations, configure_initial_action_std, dagger,
+    dagger_teacher_probability, demo_weights, demonstration_errors,
+    fit_demonstrations, merge_demonstrations,
 )
 
 
@@ -17,6 +20,8 @@ class ToyActor(torch.nn.Module):
         super().__init__()
         self.bias = torch.nn.Parameter(torch.tensor([.3, .1, -.2]))
         self.log_std = torch.nn.Parameter(torch.full((3,), -3.2))
+        self.config = PolicyConfig(local_dim=32, neighbor_dim=8, global_dim=72,
+                                   action_dim=3)
         self.max_batch = 0
 
     def mean(self, obs):
@@ -83,7 +88,10 @@ class ImitationTests(unittest.TestCase):
         errors = demonstration_errors(
             ToyActor(), {"obs": {"local": local, "phase": phase},
                          "target": torch.zeros(12, 3), "weight": weight}, 3)
-        self.assertEqual(set(errors["groups"]), {"all", "formation", "carrier_phase_0", "carrier_phase_1"})
+        self.assertEqual(set(errors["groups"]), {
+            "all", "formation", "carrier_phase_0", "carrier_phase_1",
+            "approach_stage_0", "docking_stage_0",
+        })
 
     def test_learner_visited_states_receive_teacher_labels(self):
         model, env = ToyActor(), ToyWorlds()
@@ -143,6 +151,40 @@ class ImitationTests(unittest.TestCase):
         self.assertIn("formation", report["fitting_errors"]["groups"])
         self.assertEqual(len(report["fitting_errors"]["groups"]["all"]["per_action_mse"]), 3)
         self.assertAlmostEqual(report["final_mse"], demonstration_errors(model, data, 2)["weighted_mse"], places=6)
+
+    def test_body_errors_report_approach_and_docking_stages(self):
+        local = torch.zeros(4, 42)
+        local[:3, 15] = 1
+        local[:, 40] = torch.tensor([-2., -1., 0., 1.]) / 5
+        local[:, 41] = torch.tensor([-3., -2., 0., 1.]) / 3
+        dataset = {"obs": {"local": local, "phase": torch.zeros(4)},
+                   "target": torch.zeros(4, 3), "weight": torch.ones(4)}
+
+        groups = demonstration_errors(ToyActor(), dataset, 2)["groups"]
+
+        self.assertEqual(groups["approach_stage_-2"]["examples"], 1)
+        self.assertEqual(groups["approach_stage_0"]["examples"], 1)
+        self.assertNotIn("approach_stage_1", groups)
+        self.assertEqual(groups["docking_stage_-3"]["examples"], 1)
+        self.assertEqual(groups["docking_stage_1"]["examples"], 1)
+
+    def test_dagger_exports_each_completed_round(self):
+        model = ToyActor()
+        optimizer = torch.optim.Adam(model.parameters(), lr=.01)
+        settings = args()
+        settings.dagger_rounds = 2
+        settings.dagger_steps = 1
+        settings.dagger_updates = 1
+        settings.dagger_teacher_prob = .5
+        with TemporaryDirectory() as temporary:
+            settings.output = temporary
+            with patch("train_swarm_policy.progress"):
+                _, reports = dagger(model, optimizer, ToyWorlds(), settings,
+                                    "cpu", None)
+
+            exports = [report["actor_export"] for report in reports]
+            self.assertEqual(exports, ["dagger_round_1.npz", "dagger_round_2.npz"])
+            self.assertTrue(all((Path(temporary) / name).is_file() for name in exports))
 
     def test_initial_std_override_never_changes_resumed_std(self):
         model = ToyActor()
