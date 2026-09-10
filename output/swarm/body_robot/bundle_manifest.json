@@ -192,9 +192,9 @@
     },
     {
       "path": "docs/swarm_robot_design.md",
-      "bytes": 13330,
-      "crc32": "1f4fa970",
-      "sha256": "1804842b5fce42f72ab4070ea4857922c19916f3f52ad99edf819d6d0f551891"
+      "bytes": 13645,
+      "crc32": "300436fa",
+      "sha256": "da1318ff03e4a9633a136228d2cbcbbcf2dc1d44bbe437821339b23aa14493f9"
     },
     {
       "path": "requirements-mujoco.txt",
