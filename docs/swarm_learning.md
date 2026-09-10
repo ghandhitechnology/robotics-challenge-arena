@@ -107,6 +107,21 @@ python scripts/train_swarm_policy.py \
   --output output/swarm/body_policy
 ```
 
+For an A100 run where native CPU evaluation would consume the accelerator job,
+add `--defer-evaluation`. Training then skips every validation pass and terminal
+audit, records `acceptance_passed: false`, and writes `training.pending.json`
+with the exact source revision plus hashes for the source, weights, checkpoint,
+and warmstart. Run the three fixed 32-episode audits later on a CPU host:
+
+```bash
+python scripts/evaluate_swarm_training.py output/swarm/body_policy
+```
+
+The finalizer rejects changed inputs, records CPU evaluation provenance separately
+from the A100 training fields, and creates `training.json` atomically only after
+the learned, zero-action, and warmstart evaluations all finish. A completed audit
+can still record `acceptance_passed: false` when a success gate is missed.
+
 This is the proposed body configuration, awaiting complete physical validation.
 The final report records the exact executed command, devices, source revision,
 architecture, imitation counts, and PPO parameter changes. It must replace this
@@ -117,8 +132,9 @@ earlier transport curriculum stages do not express its all-forty connectivity go
 and `checkpoint.pt` preserves the actor, critic, optimizer, and counters.
 `bc_initial.npz` precedes DAgger. `dagger.npz` and `warmstart.npz` preserve the actor
 before PPO. `weights.npz` is the portable actor export. `training.json` records
-held-out evaluation and artifact hashes. `--resume` restores optimization state
-and resets physical worlds. `--cpu-smoke` explicitly marks a local smoke check.
+held-out evaluation and artifact hashes; `training.pending.json` cannot establish
+acceptance. `--resume` restores optimization state and resets physical worlds.
+`--cpu-smoke` explicitly marks a local smoke check.
 
 Validation and final evaluation use distinct seed offsets. Each world has a fixed
 episode quota, including slow failures. Acceptance requires at least 32 held-out

@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
 """Check held-out sampling when vectorized worlds finish at different times."""
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
 import numpy as np
 
-from train_swarm_policy import evaluate, full_stage_validation_pass
+from evaluate_swarm_training import ARTIFACTS, verify_immutable_inputs
+from train_swarm_policy import (ROOT, TRAINING_SOURCES, acceptance_passed, evaluate,
+                                file_sha256, full_stage_validation_pass,
+                                training_source_provenance)
 
 
 class AsyncWorlds:
@@ -96,6 +101,78 @@ class EvaluationSamplingTests(unittest.TestCase):
         self.assertEqual(result["episodes_per_world"], [16, 0])
         self.assertEqual(result["success_rate"], 1)
         self.assertFalse(full_stage_validation_pass(result, 3, .8))
+
+
+class AcceptanceTests(unittest.TestCase):
+    def result(self, **overrides):
+        result = {
+            "complete": True,
+            "episodes": 32,
+            "success_rate": .8,
+            "success_wilson_lower_95": .6,
+        }
+        result.update(overrides)
+        return result
+
+    def test_accepts_complete_full_scale_heldout_improvement(self):
+        args = SimpleNamespace(cpu_smoke=False, robots=40, objects=2,
+                               final_success=.8)
+
+        self.assertTrue(acceptance_passed(
+            args, 3, 1.000001e-6, self.result(), {"success_rate": .5}))
+
+    def test_rejects_each_failed_acceptance_condition(self):
+        valid_args = {"cpu_smoke": False, "robots": 40, "objects": 2,
+                      "final_success": .8}
+        cases = [
+            ("cpu smoke", {"cpu_smoke": True}, 3, 2e-6, {}, {"success_rate": .5}),
+            ("wrong robot count", {"robots": 39}, 3, 2e-6, {}, {"success_rate": .5}),
+            ("too few objects", {"objects": 1}, 3, 2e-6, {}, {"success_rate": .5}),
+            ("not final stage", {}, 2, 2e-6, {}, {"success_rate": .5}),
+            ("actor update at floor", {}, 3, 1e-6, {}, {"success_rate": .5}),
+            ("incomplete heldout", {}, 3, 2e-6, {"complete": False}, {"success_rate": .5}),
+            ("too few heldout episodes", {}, 3, 2e-6, {"episodes": 31}, {"success_rate": .5}),
+            ("below final success", {}, 3, 2e-6, {"success_rate": .79}, {"success_rate": .5}),
+            ("below Wilson floor", {}, 3, 2e-6,
+             {"success_wilson_lower_95": .599999}, {"success_rate": .5}),
+            ("only matches zero margin", {}, 3, 2e-6,
+             {"success_rate": .8}, {"success_rate": .6}),
+        ]
+
+        for name, arg_changes, stage, actor_update, final_changes, zero_eval in cases:
+            with self.subTest(name=name):
+                args = SimpleNamespace(**(valid_args | arg_changes))
+                self.assertFalse(acceptance_passed(
+                    args, stage, actor_update, self.result(**final_changes), zero_eval))
+
+
+class DeferredEvaluationArtifactTests(unittest.TestCase):
+    def test_provenance_records_every_training_source_hash(self):
+        provenance = training_source_provenance()
+
+        self.assertEqual(set(provenance["files"]), set(TRAINING_SOURCES))
+        for name in TRAINING_SOURCES:
+            self.assertEqual(provenance["files"][name], file_sha256(ROOT / name))
+
+    def test_detects_artifact_changes(self):
+        sources = {"commit": "source-head", "files": {"source.py": "abc"}}
+        with TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            for name in ARTIFACTS:
+                (directory / name).write_bytes(name.encode())
+            hashes = {name: file_sha256(directory / name) for name in ARTIFACTS}
+            pending = {
+                "source_commit": sources["commit"],
+                "source_hashes": sources["files"],
+                "artifact_hashes": hashes,
+                "weights_sha256": hashes["weights.npz"],
+            }
+            with patch("evaluate_swarm_training.training_source_provenance",
+                       return_value=sources):
+                verify_immutable_inputs(directory, pending)
+                (directory / "weights.npz").write_bytes(b"changed")
+                with self.assertRaisesRegex(ValueError, "artifacts changed"):
+                    verify_immutable_inputs(directory, pending)
 
 
 if __name__ == "__main__":

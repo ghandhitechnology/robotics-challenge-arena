@@ -9,6 +9,7 @@ import importlib
 import json
 from pathlib import Path
 import random
+import subprocess
 import sys
 import time
 
@@ -28,6 +29,13 @@ STAGES = [
 ]
 
 ACTION_NAMES = ("left_wheel", "right_wheel", "lift", "magnet_enable")
+TRAINING_SOURCES = (
+    "arena_mujoco/swarm_env.py", "arena_mujoco/swarm_body_env.py",
+    "arena_mujoco/swarm_flow.py", "arena_mujoco/swarm_magnets.py",
+    "arena_mujoco/swarm_robot.py", "arena_mujoco/swarm_policy.py",
+    "arena_mujoco/builder.py", "arena_mujoco/materials.py", "arena_spec.json",
+    "scripts/train_swarm_policy.py", "scripts/evaluate_swarm_training.py",
+)
 
 
 def tensor_obs(obs, device):
@@ -56,6 +64,19 @@ def save_json(path, value):
     temporary.replace(path)
 
 
+def file_sha256(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def training_source_provenance():
+    """Identify the exact code that generates training and terminal evaluations."""
+    return {
+        "commit": subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+        "files": {name: file_sha256(ROOT / name) for name in TRAINING_SOURCES},
+    }
+
+
 def progress(args, record):
     save_json(Path(args.output) / "progress.json", record)
     print(json.dumps(record, allow_nan=False), flush=True)
@@ -82,6 +103,15 @@ def full_stage_validation_pass(result, stage, success_threshold):
     return (stage == 3 and result["complete"] and result["episodes"] >= 32
             and result["success_rate"] >= success_threshold
             and result["success_wilson_lower_95"] >= .6)
+
+
+def acceptance_passed(args, stage, cumulative_actor_update, final_eval, zero_eval):
+    return (not args.cpu_smoke and args.robots == 40 and args.objects >= 2 and stage == 3
+            and cumulative_actor_update > 1e-6
+            and final_eval["complete"] and final_eval["episodes"] >= 32
+            and final_eval["success_rate"] >= args.final_success
+            and final_eval["success_wilson_lower_95"] >= .6
+            and final_eval["success_rate"] > zero_eval["success_rate"] + .2)
 
 
 @torch.no_grad()
@@ -179,6 +209,51 @@ def evaluate(model, env, stage, args, device, policy="learned"):
                for name, values in body_episodes.items()},
         }
     return result
+
+
+def load_exported_actor(path, device):
+    """Load an actor-only NPZ into a Torch model for deterministic evaluation."""
+    with np.load(path, allow_pickle=False) as archive:
+        config = PolicyConfig(**json.loads(str(archive["config"])))
+        state = {key: torch.as_tensor(archive[key], device=device)
+                 for key in archive.files if key != "config"}
+    model = make_actor_critic(config).to(device)
+    missing, unexpected = model.load_state_dict(state, strict=False)
+    if unexpected or any(not name.startswith("critic_") for name in missing):
+        raise ValueError("Exported actor weights do not match their policy configuration")
+    model.eval()
+    return model, config
+
+
+def run_final_evaluations(model, config, args, device):
+    """Run held-out, zero-action, and saved warmstart evaluations."""
+    audit_env = make_env(args, device, args.seed + 200000, min(args.num_envs, args.eval_episodes))
+    try:
+        final_eval = evaluate(model, audit_env, 3, args, device)
+    finally:
+        if hasattr(audit_env, "close"):
+            audit_env.close()
+    baseline_env = make_env(args, device, args.seed + 200000, min(args.num_envs, args.eval_episodes))
+    try:
+        zero_eval = evaluate(model, baseline_env, 3, args, device, policy="zero")
+    finally:
+        if hasattr(baseline_env, "close"):
+            baseline_env.close()
+    warmstart_eval = None
+    warmstart_path = Path(args.output) / "warmstart.npz"
+    if warmstart_path.exists():
+        warmstart_model, warmstart_config = load_exported_actor(warmstart_path, device)
+        if warmstart_config != config:
+            raise ValueError("Warmstart and final actor configurations differ")
+        warmstart_env = make_env(args, device, args.seed + 200000,
+                                 min(args.num_envs, args.eval_episodes))
+        try:
+            warmstart_eval = evaluate(warmstart_model, warmstart_env, 3, args, device)
+        finally:
+            if hasattr(warmstart_env, "close"):
+                warmstart_env.close()
+        warmstart_eval["policy"] = "warmstart"
+    return final_eval, zero_eval, warmstart_eval
 
 
 MAX_DEMO_SAMPLES = 2_000_000
@@ -480,6 +555,8 @@ def main():
     parser.add_argument("--eval-interval", type=int, default=20)
     parser.add_argument("--eval-max-steps", type=int, default=0, help="Explicit evaluation control-step cap; 0 derives enough steps for every episode")
     parser.add_argument("--skip-initial-eval", action="store_true", help="Skip the initial warmstart or resume baseline evaluation")
+    parser.add_argument("--defer-evaluation", action="store_true",
+                        help="Run no policy evaluations and write training.pending.json for a separate CPU audit")
     parser.add_argument("--stage-success", type=float, default=.7)
     parser.add_argument("--min-stage-updates", type=int, default=20)
     parser.add_argument("--start-stage", type=int, choices=range(4), default=0)
@@ -522,9 +599,14 @@ def main():
     torch.backends.cuda.matmul.allow_tf32 = False
     out = Path(args.output)
     out.mkdir(parents=True, exist_ok=True)
+    if args.defer_evaluation and (out / "training.json").exists():
+        raise RuntimeError("Deferred evaluation needs an output directory without training.json")
+    deferred_sources = training_source_provenance() if args.defer_evaluation else None
     start = time.monotonic()
     env = make_env(args, device, args.seed)
-    validation_env = make_env(args, device, args.seed + 100000, min(args.num_envs, args.eval_episodes))
+    validation_env = (None if args.defer_evaluation else
+                      make_env(args, device, args.seed + 100000,
+                               min(args.num_envs, args.eval_episodes)))
     stage = args.start_stage
     env.set_curriculum(stage_spec(stage, args))
     obs = tensor_obs(env.reset(), device)
@@ -609,8 +691,9 @@ def main():
     progress(args, {"phase": "imitation_complete", "dagger_rounds": len(dagger_reports),
                     "demo_weighting": demo_weighting, "pre_ppo_action_std": pre_ppo_action_std})
     evaluations = []
-    if args.skip_initial_eval:
-        progress(args, {"phase": "initial_evaluation_skipped", "reason": "--skip-initial-eval"})
+    if args.skip_initial_eval or args.defer_evaluation:
+        reason = "--defer-evaluation" if args.defer_evaluation else "--skip-initial-eval"
+        progress(args, {"phase": "initial_evaluation_skipped", "reason": reason})
     else:
         baseline = evaluate(model, validation_env, stage, args, device)
         baseline["policy"] = "dagger" if dagger_reports else "warmstart" if not args.resume else "resumed"
@@ -664,7 +747,7 @@ def main():
         model.eval()
         advance = False
         early_stop = False
-        if update % args.eval_interval == 0 or update == args.updates:
+        if not args.defer_evaluation and (update % args.eval_interval == 0 or update == args.updates):
             result = evaluate(model, validation_env, stage, args, device)
             result["update"] = update
             evaluations.append(result)
@@ -710,36 +793,10 @@ def main():
             anchor = stage_warmstart if args.bc_anchor_coef > 0 else None
             del stage_warmstart
             obs = tensor_obs(env.reset(), device)
-    # Final audit uses a third, unseen seed range and the full deployment task.
     for instance in (env, validation_env):
-        if hasattr(instance, "close"):
+        if instance is not None and hasattr(instance, "close"):
             instance.close()
-    audit_env = make_env(args, device, args.seed + 200000, min(args.num_envs, args.eval_episodes))
-    final_eval = evaluate(model, audit_env, 3, args, device)
-    if hasattr(audit_env, "close"):
-        audit_env.close()
-    baseline_env = make_env(args, device, args.seed + 200000, min(args.num_envs, args.eval_episodes))
-    zero_eval = evaluate(model, baseline_env, 3, args, device, policy="zero")
-    if hasattr(baseline_env, "close"):
-        baseline_env.close()
-    warmstart_eval = None
-    if (out / "warmstart.npz").exists():
-        warmstart_model = make_actor_critic(config).to(device)
-        with np.load(out / "warmstart.npz", allow_pickle=False) as archive:
-            warmstart_model.load_state_dict({key: torch.as_tensor(archive[key], device=device)
-                                            for key in archive.files if key != "config"}, strict=False)
-        warmstart_env = make_env(args, device, args.seed + 200000, min(args.num_envs, args.eval_episodes))
-        warmstart_eval = evaluate(warmstart_model, warmstart_env, 3, args, device)
-        warmstart_eval["policy"] = "warmstart"
-        if hasattr(warmstart_env, "close"):
-            warmstart_env.close()
-    digest = hashlib.sha256((out / "weights.npz").read_bytes()).hexdigest()
-    passed = (not args.cpu_smoke and args.robots == 40 and args.objects >= 2 and stage == 3
-              and cumulative_actor_update > 1e-6
-              and final_eval["complete"] and final_eval["episodes"] >= 32
-              and final_eval["success_rate"] >= args.final_success
-              and final_eval["success_wilson_lower_95"] >= .6
-              and final_eval["success_rate"] > zero_eval["success_rate"] + .2)
+    weight_digest = file_sha256(out / "weights.npz")
     report = {"method": "shared neighbor-attention MAPPO with physical demonstration warmstart",
               "gpu": gpu, "torch": torch.__version__, "cuda": torch.version.cuda, "seed": args.seed,
               "cuda_matmul_allow_tf32": torch.backends.cuda.matmul.allow_tf32,
@@ -756,9 +813,31 @@ def main():
               "agent_steps": agent_steps,
               "cumulative_ppo_actor_update_l2": cumulative_actor_update,
               "training_seconds": time.monotonic() - start, "final_stage": stage, "evaluations": evaluations,
-              "heldout": final_eval, "zero_baseline": zero_eval, "warmstart_baseline": warmstart_eval,
-              "acceptance_passed": passed,
-              "weights_sha256": digest, "args": {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()}}
+              "weights_sha256": weight_digest,
+              "args": {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()}}
+    if args.defer_evaluation:
+        if training_source_provenance() != deferred_sources:
+            raise RuntimeError("Training sources changed before the deferred report was sealed")
+        artifact_hashes = {name: file_sha256(out / name)
+                           for name in ("weights.npz", "checkpoint.pt", "warmstart.npz")}
+        report.update({"heldout": None, "zero_baseline": None, "warmstart_baseline": None,
+                       "acceptance_passed": False, "evaluation_status": "pending",
+                       "source_commit": deferred_sources["commit"],
+                       "source_hashes": deferred_sources["files"],
+                       "artifact_hashes": artifact_hashes})
+        save_json(out / "training.pending.json", report)
+        save_json(out / "progress.json", {"phase": "evaluation_deferred", "acceptance_passed": False,
+                                          "training_seconds": report["training_seconds"]})
+        print("TRAINING_PENDING " + json.dumps(report, allow_nan=False), flush=True)
+        return
+
+    # Final audit uses a third, unseen seed range and the full deployment task.
+    final_eval, zero_eval, warmstart_eval = run_final_evaluations(model, config, args, device)
+    passed = acceptance_passed(args, stage, cumulative_actor_update, final_eval, zero_eval)
+    report.update({"training_seconds": time.monotonic() - start,
+                   "heldout": final_eval, "zero_baseline": zero_eval,
+                   "warmstart_baseline": warmstart_eval, "acceptance_passed": passed,
+                   "evaluation_status": "complete"})
     save_json(out / "training.json", report)
     save_json(out / "progress.json", {"phase": "complete", "acceptance_passed": passed,
                                      "heldout": final_eval, "training_seconds": report["training_seconds"]})
