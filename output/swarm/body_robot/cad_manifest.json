@@ -1,0 +1,444 @@
+{
+  "units": "millimeters",
+  "variant": "magnetic_body",
+  "source": [
+    "arena_mujoco/swarm_robot.py",
+    "arena_mujoco/swarm_magnets.py"
+  ],
+  "scope": "Solid native collision envelopes; assembly reference for detailed mechanical CAD",
+  "part_coordinates": "Assembly coordinates, +Y forward, +Z up, base at Z=7 mm",
+  "requires_engineering": [
+    "Shell cavities",
+    "Gear and axle bearings",
+    "Motor mounts",
+    "Transmission gears",
+    "Fasteners and tolerances",
+    "PCB and battery installation",
+    "Electropermanent magnet selection and internal packaging",
+    "Pulse-driver circuit, power budget, and thermal testing",
+    "Fabricated pull-in, holding, and release measurements"
+  ],
+  "parts": [
+    {
+      "name": "swarm_00_shell_front",
+      "stl": "parts/swarm_00_shell_front_mm.stl",
+      "bounds_mm": [
+        [
+          -9.999999776482582,
+          7.000000216066837,
+          2.9999997932463884
+        ],
+        [
+          9.999999776482582,
+          27.000000700354576,
+          16.999999061226845
+        ]
+      ],
+      "sha256": "52b3b9508f0a0ca94ab9ae5815e970e7ef25c601a61078beeb18cfbce5133597"
+    },
+    {
+      "name": "swarm_00_shell_rear",
+      "stl": "parts/swarm_00_shell_rear_mm.stl",
+      "bounds_mm": [
+        [
+          -9.999999776482582,
+          -27.000000700354576,
+          2.9999997932463884
+        ],
+        [
+          9.999999776482582,
+          -7.000000216066837,
+          16.999999061226845
+        ]
+      ],
+      "sha256": "c7ce9425885606b4ba69ad437f965beaee0afcbc2cc0ddc89af783544f2c1561"
+    },
+    {
+      "name": "swarm_00_ball_housing",
+      "stl": "parts/swarm_00_ball_housing_mm.stl",
+      "bounds_mm": [
+        [
+          -7.999991066753864,
+          -7.999994792044163,
+          1.9999993965029716
+        ],
+        [
+          7.999998517334461,
+          8.00000037997961,
+          17.999999225139618
+        ]
+      ],
+      "sha256": "4347ab0c6b255d1aab23c7d2a36e2a1ff293bb288e55a3f503c87ce5a52c8e81"
+    },
+    {
+      "name": "swarm_00_skid_front",
+      "stl": "parts/swarm_00_skid_front_mm.stl",
+      "bounds_mm": [
+        [
+          -1.5000001294538379,
+          18.50000023841858,
+          0.0
+        ],
+        [
+          1.5000001294538379,
+          21.49999886751175,
+          3.000000026077032
+        ]
+      ],
+      "sha256": "8a4d751846e36f8381d1dce3e8b55ee9ceb62ec0bd0f922a44eeaf9230fcd102"
+    },
+    {
+      "name": "swarm_00_skid_rear",
+      "stl": "parts/swarm_00_skid_rear_mm.stl",
+      "bounds_mm": [
+        [
+          -1.5000001294538379,
+          -23.499999195337296,
+          0.0
+        ],
+        [
+          1.5000001294538379,
+          -20.500000566244125,
+          3.000000026077032
+        ]
+      ],
+      "sha256": "3e5f0b494d79e69a2985936372d7dc32121ab7c04fc5856e989a2e8dd65125dd"
+    },
+    {
+      "name": "swarm_00_magnet_0_housing",
+      "stl": "parts/swarm_00_magnet_0_housing_mm.stl",
+      "bounds_mm": [
+        [
+          -12.000000104308128,
+          -15.500000678002834,
+          9.499999694526196
+        ],
+        [
+          -6.99999975040555,
+          -12.500000186264515,
+          12.500000186264515
+        ]
+      ],
+      "sha256": "8aad372339e94353511a554720b312b457bb7897fd4764e61d29a77220f4e209"
+    },
+    {
+      "name": "swarm_00_magnet_1_housing",
+      "stl": "parts/swarm_00_magnet_1_housing_mm.stl",
+      "bounds_mm": [
+        [
+          -12.000000104308128,
+          12.500000186264515,
+          9.499999694526196
+        ],
+        [
+          -6.99999975040555,
+          15.500000678002834,
+          12.500000186264515
+        ]
+      ],
+      "sha256": "2735fe9a90613ae5e2f8f9546a92ab7732f31612ff926db42a838d645491e584"
+    },
+    {
+      "name": "swarm_00_magnet_2_housing",
+      "stl": "parts/swarm_00_magnet_2_housing_mm.stl",
+      "bounds_mm": [
+        [
+          6.99999975040555,
+          -15.500000678002834,
+          9.499999694526196
+        ],
+        [
+          12.000000104308128,
+          -12.500000186264515,
+          12.500000186264515
+        ]
+      ],
+      "sha256": "2ec3384f1cbfc2c88ded201f65d4e43070bd9e922a4f3a98b3dcbf9811c6d8d0"
+    },
+    {
+      "name": "swarm_00_magnet_3_housing",
+      "stl": "parts/swarm_00_magnet_3_housing_mm.stl",
+      "bounds_mm": [
+        [
+          6.99999975040555,
+          12.500000186264515,
+          9.499999694526196
+        ],
+        [
+          12.000000104308128,
+          15.500000678002834,
+          12.500000186264515
+        ]
+      ],
+      "sha256": "c7610d184b4fe09592df6574a9be508abd420c78e65538f2d300746a2351b468"
+    },
+    {
+      "name": "swarm_00_tire_left",
+      "stl": "parts/swarm_00_tire_left_mm.stl",
+      "bounds_mm": [
+        [
+          -12.000001035630703,
+          -7.000000216066837,
+          -1.1328609161864733e-06
+        ],
+        [
+          -8.999998681247234,
+          7.000000216066837,
+          14.00000136345625
+        ]
+      ],
+      "sha256": "96943a0ef0db565ad141121586a7dfa31fc8b8be78af5607a94fb09ec19cb257"
+    },
+    {
+      "name": "swarm_00_tire_right",
+      "stl": "parts/swarm_00_tire_right_mm.stl",
+      "bounds_mm": [
+        [
+          8.999998681247234,
+          -7.000000216066837,
+          -1.1328609161864733e-06
+        ],
+        [
+          12.000001035630703,
+          7.000000216066837,
+          14.00000136345625
+        ]
+      ],
+      "sha256": "efa93d3a1c72d694019c7c098570a907eba8d5eb0aa3c650cff3a1e6c8a4b75c"
+    },
+    {
+      "name": "swarm_00_pad",
+      "stl": "parts/swarm_00_pad_mm.stl",
+      "bounds_mm": [
+        [
+          -4.999999888241291,
+          26.000000536441803,
+          3.4000000450760126
+        ],
+        [
+          4.999999888241291,
+          28.00000086426735,
+          4.800000227987766
+        ]
+      ],
+      "sha256": "347efc84d4dadadbc38c6021dddb725c2676de425d124cbbd39b45fac41fcb4d"
+    },
+    {
+      "name": "swarm_00_pad_upper",
+      "stl": "parts/swarm_00_pad_upper_mm.stl",
+      "bounds_mm": [
+        [
+          -4.999999888241291,
+          26.000000536441803,
+          4.999999422580004
+        ],
+        [
+          4.999999888241291,
+          28.00000086426735,
+          13.000000268220901
+        ]
+      ],
+      "sha256": "69c46c950e436e04fef9c09dfb9da687a6d562001221fd2852f3a923ef077989"
+    }
+  ],
+  "sites": [
+    {
+      "name": "swarm_00_magnet_0",
+      "type": 6,
+      "size_m": [
+        0.0014,
+        0.0014,
+        0.0001
+      ],
+      "position_m": [
+        -0.012,
+        -0.014,
+        0.011
+      ],
+      "rotation_matrix": [
+        [
+          0.0,
+          -0.0,
+          -0.9999999999999998
+        ],
+        [
+          0.0,
+          0.9999999999999998,
+          -0.0
+        ],
+        [
+          0.9999999999999998,
+          0.0,
+          0.0
+        ]
+      ],
+      "rgba": [
+        0.23000000417232513,
+        0.6499999761581421,
+        0.6499999761581421,
+        1.0
+      ]
+    },
+    {
+      "name": "swarm_00_magnet_1",
+      "type": 6,
+      "size_m": [
+        0.0014,
+        0.0014,
+        0.0001
+      ],
+      "position_m": [
+        -0.012,
+        0.014,
+        0.011
+      ],
+      "rotation_matrix": [
+        [
+          0.0,
+          -0.0,
+          -0.9999999999999998
+        ],
+        [
+          0.0,
+          0.9999999999999998,
+          -0.0
+        ],
+        [
+          0.9999999999999998,
+          0.0,
+          0.0
+        ]
+      ],
+      "rgba": [
+        0.23000000417232513,
+        0.6499999761581421,
+        0.6499999761581421,
+        1.0
+      ]
+    },
+    {
+      "name": "swarm_00_magnet_2",
+      "type": 6,
+      "size_m": [
+        0.0014,
+        0.0014,
+        0.0001
+      ],
+      "position_m": [
+        0.012,
+        -0.014,
+        0.011
+      ],
+      "rotation_matrix": [
+        [
+          0.0,
+          0.0,
+          0.9999999999999998
+        ],
+        [
+          0.0,
+          0.9999999999999998,
+          0.0
+        ],
+        [
+          -0.9999999999999998,
+          0.0,
+          0.0
+        ]
+      ],
+      "rgba": [
+        0.23000000417232513,
+        0.6499999761581421,
+        0.6499999761581421,
+        1.0
+      ]
+    },
+    {
+      "name": "swarm_00_magnet_3",
+      "type": 6,
+      "size_m": [
+        0.0014,
+        0.0014,
+        0.0001
+      ],
+      "position_m": [
+        0.012,
+        0.014,
+        0.011
+      ],
+      "rotation_matrix": [
+        [
+          0.0,
+          0.0,
+          0.9999999999999998
+        ],
+        [
+          0.0,
+          0.9999999999999998,
+          0.0
+        ],
+        [
+          -0.9999999999999998,
+          0.0,
+          0.0
+        ]
+      ],
+      "rgba": [
+        0.23000000417232513,
+        0.6499999761581421,
+        0.6499999761581421,
+        1.0
+      ]
+    }
+  ],
+  "magnetic_docking": {
+    "peak_force_n": 0.15,
+    "capture_gap_m": 0.003,
+    "center_inset_m": 0.0007,
+    "contact_gap_m": 0.0006,
+    "opposition_cosine": 0.5,
+    "ports": 4,
+    "releasable": true,
+    "positions_body_m": [
+      [
+        -0.012,
+        -0.014,
+        0.004
+      ],
+      [
+        -0.012,
+        0.014,
+        0.004
+      ],
+      [
+        0.012,
+        -0.014,
+        0.004
+      ],
+      [
+        0.012,
+        0.014,
+        0.004
+      ]
+    ],
+    "max_partners_per_port": 1,
+    "switching": "coordinated EPM handshake",
+    "assumption": "Unbuilt shoulder EPMs included in 40 g total mass budget"
+  },
+  "assembly_bounds_mm": [
+    [
+      -12.000001035630703,
+      -27.000000700354576,
+      -1.1328609161864733e-06
+    ],
+    [
+      12.000001035630703,
+      28.00000086426735,
+      17.999999225139618
+    ]
+  ],
+  "assembly_stl": {
+    "path": "assembly_reference_mm.stl",
+    "sha256": "3e12411bd312a4d0e9daeb8b01465a85cf27f64da64608a70e94d9453ddf19eb"
+  }
+}
