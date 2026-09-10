@@ -35,6 +35,16 @@ python3 -m venv .venv
 
 [과제 검증과 재현 방법](docs/competition_proof.md), [로봇 설계와 부품](docs/robot_design.md), [예선 규칙 검토](docs/competition_tasks.md), [A100 학습 기록](docs/colab_training.md)을 제공합니다. 전체 과제 검증은 시뮬레이터 상태 관측과 강체 테이프 설정을 사용하며, 완료 시간과 공식 120초 제한을 별도로 기록합니다.
 
+## 소형 로봇 40대의 협동 운반
+
+폭 24 × 길이 55 mm, 질량 40 g의 모듈 40대를 설계했습니다. 두 바퀴와 8 mm 리프트를 각각 구동하며, 전체 모듈을 280 × 480 mm 출발 구역 안에 배치할 수 있습니다. 두 대가 마주 보고 고무 패드로 물체를 들어 운반합니다.
+
+협동 운반 환경은 원기둥·의료 키트·샘플 원판을 포함한 물체 4개를 다룹니다. 로봇 8대가 네 쌍으로 운반하고, 나머지 32대는 대형을 유지하며 100 mm 이동합니다. 공유 신경망은 주변 로봇의 상태를 받아 각 모듈의 두 바퀴와 리프트를 제어합니다. 물리 시연으로 초기화한 뒤 MAPPO로 학습합니다.
+
+![소형 협동 모듈](output/swarm/robot/module_overview.png)
+
+[모듈 설계와 접촉 시험](docs/swarm_robot_design.md), [학습 방법과 실행 명령](docs/swarm_learning.md), [Blender·STL 설계 자료](output/swarm/robot/README.md)를 제공합니다. 협동 운반 환경은 경기장의 물체 형상을 사용한 별도 배치이며, 출발 구역에서 운반 위치까지의 이동과 공식 경기 점수는 검증 범위에 포함하지 않습니다.
+
 ## 다운로드
 
 **[경기장 릴리스 ZIP 다운로드](https://github.com/ghandhitechnology/robotics-challenge-arena/releases/latest/download/robotics_challenge_arena.zip)**

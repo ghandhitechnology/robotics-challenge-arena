@@ -10,7 +10,7 @@ Training starts with noisy demonstrations collected by stepping the same physics
 environment. Behavior cloning initializes the actor and briefly adapts it after
 each curriculum promotion. MAPPO then updates the actor
 and a centralized per-robot critic from its own sampled actions, measured rewards,
-and MuJoCo transitions. Optional `--bc-anchor-coef 0.1` adds a small demonstration
+and MuJoCo transitions. `--bc-anchor-coef` weights a demonstration
 retention loss during PPO to preserve contact precision. It samples the current
 stage's physical demonstrations and logs its loss separately. The default is 0.
 The exported policy contains the trained attention network and no teacher fallback.
@@ -110,17 +110,31 @@ reported as incomplete training.
 
 ## Running and inspecting a job
 
-Install `requirements-swarm.txt` in an A100 or H100 runtime. MuJoCo Warp runs
-parallel simulation on NVIDIA hardware and interoperates with PyTorch. Its
+Install `requirements-swarm.txt` in an A100 or H100 runtime. The current training
+job uses native MuJoCo for contact simulation and CUDA for the neural networks.
+MuJoCo Warp also provides parallel simulation on NVIDIA hardware and
+interoperates with PyTorch. Its
 [official documentation](https://mujoco.readthedocs.io/en/stable/mjwarp/index.html)
 describes graph capture, contact capacity, and solver settings that affect
-throughput. The native backend is useful for short implementation checks.
+throughput.
+
+The full-stage A100 configuration is:
 
 ```bash
-python scripts/train_swarm_policy.py --backend warp --num-envs 64 \
-  --updates 1000 --horizon 128 --demo-steps 1800 --bc-updates 500 \
+python scripts/train_swarm_policy.py \
+  --backend native --num-envs 8 --native-workers 8 \
+  --robots 40 --objects 4 --episode-seconds 40 --start-stage 3 \
+  --demo-steps 1800 --demo-noise .01 --bc-updates 4000 \
+  --bc-anchor-coef 30 --learning-rate .0001 --ppo-epochs 2 \
+  --clip .1 --target-kl .01 --entropy-coef .0003 \
+  --horizon 128 --updates 200 --eval-interval 40 \
   --eval-episodes 32 --output output/swarm/policy
 ```
+
+This run starts directly with four transport pairs and 32 formation robots.
+The curriculum described above is available by omitting `--start-stage 3`.
+The coefficient 30 multiplies normalized motor-command MSE; the report records
+both that coefficient and the raw retention loss so its effect can be inspected.
 
 The command rejects GPUs outside A100/H100 unless `--allow-other-gpu` is explicit.
 `--backend native --native-workers 8` advances independent worlds on persistent
@@ -134,6 +148,11 @@ An eight-world, eight-worker benchmark on the Colab A100 host completed 100 cont
 steps in 10.59 seconds with zero terminations, robot collisions, or overflows. A
 local four-worker check ran 3.09 times faster than serial integration and produced
 bit-identical positions, velocities, and lift targets.
+
+The tested Warp configuration had 36 early episode terminations in a 100-step,
+32-world benchmark. Separate launches also encountered compiled collision-kernel
+metadata errors. Native simulation passed the corresponding contact stability
+checks, which determined the backend used for this job.
 
 `--cpu-smoke` selects the native backend and marks the result as a smoke check.
 `--time-budget-seconds` stops after an update boundary. `--resume checkpoint.pt`
