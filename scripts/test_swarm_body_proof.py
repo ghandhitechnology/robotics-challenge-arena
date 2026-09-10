@@ -78,6 +78,24 @@ class BodyTaskTests(unittest.TestCase):
         audit_body_task(trajectory, trace, model, metadata, report, errors)
         self.assertTrue(any('throughout the final hold' in error for error in errors), errors)
 
+    def test_middle_connectivity_requires_95_percent_of_substep_intervals(self):
+        trajectory, trace, model, metadata, report, _ = synthetic_task()
+        trajectory['substep_min_largest_component'][110:120] = 31
+        errors = []
+        checked = audit_body_task(trajectory, trace, model, metadata, report, errors)
+        self.assertLess(checked['middle_at_least_32_connected_fraction'], .95)
+        self.assertTrue(any('Fewer than 95%' in error for error in errors), errors)
+
+    def test_relocking_only_the_original_neighbor_does_not_count_as_reconfiguration(self):
+        trajectory, trace, model, metadata, report, _ = synthetic_task()
+        trajectory['magnetic_graph'][102:, 1, 2] = trajectory['magnetic_graph'][102:, 2, 1] = False
+        trajectory['magnetic_graph'][102:, 0, 1] = trajectory['magnetic_graph'][102:, 1, 0] = True
+        errors = []
+        checked = audit_body_task(trajectory, trace, model, metadata, report, errors)
+        self.assertGreater(checked['magnetic_edges_formed_after_release'], 0)
+        self.assertEqual(checked['new_neighbor_pairs_after_release'], 0)
+        self.assertTrue(any('new magnetic neighbor pair' in error for error in errors), errors)
+
     def test_early_release_and_idle_fortieth_module_fail(self):
         trajectory, trace, model, metadata, report, addresses = synthetic_task()
         trace['actions'][5, 3, 3] = -1

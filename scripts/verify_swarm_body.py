@@ -39,6 +39,7 @@ OBSERVATIONS = ("local", "neighbors", "neighbor_mask", "active", "global")
 TASK = "magnetic_swarm_body_transport"
 ENV_FACTORY = "arena_mujoco.swarm_body_env:SwarmBodyEnv"
 FORCE_THRESHOLD_N = .002
+MIN_TRANSIT_CONNECTED_FRACTION = .95
 START_BOUNDS = np.array([.863, .701, 1.143, 1.181])
 CONTRACT = {"local_dim": 40, "neighbor_dim": 12, "global_dim": 88, "action_dim": 4}
 
@@ -245,6 +246,9 @@ def audit_body_task(trajectory, trace, model, metadata, report, errors):
     require(commanded_breaks.any(), "No force-bearing magnetic edge actually breaks on a release command", errors)
     reformed = 0 if release is None else int(formed[release+1:].sum())
     require(reformed > 0, "No magnetic links form after deliberate release", errors)
+    novel_pairs = (0 if release is None else int(np.any(formed[release+1:], axis=0)[
+        ~np.any(graph[:release+1], axis=0)].sum()))
+    require(novel_pairs >= 1, "Release is not followed by a new magnetic neighbor pair", errors)
     require(np.all(net >= .20), "At least one of forty robots moved less than 0.20 m net", errors)
     centered = robot_positions-robot_positions.mean(axis=1, keepdims=True)
     covariance = np.einsum('fni,fnj->fij', centered, centered)/40
@@ -265,17 +269,20 @@ def audit_body_task(trajectory, trace, model, metadata, report, errors):
                 require(np.all(speed < .015), "A module keeps moving during the final hold", errors)
     interval_components = np.minimum(largest, trajectory["substep_min_largest_component"])
     middle = interval_components[max(1, release or 1):max(2, finish_index+1)]
+    middle_fraction = float(np.mean(middle >= 32)) if len(middle) else 0.
+    require(middle_fraction >= MIN_TRANSIT_CONNECTED_FRACTION,
+            "Fewer than 95% of middle control intervals retain at least 32 force-connected modules at every substep", errors)
     checks = {
         "robot_net_displacement_m": net.tolist(), "robot_path_distance_m": path.tolist(),
         "all_forty_connected_before_release_s": connected_before,
         "first_magnet_release_command_s": None if release is None else float(times[release]),
         "commanded_magnetic_edge_breaks": int(commanded_breaks.sum()),
         "magnetic_edges_formed_after_release": reformed,
-        "new_neighbor_pairs_after_release": (0 if release is None else int(np.any(formed[release+1:], axis=0)[
-            ~np.any(graph[:release+1], axis=0)].sum())),
+        "new_neighbor_pairs_after_release": novel_pairs,
         "magnetic_edge_formations": int(formed.sum()), "magnetic_edge_breaks": int(broken.sum()),
-        "middle_at_least_32_connected_fraction": float(np.mean(middle >= 32)) if len(middle) else 0.,
-        "middle_connectivity_threshold_enforced": False,
+        "middle_at_least_32_connected_fraction": middle_fraction,
+        "middle_connectivity_threshold_enforced": True,
+        "minimum_middle_connected_fraction": MIN_TRANSIT_CONNECTED_FRACTION,
         "initial_shape_aspect_ratio": float(aspect[0]), "final_shape_aspect_ratio": float(aspect[-1]),
         "shape_aspect_ratio_range": [float(aspect.min()), float(aspect.max())],
         "final_largest_force_connected_component": int(largest[-1]),
