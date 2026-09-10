@@ -47,6 +47,7 @@ VIDEO_PROJECT_FILES = (
 SOURCE_FILES = (
     "README.md",
     "docs/swarm_learning.md",
+    "docs/swarm_transport_baseline.md",
     "docs/swarm_robot_design.md",
     "arena_mujoco/__init__.py",
     "arena_mujoco/assets/biohazard.json",
