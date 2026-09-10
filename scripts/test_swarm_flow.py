@@ -8,7 +8,7 @@ import unittest
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from arena_mujoco.swarm_flow import (body_telemetry, compact_packing, flow_actions,
+from arena_mujoco.swarm_flow import (DockingState, body_telemetry, compact_packing, flow_actions,
                                      local_velocity_field, velocity_actions)
 
 
@@ -110,6 +110,53 @@ class SwarmFlowTests(unittest.TestCase):
         self.assertTrue(np.all(large[:, 3] == -1))
         self.assertLess(abs(tiny[:, :2]).max(), .005)
         self.assertGreater(abs(large[:, :2]).max(), .05)
+
+    def test_docking_reads_do_not_advance_and_ids_survive_subset_reordering(self):
+        pos = np.array([[.5, .5], [.5248, .528], [.5496, .5], [.59, .50]])
+        yaw = np.array([0., 0., 0., .3])
+        links = np.array([[0, 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 0]], bool)
+        ids = np.array([5, 7, 9, 12])
+        state = DockingState(40)
+        state.update(pos, yaw, links, module_ids=ids)
+        first = state.guidance(pos, yaw, module_ids=ids)
+        self.assertEqual(first['stage'][3], 0)
+        self.assertTrue(first['active'][3])
+        target = first['positions'][3].copy()
+        # Arriving at the staging pose must not advance the state during reads.
+        moved = pos.copy()
+        moved[3] = target
+        for _ in range(3):
+            _, _, read = flow_actions(moved, np.zeros_like(pos), yaw, pos.mean(0),
+                                     links=links, docking=True, docking_state=state,
+                                     module_ids=ids, return_guidance=True)
+            self.assertEqual(read['stage'][3], 0)
+        state.update(moved, yaw, links, module_ids=ids)
+        self.assertEqual(state.guidance(moved, yaw, module_ids=ids)['stage'][3], 1)
+        order = np.array([3, 1, 0, 2])
+        shuffled = state.guidance(moved[order], yaw[order], module_ids=ids[order])
+        self.assertEqual(shuffled['stage'][0], 1)
+        np.testing.assert_allclose(shuffled['final_positions'][0], first['final_positions'][3])
+        state.reset()
+        self.assertFalse(state.guidance(moved, yaw, module_ids=ids)['active'].any())
+
+    def test_docking_port_latches_until_measured_physical_attachment(self):
+        pos = np.array([[.5, .5], [.5248, .528], [.5496, .5], [.59, .50]])
+        yaw = np.array([0., 0., 0., .3])
+        links = np.array([[0, 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 0]], bool)
+        state = DockingState(4)
+        state.update(pos, yaw, links)
+        initial = state.guidance(pos, yaw)
+        pos[3] += [.002, .004]
+        yaw[3] += .5
+        state.update(pos, yaw, links)
+        updated = state.guidance(pos, yaw)
+        self.assertEqual(updated['neighbor'][3], initial['neighbor'][3])
+        self.assertEqual(updated['port'][3], initial['port'][3])
+        np.testing.assert_allclose(updated['final_positions'][3], initial['final_positions'][3])
+        neighbor = initial['neighbor'][3]
+        links[3, neighbor] = links[neighbor, 3] = True
+        state.update(pos, yaw, links)
+        self.assertFalse(state.guidance(pos, yaw)['active'][3])
 
 
 if __name__ == '__main__':
