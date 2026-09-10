@@ -9,7 +9,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from arena_mujoco.swarm_flow import (DockingState, FlowConfig, body_telemetry, compact_packing, flow_actions,
-                                     local_velocity_field, velocity_actions, _clear_docking_poses)
+                                     local_velocity_field, velocity_actions, _clear_docking_poses, _docking_route)
 
 
 class SwarmFlowTests(unittest.TestCase):
@@ -250,6 +250,58 @@ class SwarmFlowTests(unittest.TestCase):
         self.assertFalse(state.waiting[3])
         state.update(pos, yaw, graph)
         self.assertFalse(state.waiting[3])
+
+    def test_docking_route_preserves_a_clear_target_inside_the_core_bounding_box(self):
+        pos = np.array([[.5, .5], [.55, .55], [.6, .6]])
+        yaw = np.full(3, math.pi/4)
+        target = np.array([.5, .6])
+        route = _docking_route(np.array([.4, .6]), target, pos, yaw)
+        np.testing.assert_allclose(route, target)
+        permutation = np.array([2, 0, 1])
+        np.testing.assert_allclose(_docking_route(np.array([.4, .6]), target,
+                                                pos[permutation], yaw[permutation]), route)
+
+    def test_docking_route_advances_around_payload_corners(self):
+        start, target = np.array([.3, .5]), np.array([.7, .5])
+        pos, yaw = np.array([[.9, .9]]), np.zeros(1)
+        obstacles = [[.48, .47, .52, .53]]
+        first = _docking_route(start, target, pos, yaw, obstacles)
+        second = _docking_route(first, target, pos, yaw, obstacles)
+        self.assertAlmostEqual(first[0], .46)
+        self.assertAlmostEqual(second[0], .54)
+        self.assertAlmostEqual(abs(first[1]-.5), .05)
+        self.assertAlmostEqual(second[1], first[1])
+        np.testing.assert_allclose(_docking_route(second, target, pos, yaw, obstacles), target)
+
+    def test_docking_route_escapes_overlapping_arrival_clearances_together(self):
+        start, target = np.array([.49, .9301]), np.array([.5745, 1.0181])
+        pos, yaw = np.array([[.7, .885]]), np.zeros(1)
+        others = np.array([[.4776, .8866], [.4709, .9897]])
+        headings = np.array([-.5635, .6476])
+        next_point = _docking_route(start, target, pos, yaw,
+                                    other_positions=others, other_yaw=headings)
+        self.assertGreater(next_point[0], start[0]+.01)
+        self.assertGreater(next_point[1], start[1])
+        forward = np.column_stack((-np.sin(headings), np.cos(headings)))
+        right = np.column_stack((np.cos(headings), np.sin(headings)))
+        delta = next_point-others-.0005*forward
+        gap = np.maximum(np.abs(np.sum(delta*right, axis=-1))-.0121,
+                         np.abs(np.sum(delta*forward, axis=-1))-.0276)
+        self.assertTrue(np.all(gap >= .0359))
+
+    def test_docking_staging_reservation_uses_the_other_clear_lane(self):
+        from arena_mujoco.swarm_flow import docking_targets
+        pos = np.array([[.5, .5], [.5248, .528], [.5496, .5], [.59, .5]])
+        yaw = np.array([0., 0., 0., .3])
+        graph = np.array([[0, 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 0]], bool)
+        first = docking_targets(pos, yaw, graph)
+        forward = np.array([-np.sin(first['yaw'][3]), np.cos(first['yaw'][3])])
+        reserved = first['positions'][3]+first['staging_offset'][3]*forward
+        second = docking_targets(pos, yaw, graph, reserved_staging=[reserved])
+        self.assertTrue(second['active'][3])
+        forward = np.array([-np.sin(second['yaw'][3]), np.cos(second['yaw'][3])])
+        alternate = second['positions'][3]+second['staging_offset'][3]*forward
+        self.assertGreaterEqual(np.linalg.norm(alternate-reserved), .07)
 
 
 if __name__ == '__main__':

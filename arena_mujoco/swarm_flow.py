@@ -57,6 +57,95 @@ def _axes(yaw):
             np.column_stack((np.cos(yaw), np.sin(yaw))))
 
 
+def _docking_route(start, target, positions, yaw, obstacles=(), other_positions=(), other_yaw=()):
+    """Return the next visible waypoint around measured chassis and payloads."""
+    def robot_polygon(positions, yaw):
+        forward, right = _axes(yaw)
+        corners = (positions[:, None]+.0005*forward[:, None]
+                   + np.array([-1, -1, 1, 1])[None, :, None]*.0121*right[:, None]
+                   + np.array([-1, 1, 1, -1])[None, :, None]*.0276*forward[:, None]).reshape(-1, 2)
+        points = sorted(map(tuple, corners))
+
+        def half_hull(ordered):
+            result = []
+            for point in ordered:
+                while len(result) >= 2:
+                    a, b = result[-2:]
+                    cross = (b[0]-a[0])*(point[1]-a[1])-(b[1]-a[1])*(point[0]-a[0])
+                    if cross > 1e-12:
+                        break
+                    result.pop()
+                result.append(point)
+            return result
+
+        hull = np.asarray(half_hull(points)[:-1]+half_hull(points[::-1])[:-1])
+        edges = np.roll(hull, -1, axis=0)-hull
+        normals = np.column_stack((edges[:, 1], -edges[:, 0]))
+        normals /= np.linalg.norm(normals, axis=-1)[:, None]
+        # The arriving chassis can rotate within this 32 mm clearance.
+        offsets = np.sum(normals*hull, axis=-1)+.032
+        vertices = np.array([
+            np.linalg.solve(np.stack((normals[i-1], normals[i])), offsets[[i-1, i]])
+            for i in range(len(hull))])
+        return vertices, normals, offsets
+
+    polygons = [robot_polygon(positions, yaw)]
+    for rectangle in obstacles:
+        # Payload rectangles already include the ordinary 12 mm body margin.
+        lower, upper = np.asarray(rectangle[:2])-.020, np.asarray(rectangle[2:])+.020
+        vertices = np.array([lower, [upper[0], lower[1]], upper, [lower[0], upper[1]]])
+        normals = np.array([[0., -1.], [1., 0.], [0., 1.], [-1., 0.]])
+        polygons.append((vertices, normals, np.sum(normals*vertices, axis=-1)))
+    for position, heading in zip(other_positions, other_yaw):
+        polygons.append(robot_polygon(position[None], np.array([heading])))
+    # Nearby arrivals may have overlapping clearance envelopes. Escape all of
+    # them together before choosing a route; separate repulsion can wedge them.
+    if any(np.max(normals@start-offsets) < -1e-6 for _, normals, offsets in polygons):
+        angles = np.arange(32)*math.pi/16
+        directions = np.column_stack((np.cos(angles), np.sin(angles)))
+        candidates = (start+np.arange(.004, .121, .004)[:, None, None]*directions[None]).reshape(-1, 2)
+        valid = np.ones(len(candidates), bool)
+        for _, normals, offsets in polygons:
+            valid &= np.max(candidates@normals.T-offsets, axis=-1) >= .004
+        if not valid.any():
+            return start
+        cost = np.linalg.norm(candidates-start, axis=-1)+.25*np.linalg.norm(candidates-target, axis=-1)
+        return candidates[np.argmin(np.where(valid, cost, np.inf))]
+
+    nodes = np.vstack((start, target, *[polygon[0] for polygon in polygons]))
+    distances = np.linalg.norm(nodes[:, None]-nodes[None], axis=-1)
+    # A segment is blocked when its interval inside any convex polygon has
+    # positive length. Tangencies and travel along its boundary remain valid.
+    for _, normals, offsets in polygons:
+        values = nodes@normals.T-offsets
+        slope = values[None]-values[:, None]
+        crossing = np.divide(-values[:, None], slope, out=np.zeros_like(slope),
+                             where=np.abs(slope) > 1e-10)
+        lower = np.max(np.where(slope < -1e-10, crossing, -np.inf), axis=-1)
+        upper = np.min(np.where(slope > 1e-10, crossing, np.inf), axis=-1)
+        parallel_outside = ((np.abs(slope) <= 1e-10) & (values[:, None] >= -1e-7)).any(axis=-1)
+        blocked = (np.maximum(lower, 0) < np.minimum(upper, 1)-1e-7) & ~parallel_outside
+        distances[blocked] = np.inf
+    best = np.full(len(nodes), np.inf)
+    best[1] = 0.
+    visited = np.zeros(len(nodes), bool)
+    next_node = np.full(len(nodes), -1)
+    for _ in nodes:
+        node = np.argmin(np.where(visited, np.inf, best))
+        if not np.isfinite(best[node]):
+            break
+        visited[node] = True
+        candidate = best[node]+distances[node]
+        better = candidate < best
+        best[better], next_node[better] = candidate[better], node
+    next_index = next_node[0]
+    for _ in nodes:
+        if next_index < 0 or next_index == 1 or np.linalg.norm(nodes[next_index]-start) >= .003:
+            break
+        next_index = next_node[next_index]
+    return nodes[next_index] if next_index >= 0 else start
+
+
 def local_velocity_field(positions, velocities, yaw, waypoint, *, links=None,
                          shape_radii=(.15, .15), shape_yaw=0., obstacles=(),
                          arena_bounds=(0., 0., 1.143, 1.181), config=None):
@@ -250,7 +339,7 @@ def _clear_docking_rectangles(centers, headings, half_lengths, obstacles):
 
 def docking_targets(positions, yaw, links, *, obstacles=(),
                     arena_bounds=(0., 0., 1.143, 1.181), capture_distance=.0015,
-                    search_distance=.35, reserved_ports=None):
+                    search_distance=.35, reserved_ports=None, reserved_staging=()):
     """Choose free shoulder ports for isolated modules to rejoin nearby bodies.
 
     Targets follow the current body geometry. No lattice slots or module IDs
@@ -344,6 +433,13 @@ def docking_targets(positions, yaw, links, *, obstacles=(),
                                            swept_length, obstacles).reshape(-1, 2)
         clear &= np.all(staging+.0005*tf[:, None]-half_xy[:, None] >= [xmin+.002, ymin+.002], axis=-1)
         clear &= np.all(staging+.0005*tf[:, None]+half_xy[:, None] <= [xmax-.002, ymax-.002], axis=-1)
+        other_arrivals = isolated[isolated != robot]
+        if len(other_arrivals):
+            gap = np.linalg.norm(staging[:, :, None]-pos[other_arrivals][None, None], axis=-1)
+            clear &= gap.min(axis=-1) >= .070
+        if len(reserved_staging):
+            gap = np.linalg.norm(staging[:, :, None]-np.asarray(reserved_staging)[None, None], axis=-1)
+            clear &= gap.min(axis=-1) >= .070
         lane_cost = np.where(clear, np.linalg.norm(staging-pos[robot], axis=-1)+.3*np.abs(offsets), np.inf)
         lane = np.argmin(lane_cost, axis=-1)
         staging_offset = offsets[np.arange(len(targets)), lane]
@@ -501,13 +597,22 @@ class DockingState:
                     self.stage[robot] = 2
         reserved = np.zeros((len(ids), 4), bool)
         normals = []
+        staging_reservations = []
+        existing = self.guidance(pos, yaw, module_ids=ids)
         for robot in ids[self.stage[ids] >= 0]:
             destination = local[int(self.neighbor[robot])]
             reserved[destination, self.port[robot]] = True
             _, right = _axes(yaw[destination:destination+1])
             normals.append(np.sign(_DOCK_XY[self.port[robot], 0])*right[0])
+            if self.stage[robot] < 2:
+                arrival = local[int(robot)]
+                forward, _ = _axes(existing['yaw'][arrival:arrival+1])
+                staging_reservations.append(existing['final_positions'][arrival]+self.offset[robot]*forward[0])
+        if len(normals) >= 2:
+            return
         choices = docking_targets(pos, yaw, graph, obstacles=obstacles,
-                                  arena_bounds=arena_bounds, reserved_ports=reserved)
+                                  arena_bounds=arena_bounds, reserved_ports=reserved,
+                                  reserved_staging=staging_reservations)
         labels, _ = connected_components(graph)
         for i in np.flatnonzero(choices['active']):
             robot = ids[i]
@@ -521,6 +626,12 @@ class DockingState:
                 self.waiting[robot] = True
                 continue
             target, target_yaw = choices['positions'][i], choices['yaw'][i]
+            stage_forward, _ = _axes(np.array([target_yaw]))
+            proposed_stage = target+choices['staging_offset'][i]*stage_forward[0]
+            if any(np.linalg.norm(proposed_stage-point) < .070 for point in staging_reservations):
+                self.waiting[robot] = True
+                continue
+            staging_reservations.append(proposed_stage)
             forward, right = _axes(np.array([target_yaw]))
             offsets = np.full(2, choices['staging_offset'][i])
             staging = target+offsets[:, None]*forward[0]
@@ -623,7 +734,7 @@ def flow_actions(positions, velocities, yaw, waypoint, **kwargs):
                                    obstacles=kwargs.get('obstacles', ()),
                                    arena_bounds=kwargs.get('arena_bounds', (0., 0., 1.143, 1.181))))
         if docking_state is not None:
-            # Only approach routing bends around payloads. Alignment and final
+            # Approach routes clear measured chassis and payloads. Alignment and final
             # rolling retain the physical port axis. Expose the same deflected
             # pose to the policy that the wheel controller receives.
             for robot in np.flatnonzero(guidance['active'] & (guidance['stage'] == 0)):
@@ -632,12 +743,11 @@ def flow_actions(positions, velocities, yaw, waypoint, **kwargs):
                 if destination >= 0:
                     labels, _ = connected_components(kwargs['links'])
                     group = labels == labels[destination]
-                    gf, gr = _axes(heading[group])
-                    half = .0121*np.abs(gr)+.0276*np.abs(gf)
-                    center = pos[group]+.0005*gf
-                    lower = (center-half).min(axis=0)-.010
-                    upper = (center+half).max(axis=0)+.010
-                    navigation_obstacles.append([*lower, *upper])
+                    other = np.flatnonzero(~group & (np.arange(len(pos)) != robot))
+                    guidance['positions'][robot] = _docking_route(
+                        pos[robot], guidance['positions'][robot], pos[group], heading[group],
+                        navigation_obstacles, pos[other], heading[other])
+                    navigation_obstacles = []
                 navigation = local_velocity_field(
                     pos[robot:robot+1], np.zeros((1, 2)), heading[robot:robot+1],
                     guidance['positions'][robot], obstacles=navigation_obstacles,
