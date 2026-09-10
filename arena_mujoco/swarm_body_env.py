@@ -22,6 +22,7 @@ from .swarm_magnets import MagneticCoupling, add_magnetic_docks
 FEATURES = TRANSPORT_FEATURES + [
     "body_centroid_right", "body_centroid_forward", "body_goal_right", "body_goal_forward",
     "magnets_enabled", "magnetic_degree", "magnetic_component_fraction", "body_phase",
+    "body_approach_stage", "docking_stage",
 ]
 APPROACH_FLOW = FlowConfig(steering_full_speed=.001, max_yaw_rate=2.5, heading_gain=6.)
 DEPLOY_FLOW = FlowConfig(consensus_steps=0)
@@ -341,10 +342,15 @@ class SwarmBodyEnv(SwarmVectorEnv):
                     group.append(item)
                     pending.extend(np.flatnonzero(self.body_links[world, item]).tolist())
                 components[world, group] = len(group)/self.num_robots
+        docking_stage = self._tensor(np.stack([
+            np.where(plan.release_steps > 0, -3, np.where(plan.waiting, -2, plan.stage))
+            for plan in self.body_docking]))
+        approach_stage = torch.where(self.carrier, self.body_approach_stage, 0).float()
         extra = torch.cat([local(centroid[:, None]-positions)/.2,
                            local(self.body_waypoint[:, None]-positions)/.4,
                            (self.magnet_command > 0).float()[..., None], degree[..., None],
-                           components[..., None], self.body_phase[:, None, None].expand(-1, self.num_robots, 1)/3], -1)
+                           components[..., None], self.body_phase[:, None, None].expand(-1, self.num_robots, 1)/3,
+                           approach_stage[..., None]/5, docking_stage[..., None]/3], -1)
         base["local"] = torch.cat([base["local"], extra], -1).clamp(-10, 10)
         # Recompute exactly the base neighborhood indices to add docking state.
         delta = positions[:, None]-positions[:, :, None]

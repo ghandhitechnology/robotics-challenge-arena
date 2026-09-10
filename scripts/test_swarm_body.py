@@ -25,9 +25,9 @@ class BodyEnvironmentTests(unittest.TestCase):
     def test_actions_and_partial_reset(self):
         env = self.env
         obs = env.reset()
-        self.assertEqual(tuple(obs['local'].shape), (2, 40, 40))
+        self.assertEqual(tuple(obs['local'].shape), (2, 40, 42))
         self.assertEqual(tuple(obs['neighbors'].shape), (2, 40, 6, 12))
-        self.assertEqual(tuple(obs['global'].shape), (2, 88))
+        self.assertEqual(tuple(obs['global'].shape), (2, 92))
         command = torch.zeros((2, 40, 4))
         command[..., 2] = -1
         command[1, :, 3] = 1
@@ -105,6 +105,7 @@ class BodyEnvironmentTests(unittest.TestCase):
             saved = {key: value.copy() for key, value in vars(plans[0]).items()
                      if isinstance(value, np.ndarray)}
             first = env._observation()
+            self.assertAlmostEqual(float(first['local'][0, 0, 41]), 1/3, places=6)
             env.teacher_action()
             second = env._observation()
             self.assertEqual(update.call_count, 1)
@@ -116,6 +117,18 @@ class BodyEnvironmentTests(unittest.TestCase):
         env.reset_done(torch.tensor([True, False]))
         self.assertTrue(np.all(plans[0].stage == -1))
         self.assertEqual(plans[1].stage[0], 2)
+
+    def test_programmed_control_stages_are_visible_to_the_actor(self):
+        env = self.env
+        env.body_approach_stage[:, 0] = 3
+        before = env._observation()['local']
+        env.body_approach_stage[:, 0] = 4
+        env.body_docking[0].release_steps[4] = 30
+        after = env._observation()['local']
+        self.assertAlmostEqual(float(before[0, 0, 40]), 3/5, places=6)
+        self.assertAlmostEqual(float(after[0, 0, 40]), 4/5, places=6)
+        self.assertEqual(float(after[0, 4, 40]), 0.)
+        self.assertEqual(float(after[0, 4, 41]), -1.)
 
 
 if __name__ == '__main__':
