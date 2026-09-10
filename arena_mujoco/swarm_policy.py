@@ -10,6 +10,9 @@ import numpy as np
 MIRROR_LOCAL_NEGATE = [0, 2, 4, 6, 8, 10, 25, 28]
 MIRROR_NEIGHBOR_NEGATE = [0, 2, 4]
 MIRROR_ACTION_ORDER = [1, 0, 2]
+LEGACY_POLICY_CONTRACT = "legacy_shape_v0"
+HINGE_BODY_POLICY_CONTRACT = "hinge_body_v1"
+POLICY_CONTRACTS = frozenset({LEGACY_POLICY_CONTRACT, HINGE_BODY_POLICY_CONTRACT})
 
 
 def mirror_observation(obs):
@@ -38,10 +41,15 @@ class PolicyConfig:
     hidden: int = 64
     heads: int = 2
     mirror: bool = False
+    contract: str = LEGACY_POLICY_CONTRACT
 
     def __post_init__(self):
+        if self.contract not in POLICY_CONTRACTS:
+            raise ValueError(f"Unknown policy contract: {self.contract!r}")
         if self.hidden % self.heads:
             raise ValueError("hidden must be divisible by heads")
+        if self.contract == HINGE_BODY_POLICY_CONTRACT and self.mirror:
+            raise ValueError("hinge_body_v1 does not define a reflection transform")
         supported = {(32, 8, 3), (40, 12, 4), (42, 12, 4)}
         if self.mirror and (self.local_dim, self.neighbor_dim, self.action_dim) not in supported:
             raise ValueError("Reflection requires a supported transport or magnetic-body feature contract")
@@ -137,10 +145,13 @@ def export_policy(model, path):
 
 
 class NumpySwarmPolicy:
-    def __init__(self, path):
+    def __init__(self, path, *, expected_contract=None):
         with np.load(path, allow_pickle=False) as archive:
             self.config = PolicyConfig(**json.loads(str(archive["config"])))
             self.weights = {key: archive[key].astype(np.float32) for key in archive.files if key != "config"}
+        if expected_contract is not None and self.config.contract != expected_contract:
+            raise ValueError(
+                f"Policy contract mismatch: expected {expected_contract!r}, found {self.config.contract!r}")
         self.calls = 0
 
     def linear(self, name, value):

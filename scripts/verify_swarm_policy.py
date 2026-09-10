@@ -26,6 +26,14 @@ CONTRACTS = (
 )
 
 
+def assert_value_error(callback, description):
+    try:
+        callback()
+    except ValueError:
+        return
+    raise AssertionError(description)
+
+
 def main():
     torch.set_num_threads(2)
     torch.manual_seed(417)
@@ -98,7 +106,7 @@ def main():
             checked[contract["name"]] = {key: contract[key] for key in
                                          ("local_dim", "neighbor_dim", "global_dim", "action_dim")}
 
-    # Existing exports omitted the mirror field. Their original behavior stays valid.
+    # Existing exports omitted the mirror and contract fields. Their original behavior stays valid.
     model = make_actor_critic(PolicyConfig(local_dim=32, global_dim=72))
     with tempfile.TemporaryDirectory() as directory:
         path = Path(directory) / "legacy.npz"
@@ -107,16 +115,63 @@ def main():
             arrays = {key: archive[key] for key in archive.files}
         config = json.loads(str(arrays["config"]))
         del config["mirror"]
+        del config["contract"]
         arrays["config"] = np.array(json.dumps(config))
         np.savez_compressed(path, **arrays)
-        legacy = NumpySwarmPolicy(path)
+        legacy = NumpySwarmPolicy(path, expected_contract="legacy_shape_v0")
         assert not legacy.config.mirror
+        assert legacy.config.contract == "legacy_shape_v0"
         numpy_obs = {key: value.numpy() for key, value in legacy_obs.items()}
         with torch.no_grad():
             assert np.allclose(legacy(numpy_obs), model.act(legacy_obs, deterministic=True)[0].numpy(), atol=1e-6)
+
+    # A shape-compatible legacy body archive cannot be mistaken for the hinge policy contract.
+    legacy_body_model = make_actor_critic(PolicyConfig(local_dim=42, neighbor_dim=12,
+                                                        global_dim=92, action_dim=4))
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory) / "legacy_body.npz"
+        export_policy(legacy_body_model, path)
+        assert_value_error(
+            lambda: NumpySwarmPolicy(path, expected_contract="hinge_body_v1"),
+            "A legacy four-action body export was accepted as hinge_body_v1",
+        )
+
+    # The hinge contract is intentionally independent of the current observation dimensions.
+    hinge_config = PolicyConfig(local_dim=7, neighbor_dim=5, global_dim=11, action_dim=4,
+                                hidden=12, heads=3, contract="hinge_body_v1")
+    hinge_model = make_actor_critic(hinge_config)
+    hinge_obs = {
+        "local": torch.randn(2, 4, hinge_config.local_dim),
+        "neighbors": torch.randn(2, 4, 3, hinge_config.neighbor_dim),
+        "neighbor_mask": torch.rand(2, 4, 3) > .3,
+        "active": torch.ones(2, 4),
+        "global": torch.randn(2, hinge_config.global_dim),
+    }
+    hinge_obs["neighbor_mask"][0, 0] = False
+    hinge_obs["active"][0, -1] = 0
+    hinge_action = hinge_model.act(hinge_obs, deterministic=True)[0]
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory) / "hinge.npz"
+        export_policy(hinge_model, path)
+        hinge_policy = NumpySwarmPolicy(path, expected_contract="hinge_body_v1")
+        assert hinge_policy.config.contract == "hinge_body_v1"
+        numpy_obs = {key: value.numpy() for key, value in hinge_obs.items()}
+        error = float(np.max(np.abs(hinge_policy(numpy_obs) - hinge_action.detach().numpy())))
+        max_export_error = max(max_export_error, error)
+        assert error < 1e-6, f"Hinge Torch/NumPy export discrepancy: {error}"
+
+    for invalid_contract in ("", "unknown_policy_v1"):
+        assert_value_error(
+            lambda value=invalid_contract: PolicyConfig(contract=value),
+            f"Invalid policy contract was accepted: {invalid_contract!r}",
+        )
+    assert_value_error(
+        lambda: PolicyConfig(contract="hinge_body_v1", mirror=True),
+        "hinge_body_v1 accepted mirror=True",
+    )
     print(json.dumps({"reflection_exact": True, "robot_counts": [2, 8, 40],
                       "contracts": checked, "numpy_max_error": max_export_error,
-                      "legacy_export_compatible": True}))
+                      "legacy_export_compatible": True, "policy_contracts_checked": True}))
 
 
 if __name__ == "__main__":

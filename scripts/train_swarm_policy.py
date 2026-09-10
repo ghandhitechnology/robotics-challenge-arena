@@ -19,7 +19,10 @@ import torch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from arena_mujoco.swarm_policy import PolicyConfig, export_policy, make_actor_critic
+from arena_mujoco.swarm_policy import (
+    HINGE_BODY_POLICY_CONTRACT, LEGACY_POLICY_CONTRACT,
+    PolicyConfig, export_policy, make_actor_critic,
+)
 
 
 STAGES = [
@@ -629,10 +632,13 @@ def main():
     stage = args.start_stage
     env.set_curriculum(stage_spec(stage, args))
     obs = tensor_obs(env.reset(), device)
+    policy_contract = getattr(env, "policy_contract", LEGACY_POLICY_CONTRACT)
     config = PolicyConfig(local_dim=obs["local"].shape[-1], neighbor_dim=obs["neighbors"].shape[-1],
                           global_dim=obs["global"].shape[-1], hidden=args.hidden,
-                          action_dim=getattr(env, "action_dim", 3),
-                          mirror=obs["local"].shape[-1] in (32, 40, 42) and not args.disable_reflection)
+                          action_dim=getattr(env, "action_dim", 3), contract=policy_contract,
+                          mirror=(policy_contract != HINGE_BODY_POLICY_CONTRACT
+                                  and obs["local"].shape[-1] in (32, 40, 42)
+                                  and not args.disable_reflection))
     checkpoint = None
     if args.resume:
         checkpoint = torch.load(args.resume, map_location=device, weights_only=False)
