@@ -485,6 +485,11 @@ class DockingState:
                     or occupied or self.release_steps[robot] > 0):
                 self.stage[robot] = -1
                 self.neighbor[robot] = -1
+        # An isolated arrival without a valid lane waits instead of driving
+        # into the core under its ordinary inward cohesion field.
+        waiting = ((labels != largest) & (counts[labels] == 1)
+                   & (self.stage[ids] < 0) & (self.release_steps[ids] == 0))
+        self.waiting[ids[waiting]] = True
         guidance = self.guidance(pos, yaw, module_ids=ids)
         for i, robot in enumerate(ids):
             stage = self.stage[robot]
@@ -535,6 +540,7 @@ class DockingState:
             self.own_port[robot], self.axis_flip[robot] = choices['own_port'][i], choices['axis_flip'][i]
             self.offset[robot] = offsets[int(np.argmin(cost))]
             self.stage[robot] = 0
+            self.waiting[robot] = False
             error = math.atan2(math.sin(target_yaw-yaw[i]), math.cos(target_yaw-yaw[i]))
             delta = target-pos[i]
             if abs(delta@right[0]) < .0015 and abs(error) < .1 and np.linalg.norm(delta) < .06:

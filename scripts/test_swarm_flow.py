@@ -232,6 +232,25 @@ class SwarmFlowTests(unittest.TestCase):
         updated = state.guidance(pos, yaw)
         self.assertFalse(updated['neighbor'][3] == owner and updated['port'][3] == port)
 
+    def test_unplanned_arrival_holds_until_a_docking_lane_is_assigned(self):
+        pos = np.array([[.5, .5], [.5248, .528], [.5496, .5], [.95, .9]])
+        yaw = np.array([0., 0., 0., .3])
+        graph = np.array([[0, 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 0]], bool)
+        state = DockingState(4)
+        state.update(pos, yaw, graph)
+        actions, _, guide = flow_actions(pos, np.zeros_like(pos), yaw, [.5, .5],
+                                        links=graph, docking=True, docking_state=state,
+                                        return_guidance=True)
+        self.assertTrue(state.waiting[3])
+        self.assertEqual(guide['stage'][3], -2)
+        np.testing.assert_allclose(actions[3], [0., 0., -1., 1.])
+        pos[3] = [.59, .5]
+        state.update(pos, yaw, graph)
+        self.assertGreaterEqual(state.stage[3], 0)
+        self.assertFalse(state.waiting[3])
+        state.update(pos, yaw, graph)
+        self.assertFalse(state.waiting[3])
+
 
 if __name__ == '__main__':
     unittest.main()
