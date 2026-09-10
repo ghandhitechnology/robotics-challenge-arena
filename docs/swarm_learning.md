@@ -25,6 +25,7 @@ The exported policy contains the trained attention network and no teacher fallba
 | [MAPush, Feng et al.](https://arxiv.org/abs/2411.07104) | Separate object-level subgoals from learned motor coordination. Our wheeled robots and contact model differ from the paper's quadrupeds. |
 | [Cooperative transport allocation, Shibata et al.](https://arxiv.org/abs/2212.02692) | Keep task priorities and local coordination separate so several teams can transport different objects. Our task allocator is programmed. |
 | [Residual reinforcement learning, Johannink et al.](https://arxiv.org/abs/1812.03201) | Use existing control knowledge to reduce contact exploration. Here demonstrations initialize a direct actor; runtime commands have no residual teacher contribution. |
+| [DAgger, Ross et al.](https://proceedings.mlr.press/v15/ross11a.html) | Collect corrective labels on states visited by the learned controller, aggregate those examples, and refit before PPO. |
 | [Difference rewards policy gradients, Castellini et al.](https://arxiv.org/abs/2012.11258) | Credit assignment matters. Our team reward and local shaping do not compute the counterfactual removals needed to claim difference rewards. |
 
 This is a project-specific combination of established methods. Its quality is
@@ -191,6 +192,52 @@ zero baseline of more than 20 percentage points. Policy optimization must use CU
 The final evaluation accompanies native MuJoCo playback, contact and pickup
 evidence, and warmstart-versus-PPO comparisons.
 
+## Correcting accumulated control error
+
+The initial A100 cloning run completed no full trials out of 32 and averaged 1.5
+deliveries out of four. In a separate native rollout with seed 20260911, all four
+objects were lifted by five seconds, but repeated losses of contact left one
+delivery at the 40-second limit. Formation robots reached their targets and later
+drifted away. Wheel-command RMSE on the carrier's own transport states was
+0.064/0.068, compared with 0.0095/0.0118 on a held-out teacher trajectory. These
+measurements motivated collecting examples under the learner's own control.
+
+`--dagger-rounds` enables physical dataset aggregation before PPO. Each control
+step labels the current observation with the demonstration controller's action.
+A per-world draw chooses whether the teacher or learned actor advances physics.
+`--dagger-teacher-prob` decreases linearly to zero in the last round; a single
+round uses the learner throughout. Each round fits the aggregated dataset,
+capped deterministically at two million active-agent examples. `dagger.json`
+records the mixture, completed episodes, deliveries, and action errors by role
+and carrier phase. Its collection outcomes are separate from held-out evaluation.
+
+`--balance-demo-roles` balances phases within the carrier group and gives carriers
+and formation robots equal total fitting weight. The original global phase
+weighting assigned little weight to formation robots because they all use phase
+zero. `--initial-action-std .01` sets exploration for fresh models; resumed models
+retain their saved standard deviation. CUDA matrix multiplication uses full FP32.
+
+For a fresh recovery run, add the following options to the full-stage command
+above, replacing its BC-update count and anchor coefficient:
+
+```bash
+--bc-updates 6000 --bc-anchor-coef 100 --balance-demo-roles \
+--initial-action-std .01 --dagger-rounds 4 --dagger-steps 2000 \
+--dagger-updates 4000 --dagger-teacher-prob .6 --skip-initial-eval
+```
+
+`bc_initial.npz` preserves the initial cloned actor. `dagger.npz` and
+`warmstart.npz` hold the actor after dataset aggregation, immediately before PPO.
+The final warmstart comparison therefore measures the effect of PPO after the
+same imitation training. Resuming with DAgger archives an existing warmstart
+before replacing it and records every export's meaning in `training.json`.
+
+`python scripts/test_swarm_imitation.py` checks learner-state labeling, the policy
+mixture, role weights, dataset capping, bounded fitting diagnostics, and saved
+exploration on resume.
+
+## Verifying and packaging the result
+
 `scripts/verify_swarm_proof.py` audits a saved native rollout. It validates source
 and artifact hashes, free-body topology, motor limits, seed-derived initial poses
 and goals, complete timestamps, physical pickup and supported transport, released
@@ -209,3 +256,18 @@ The default verifier requires accepted A100/H100 training and matching weights.
 `--allow-teacher` permits a teacher pipeline fixture and labels it explicitly;
 it cannot produce `final_neural_proof=true`. Run the tamper checks with
 `python scripts/test_swarm_proof.py --fixture PATH_TO_TEACHER_PROOF --replay-physics`.
+
+After accepted training, record and render the neural proof, then build its
+download bundle:
+
+```bash
+python scripts/run_swarm.py --output output/swarm/proof
+python scripts/render_swarm_video.py --render
+python scripts/package_swarm.py
+```
+
+The bundle contains the native scene and trace, policy weights and checkpoint,
+training logs, module CAD, both complete video projects, and both video sizes.
+The packager checks the artifact links, CRC, and source imports from a clean
+extraction. It writes `output/swarm/swarm_complete.zip`, a manifest, and SHA-256
+checksums. A final bundle requires a successful full native replay.

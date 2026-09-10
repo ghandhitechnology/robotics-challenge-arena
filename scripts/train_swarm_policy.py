@@ -143,53 +143,187 @@ def evaluate(model, env, stage, args, device, policy="learned"):
             "episodes_per_world": counted}
 
 
-def warmstart(model, optimizer, env, args, device, demo_steps=None, bc_updates=None):
-    """Collect noisy teacher trajectories through physics, then fit the actor."""
-    demo_steps = args.demo_steps if demo_steps is None else demo_steps
-    bc_updates = args.bc_updates if bc_updates is None else bc_updates
+MAX_DEMO_SAMPLES = 2_000_000
+
+
+def demo_weights(data, balance_roles=False):
+    weight = data.get("learning_weight", torch.ones(len(data["local"]), device=data["local"].device)).clone()
+    if balance_roles:
+        if data["local"].shape[-1] != 32 or "phase" not in data:
+            raise ValueError("Role balancing requires the swarm's 32-feature observation and phase labels")
+        carrier = data["local"][:, 15] > .5
+        weight.zero_()
+        if carrier.any():
+            phases = data["phase"][carrier].long()
+            _, inverse, counts = torch.unique(phases, return_inverse=True, return_counts=True)
+            weight[carrier] = 1. / (len(counts) * counts[inverse].float())
+        if (~carrier).any():
+            weight[~carrier] = 1. / (~carrier).sum()
+    elif "phase" in data:
+        phases = data["phase"].long()
+        counts = torch.bincount(phases, minlength=int(phases.max()) + 1).clamp_min(1)
+        weight *= len(phases) / (len(counts) * counts[phases])
+    return weight / weight.mean().clamp_min(1e-8)
+
+
+@torch.no_grad()
+def collect_demonstrations(model, env, args, device, steps, teacher_prob=1., dagger_round=None):
+    """Label real visited states; only collection may execute teacher actions."""
     obs = tensor_obs(env.reset(), device)
-    samples, targets = [], []
-    for step in range(demo_steps):
+    samples, targets, successes, deliveries = [], [], [], []
+    teacher_world_steps = 0
+    noise = args.demo_noise if dagger_round is None else 0.
+    phase = "demonstrations" if dagger_round is None else "dagger_collection"
+    for step in range(steps):
         if step % 128 == 0:
-            progress(args, {"phase": "demonstrations", "control_step": step, "total_control_steps": demo_steps})
+            progress(args, {"phase": phase, "round": dagger_round, "control_step": step,
+                            "total_control_steps": steps, "teacher_probability": teacher_prob,
+                            "action_noise_std": noise})
         target = torch.as_tensor(env.teacher_action(), device=device, dtype=torch.float32)
         active = obs["active"].bool()
-        # Store participating agents only. The critic's global state is unused
-        # by cloning, and parked robots should not dominate contact examples.
         samples.append({key: value[active].clone() for key, value in obs.items() if key != "global"})
         targets.append(target[active].clone())
-        noisy = (target + torch.randn_like(target) * args.demo_noise).clamp(-1, 1)
-        next_obs, _, terminated, truncated, _ = env.step(noisy)
+        worlds = active.shape[0]
+        if teacher_prob == 1:
+            action = target
+            teacher_world_steps += worlds
+        else:
+            learner = torch.tanh(model.mean(obs)) * active.unsqueeze(-1)
+            if teacher_prob == 0:
+                action = learner
+            else:
+                use_teacher = torch.rand((worlds, 1, 1), device=device) < teacher_prob
+                teacher_world_steps += int(use_teacher.sum())
+                action = torch.where(use_teacher, target, learner)
+        if dagger_round is None or noise:
+            action = (action + torch.randn_like(action) * noise).clamp(-1, 1)
+        next_obs, _, terminated, truncated, info = env.step(action)
         done = torch.as_tensor(terminated, device=device).bool() | torch.as_tensor(truncated, device=device).bool()
+        if done.any():
+            successes.extend(torch.as_tensor(info["success"], device=device)[done].tolist())
+            deliveries.extend(torch.as_tensor(info["delivered"], device=device)[done].tolist())
         obs = tensor_obs(env.reset_done(done) if done.any() else next_obs, device)
     if not samples:
         return None
     data = {key: torch.cat([sample[key] for sample in samples]) for key in samples[0]}
     target = torch.cat(targets)
-    weight = data.get("learning_weight", torch.ones(len(target), device=device)).clone()
-    if "phase" in data:
-        phases = data["phase"].long()
-        counts = torch.bincount(phases, minlength=int(phases.max()) + 1).clamp_min(1)
-        weight *= len(phases) / (len(counts) * counts[phases])
-    weight /= weight.mean().clamp_min(1e-8)
-    last_loss = 0.0
-    for update in range(bc_updates):
-        idx = torch.randint(len(target), (min(args.bc_batch_size, len(target)),), device=device)
-        batch = {key: value[idx] for key, value in data.items()}
-        error = (torch.tanh(model.mean(batch)) - target[idx]).square().mean(-1)
-        loss = masked_mean(error, weight[idx])
+    report = {"physics_control_steps": steps * worlds, "agent_examples": len(target),
+              "completed_episodes": len(successes), "successful_episodes": int(sum(successes)),
+              "success_rate": float(np.mean(successes)) if successes else None,
+              "mean_delivered": float(np.mean(deliveries)) if deliveries else None,
+              "teacher_probability": teacher_prob, "teacher_world_steps": teacher_world_steps,
+              "learner_world_steps": steps * worlds - teacher_world_steps,
+              "learner_deterministic": True, "action_noise_std": noise}
+    return {"obs": data, "target": target, "weight": demo_weights(data, args.balance_demo_roles), "report": report}
+
+
+@torch.no_grad()
+def demonstration_errors(model, dataset, batch_size):
+    """Measure all retained samples, separating carriers' phases from formation."""
+    totals = {}
+    weighted_error = torch.zeros((), device=dataset["target"].device)
+    for start in range(0, len(dataset["target"]), batch_size):
+        batch = {key: value[start:start + batch_size] for key, value in dataset["obs"].items()}
+        error = (torch.tanh(model.mean(batch)) - dataset["target"][start:start + batch_size]).square()
+        weight = dataset["weight"][start:start + batch_size]
+        weighted_error += (error.mean(-1) * weight).sum()
+        groups = {"all": torch.ones(len(error), dtype=torch.bool, device=error.device)}
+        if batch["local"].shape[-1] == 32 and "phase" in batch:
+            carrier = batch["local"][:, 15] > .5
+            groups["formation"] = ~carrier
+            for phase in torch.unique(batch["phase"][carrier]).tolist():
+                groups[f"carrier_phase_{int(phase)}"] = carrier & (batch["phase"] == phase)
+        elif "phase" in batch:
+            groups.update({f"phase_{int(phase)}": batch["phase"] == phase
+                           for phase in torch.unique(batch["phase"]).tolist()})
+        for name, mask in groups.items():
+            if not mask.any():
+                continue
+            count, summed = totals.get(name, (0, torch.zeros(error.shape[-1], device=error.device)))
+            totals[name] = (count + int(mask.sum()), summed + error[mask].sum(0))
+    return {"weighted_mse": float(weighted_error / dataset["weight"].sum()),
+            "action_order": ["left_wheel", "right_wheel", "lift"],
+            "groups": {name: {"examples": count, "per_action_mse": (summed / count).tolist()}
+                       for name, (count, summed) in totals.items()}}
+
+
+def fit_demonstrations(model, optimizer, dataset, args, updates, dagger_round=None):
+    last_loss = None
+    for update in range(updates):
+        idx = torch.randint(len(dataset["target"]), (min(args.bc_batch_size, len(dataset["target"])),),
+                            device=dataset["target"].device)
+        batch = {key: value[idx] for key, value in dataset["obs"].items()}
+        error = (torch.tanh(model.mean(batch)) - dataset["target"][idx]).square().mean(-1)
+        loss = masked_mean(error, dataset["weight"][idx])
         optimizer.zero_grad(set_to_none=True)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), args.max_grad_norm)
         optimizer.step()
         last_loss = float(loss.detach())
         if update % 100 == 0:
-            progress(args, {"phase": "behavior_cloning", "update": update + 1,
-                            "total_updates": bc_updates, "weighted_mse": last_loss})
-    return {"report": {"physics_control_steps": demo_steps * args.num_envs, "agent_examples": len(target),
-                       "updates": bc_updates, "final_mse": last_loss,
-                       "phase_balanced": "phase" in data, "carrier_weighted": "learning_weight" in data},
-            "obs": data, "target": target, "weight": weight}
+            progress(args, {"phase": "behavior_cloning" if dagger_round is None else "dagger_fitting",
+                            "round": dagger_round, "update": update + 1,
+                            "total_updates": updates, "weighted_mse": last_loss})
+    errors = demonstration_errors(model, dataset, args.bc_batch_size)
+    return {"updates": updates, "final_mse": errors["weighted_mse"], "last_minibatch_mse": last_loss,
+            "phase_balanced": "phase" in dataset["obs"], "roles_balanced": args.balance_demo_roles,
+            "carrier_weighted": not args.balance_demo_roles and "learning_weight" in dataset["obs"],
+            "fitting_errors": errors}
+
+
+def warmstart(model, optimizer, env, args, device, demo_steps=None, bc_updates=None):
+    demo_steps = args.demo_steps if demo_steps is None else demo_steps
+    bc_updates = args.bc_updates if bc_updates is None else bc_updates
+    dataset = collect_demonstrations(model, env, args, device, demo_steps)
+    if dataset is not None:
+        dataset["report"].update(fit_demonstrations(model, optimizer, dataset, args, bc_updates))
+        progress(args, {"phase": "demonstration_summary", **dataset["report"]})
+    return dataset
+
+
+def merge_demonstrations(previous, incoming, balance_roles, limit=MAX_DEMO_SAMPLES):
+    if previous is None:
+        data, target = incoming["obs"], incoming["target"]
+    else:
+        data = {key: torch.cat((previous["obs"][key], incoming["obs"][key])) for key in incoming["obs"]}
+        target = torch.cat((previous["target"], incoming["target"]))
+    total = len(target)
+    if total > limit:
+        # Even spacing preserves temporal coverage without consuming training RNG.
+        indices = torch.arange(limit, device=target.device) * (total - 1) // max(limit - 1, 1)
+        data = {key: value[indices] for key, value in data.items()}
+        target = target[indices]
+    return {"obs": data, "target": target, "weight": demo_weights(data, balance_roles),
+            "report": {"samples_before_cap": total, "agent_examples": len(target), "sample_cap": limit}}
+
+
+def dagger_teacher_probability(round_index, rounds, initial_probability):
+    return initial_probability * (rounds - round_index - 1) / (rounds - 1) if rounds > 1 else 0.
+
+
+def dagger(model, optimizer, env, args, device, dataset):
+    reports = []
+    for round_index in range(args.dagger_rounds):
+        probability = dagger_teacher_probability(round_index, args.dagger_rounds, args.dagger_teacher_prob)
+        incoming = collect_demonstrations(model, env, args, device, args.dagger_steps,
+                                          probability, round_index + 1)
+        dataset = merge_demonstrations(dataset, incoming, args.balance_demo_roles)
+        report = {"round": round_index + 1, "collection": incoming["report"],
+                  "dataset": dataset["report"],
+                  "fit": fit_demonstrations(model, optimizer, dataset, args, args.dagger_updates, round_index + 1)}
+        reports.append(report)
+        save_json(Path(args.output) / "dagger.json", {"rounds": reports})
+        progress(args, {"phase": "dagger_round_complete", **report})
+    return dataset, reports
+
+
+def configure_initial_action_std(model, requested, resumed=False):
+    if requested is not None and not resumed:
+        with torch.no_grad():
+            model.log_std.fill_(float(np.log(requested)))
+    return {"requested": requested, "applied": requested is not None and not resumed,
+            "source": "checkpoint" if resumed else "override" if requested is not None else "model_default",
+            "actual_action_std": model.log_std.detach().clamp(-5, .5).exp().cpu().tolist()}
 
 
 def ppo_update(model, optimizer, rollout, args, anchor=None):
@@ -279,6 +413,12 @@ def main():
     parser.add_argument("--bc-updates", type=int, default=500)
     parser.add_argument("--stage-bc-updates", type=int, default=150)
     parser.add_argument("--bc-batch-size", type=int, default=8192)
+    parser.add_argument("--balance-demo-roles", action="store_true", help="Balance carrier phases, then give carriers and formation equal total demonstration weight")
+    parser.add_argument("--dagger-rounds", type=int, default=0, help="Physical dataset aggregation and fitting rounds before PPO")
+    parser.add_argument("--dagger-steps", type=int, default=1800, help="Control steps per world in each DAgger collection round")
+    parser.add_argument("--dagger-updates", type=int, default=1000, help="Supervised updates on the aggregated dataset per DAgger round")
+    parser.add_argument("--dagger-teacher-prob", type=float, default=.5, help="Initial per-world teacher probability, linearly reduced to zero in the final round; one round uses zero")
+    parser.add_argument("--initial-action-std", type=float, help="Initial raw-action standard deviation for a fresh model; resumed models retain their saved value")
     parser.add_argument("--bc-anchor-coef", type=float, default=0., help="Optional physical demonstration retention loss during PPO; try 0.1")
     parser.add_argument("--bc-anchor-batch-size", type=int, default=2048)
     parser.add_argument("--ppo-epochs", type=int, default=4)
@@ -314,6 +454,12 @@ def main():
         parser.error("Invalid discount, GAE, or demonstration settings")
     if args.bc_anchor_coef < 0 or args.bc_anchor_batch_size < 1:
         parser.error("BC anchor coefficient must be nonnegative and its batch size positive")
+    if args.bc_batch_size < 1 or args.dagger_rounds < 0 or args.dagger_steps < 1 or args.dagger_updates < 1:
+        parser.error("BC batch size and DAgger steps/updates must be positive; rounds must be nonnegative")
+    if not 0 <= args.dagger_teacher_prob <= 1:
+        parser.error("DAgger teacher probability must be between zero and one")
+    if args.initial_action_std is not None and not np.exp(-5) <= args.initial_action_std <= np.exp(.5):
+        parser.error("Initial action std must be within the policy's supported range exp(-5) to exp(0.5)")
     if args.eval_max_steps < 0:
         parser.error("Evaluation control-step cap must be nonnegative")
     if args.native_workers < 1:
@@ -332,7 +478,7 @@ def main():
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
     random.seed(args.seed)
-    torch.backends.cuda.matmul.allow_tf32 = True
+    torch.backends.cuda.matmul.allow_tf32 = False
     out = Path(args.output)
     out.mkdir(parents=True, exist_ok=True)
     start = time.monotonic()
@@ -361,11 +507,16 @@ def main():
     environment_steps = 0
     agent_steps = 0
     warmstart_report = None
-    anchor = None
+    demo_data = None
+    imitation_exports = {}
+    warmstart_baseline_kind = (checkpoint.get("warmstart_baseline_kind", "prior_run_pre_ppo")
+                              if checkpoint else "behavior_cloning_pre_ppo")
     full_stage_passes = 0
     cumulative_actor_update = 0.
     if args.resume:
         model.load_state_dict(checkpoint["model"])
+        action_std_report = configure_initial_action_std(model, args.initial_action_std, resumed=True)
+        progress(args, {"phase": "initial_action_std", **action_std_report})
         optimizer.load_state_dict(checkpoint["optimizer"])
         initial_update = checkpoint["update"]
         environment_steps = checkpoint["environment_steps"]
@@ -377,24 +528,50 @@ def main():
         obs = tensor_obs(env.reset(), device)
         if args.updates <= initial_update:
             parser.error("--updates must exceed the resumed checkpoint update")
-        if args.bc_anchor_coef > 0:
-            anchor = warmstart(model, optimizer, env, args, device, args.stage_demo_steps, 0)
+        if args.bc_anchor_coef > 0 or args.dagger_rounds > 0:
+            demo_data = warmstart(model, optimizer, env, args, device, args.stage_demo_steps, 0)
             obs = tensor_obs(env.reset(), device)
     else:
-        warmstart_result = warmstart(model, optimizer, env, args, device)
-        if warmstart_result:
-            warmstart_report = warmstart_result["report"]
-            if args.bc_anchor_coef > 0:
-                anchor = warmstart_result
-            del warmstart_result
-        export_policy(model, out / "warmstart.npz")
+        action_std_report = configure_initial_action_std(model, args.initial_action_std)
+        progress(args, {"phase": "initial_action_std", **action_std_report})
+        demo_data = warmstart(model, optimizer, env, args, device)
+        if demo_data:
+            warmstart_report = demo_data["report"]
+        initial_name = "bc_initial.npz" if args.dagger_rounds else "warmstart.npz"
+        export_policy(model, out / initial_name)
+        imitation_exports[initial_name] = "initial_behavior_cloning"
         obs = tensor_obs(env.reset(), device)
+    demo_data, dagger_reports = dagger(model, optimizer, env, args, device, demo_data)
+    if dagger_reports:
+        if args.resume and (out / "warmstart.npz").exists():
+            stem = f"warmstart_before_dagger_resume_{initial_update}"
+            previous = out / f"{stem}.npz"
+            suffix = 1
+            while previous.exists():
+                previous = out / f"{stem}_{suffix}.npz"
+                suffix += 1
+            previous.write_bytes((out / "warmstart.npz").read_bytes())
+            imitation_exports[previous.name] = warmstart_baseline_kind
+        export_policy(model, out / "dagger.npz")
+        export_policy(model, out / "warmstart.npz")
+        warmstart_baseline_kind = "post_dagger_pre_ppo"
+        imitation_exports["dagger.npz"] = warmstart_baseline_kind
+        obs = tensor_obs(env.reset(), device)
+        full_stage_passes = 0
+    if (out / "warmstart.npz").exists():
+        imitation_exports["warmstart.npz"] = warmstart_baseline_kind
+    anchor = demo_data if args.bc_anchor_coef > 0 else None
+    del demo_data
+    pre_ppo_action_std = model.log_std.detach().clamp(-5, .5).exp().cpu().tolist()
+    demo_weighting = "equal_roles_carrier_phases" if args.balance_demo_roles else "legacy_phase_carrier"
+    progress(args, {"phase": "imitation_complete", "dagger_rounds": len(dagger_reports),
+                    "demo_weighting": demo_weighting, "pre_ppo_action_std": pre_ppo_action_std})
     evaluations = []
     if args.skip_initial_eval:
         progress(args, {"phase": "initial_evaluation_skipped", "reason": "--skip-initial-eval"})
     else:
         baseline = evaluate(model, validation_env, stage, args, device)
-        baseline["policy"] = "warmstart" if not args.resume else "resumed"
+        baseline["policy"] = "dagger" if dagger_reports else "warmstart" if not args.resume else "resumed"
         print(json.dumps({"phase": "baseline", **baseline}), flush=True)
         evaluations.append(baseline)
     stage_warmstarts = []
@@ -471,6 +648,7 @@ def main():
         torch.save({"config": asdict(config), "model": model.state_dict(), "optimizer": optimizer.state_dict(),
                     "update": update, "stage": stage, "environment_steps": environment_steps,
                     "agent_steps": agent_steps, "cumulative_actor_update_l2": cumulative_actor_update,
+                    "warmstart_baseline_kind": warmstart_baseline_kind,
                     "updates_at_stage": updates_at_stage, "consecutive_full_stage_passes": full_stage_passes,
                     "args": vars(args)}, out / "checkpoint.pt.tmp")
         (out / "checkpoint.pt.tmp").replace(out / "checkpoint.pt")
@@ -522,11 +700,15 @@ def main():
               and final_eval["success_rate"] > zero_eval["success_rate"] + .2)
     report = {"method": "shared neighbor-attention MAPPO with physical demonstration warmstart",
               "gpu": gpu, "torch": torch.__version__, "cuda": torch.version.cuda, "seed": args.seed,
+              "cuda_matmul_allow_tf32": torch.backends.cuda.matmul.allow_tf32,
               "policy_device": str(next(model.parameters()).device), "physics_device": str(env.device),
               "native_workers": env.native_workers,
               "cuda_optimization": next(model.parameters()).device.type == "cuda",
               "backend": args.backend, "config": asdict(config), "parameters": sum(p.numel() for p in model.parameters()),
               "warmstart": warmstart_report, "ppo_updates": update, "ppo_updates_this_process": len(history), "environment_steps": environment_steps,
+              "dagger": dagger_reports, "initial_action_std": action_std_report,
+              "pre_ppo_action_std": pre_ppo_action_std, "demo_weighting": demo_weighting,
+              "imitation_exports": imitation_exports, "warmstart_baseline_kind": warmstart_baseline_kind,
               "stage_warmstarts": stage_warmstarts,
               "bc_anchor_coef": args.bc_anchor_coef, "stopping_reason": stopping_reason,
               "agent_steps": agent_steps,
