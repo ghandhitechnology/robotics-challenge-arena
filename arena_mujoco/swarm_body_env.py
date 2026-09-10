@@ -15,7 +15,7 @@ import torch
 
 from .builder import numbers
 from .swarm_env import FEATURES as TRANSPORT_FEATURES, SwarmVectorEnv, build_swarm_scene
-from .swarm_flow import FlowConfig, compact_packing, flow_actions, body_telemetry, velocity_actions
+from .swarm_flow import DockingState, FlowConfig, compact_packing, flow_actions, body_telemetry, velocity_actions
 from .swarm_magnets import MagneticCoupling, add_magnetic_docks
 
 
@@ -38,6 +38,7 @@ class SwarmBodyEnv(SwarmVectorEnv):
         self.magnets = [MagneticCoupling(self.model, self.metadata["robots"])
                         for _ in range(self.num_envs)]
         E, N = self.num_envs, self.num_robots
+        self.body_docking = [DockingState(N) for _ in range(E)]
         self.object_is_cylinder = np.array([obj["kind"] == "cylinder" for obj in self.metadata["objects"]])
         self.magnet_command = torch.ones((E, N), device=self.device)
         self.body_motor_gain = np.full((E, N), .00045)
@@ -113,6 +114,7 @@ class SwarmBodyEnv(SwarmVectorEnv):
             self.qpos[world] = self._tensor(data.qpos)
             self.qvel[world] = self._tensor(data.qvel)
             self.magnets[world].reset()
+            self.body_docking[world].reset()
         self.magnet_command[ids] = 1
         self.body_links[ids.numpy()] = False
         self.body_initial_links[ids.numpy()] = False
@@ -128,31 +130,57 @@ class SwarmBodyEnv(SwarmVectorEnv):
                      "body_middle_connected_steps"):
             getattr(self, name)[ids] = 0
 
+    def _flow_members(self, world):
+        if self.body_phase[world] in (1, 2):
+            return np.flatnonzero((~self.carrier[world] |
+                                  (self.phase[world, self.assignment] == 5)).numpy())
+        return np.arange(self.num_robots)
+
+    def _flow_obstacles(self, qo, world):
+        obstacles = [[1.012, .335, 1.124, .646]]
+        for pos, radius in zip(qo[world, :, :2].numpy(), self.object_radius.numpy()):
+            margin = float(radius) + .012
+            obstacles.append([pos[0]-margin, pos[1]-margin, pos[0]+margin, pos[1]+margin])
+        return obstacles
+
+    def _update_docking(self, state):
+        qr, qo, yaw, *_ = state
+        for world, docking in enumerate(self.body_docking):
+            members = self._flow_members(world)
+            docking.update(qr[world, members, :2].numpy(), yaw[world, members].numpy(),
+                           self.body_links[world][np.ix_(members, members)], module_ids=members,
+                           obstacles=self._flow_obstacles(qo, world))
+
     def _flow(self, state):
         qr, qo, yaw, _, _, velocity, _, _ = state
-        actions, fields = [], []
+        actions, fields, guidance_positions, guidance_yaws, guidance_active = [], [], [], [], []
         for world in range(self.num_envs):
             # Real payloads and the raised laboratory are navigation obstacles.
-            obstacles = [[1.012, .335, 1.124, .646]]
-            for pos, radius in zip(qo[world, :, :2].numpy(), self.object_radius.numpy()):
-                margin = float(radius) + .012
-                obstacles.append([pos[0]-margin, pos[1]-margin, pos[0]+margin, pos[1]+margin])
-            members = np.arange(self.num_robots)
-            if self.body_phase[world] in (1, 2):
-                members = np.flatnonzero((~self.carrier[world] |
-                                         (self.phase[world, self.assignment] == 5)).numpy())
+            obstacles = self._flow_obstacles(qo, world)
+            members = self._flow_members(world)
             action = np.zeros((self.num_robots, 4))
             action[:, 2:] = [-1., 1.]
             field = np.zeros((self.num_robots, 2))
+            positions = qr[world, :, :2].numpy().copy()
+            headings = yaw[world].numpy().copy()
+            active = np.zeros(self.num_robots, dtype=bool)
             if len(members):
-                subset_action, subset_field = flow_actions(qr[world, members, :2].numpy(), velocity[world, members].numpy(),
+                subset_action, subset_field, guidance = flow_actions(qr[world, members, :2].numpy(), velocity[world, members].numpy(),
                                             yaw[world, members].numpy(), self.body_waypoint[world].numpy(),
                                             links=self.body_links[world][np.ix_(members, members)], shape_radii=(.15, .145),
-                                            obstacles=obstacles)
+                                            obstacles=obstacles, docking=True, docking_state=self.body_docking[world],
+                                            module_ids=members, return_guidance=True)
                 action[members], field[members] = subset_action, subset_field
+                positions[members], headings[members], active[members] = guidance['positions'], guidance['yaw'], guidance['active']
             actions.append(action)
             fields.append(field)
-        return self._tensor(np.stack(actions)), self._tensor(np.stack(fields))
+            guidance_positions.append(positions)
+            guidance_yaws.append(headings)
+            guidance_active.append(active)
+        guidance = dict(positions=self._tensor(np.stack(guidance_positions)),
+                        yaw=self._tensor(np.stack(guidance_yaws)),
+                        active=torch.as_tensor(np.stack(guidance_active)))
+        return self._tensor(np.stack(actions)), self._tensor(np.stack(fields)), guidance
 
     def _targets(self, state=None):
         state = self._state() if state is None else state
@@ -185,11 +213,13 @@ class SwarmBodyEnv(SwarmVectorEnv):
         navigation_yaw = torch.where(nav_error.abs() > math.pi/2, navigation_yaw+math.pi, navigation_yaw)
         wanted_yaw = torch.where(approaching & (stage < 3), navigation_yaw, wanted_yaw)
         wanted_yaw = torch.where(approaching & (stage == -1), yaw, wanted_yaw)
-        _, field = self._flow(state)
+        _, field, guidance = self._flow(state)
         flow_target = qr[..., :2] + field
         flow_yaw = torch.atan2(-field[..., 0], field[..., 1])
         speed = torch.linalg.vector_norm(field, dim=-1)
         flow_yaw = torch.where(speed > .001, flow_yaw, yaw)
+        flow_target = torch.where(guidance['active'][..., None], guidance['positions'], flow_target)
+        flow_yaw = torch.where(guidance['active'], guidance['yaw'], flow_yaw)
         # The whole body first clears the start area before boundary modules peel.
         deploy = self.body_phase[:, None] == 0
         use_flow = ~self.carrier | deploy | (phase == 5)
@@ -202,7 +232,7 @@ class SwarmBodyEnv(SwarmVectorEnv):
             return super().teacher_action()
         state = self._state()
         qr, qo, yaw, _, _, _, _, _ = state
-        flow, _ = self._flow(state)
+        flow, _, _ = self._flow(state)
         contact_action = super().teacher_action()
         targets, headings, *_ = self._targets(state)
         action = flow.clone()
@@ -233,9 +263,7 @@ class SwarmBodyEnv(SwarmVectorEnv):
                 elif phase == 0 and stage == 4:
                     delta = targets[world, robot]-qr[world, robot, :2]
                     forward = state[3][world, robot]
-                    right = state[4][world, robot]
                     along = float(delta@forward)
-                    lateral = float(delta@right)
                     speed = np.clip(2*along, -.012, .012)
                     yaw_rate = float(self.qvel[world, self.robot_dadr[robot]+5])
                     turn = np.clip(6*heading_error + .65*np.sign(heading_error)*(abs(heading_error) > .006)
@@ -399,6 +427,7 @@ class SwarmBodyEnv(SwarmVectorEnv):
         self.body_waypoint = torch.where((self.body_phase == 2)[:, None], pickup_center, self.body_waypoint)
         regroup_center = mean_payload + self._tensor([.17, 0.])
         self.body_waypoint = torch.where((self.body_phase == 3)[:, None], regroup_center, self.body_waypoint)
+        self._update_docking(self._state())
         metrics = []
         for world in range(self.num_envs):
             metrics.append(body_telemetry(qr[world, :, :2].numpy(), velocity[world].numpy(),

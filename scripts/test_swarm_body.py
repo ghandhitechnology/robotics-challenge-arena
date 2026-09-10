@@ -4,6 +4,7 @@ import math
 from pathlib import Path
 import sys
 import unittest
+from unittest.mock import patch
 
 import mujoco
 import numpy as np
@@ -89,6 +90,32 @@ class BodyEnvironmentTests(unittest.TestCase):
         env.body_phase[:] = 2
         carrying = env.teacher_action()[:, :2, :2].mean(-1)
         torch.testing.assert_close(carrying, torch.tensor([[.25, .05], [.25, .05]]))
+
+    def test_docking_updates_once_and_observation_reads_preserve_plans(self):
+        env = self.env
+        plans = env.body_docking
+        with patch.object(plans[0], 'update', wraps=plans[0].update) as update:
+            env.step(env.teacher_action())
+            self.assertEqual(update.call_count, 1)
+            # A pending alignment plan must survive repeated policy reads.
+            plans[0].stage[0] = 1
+            plans[0].neighbor[0] = 4
+            plans[0].port[0] = 0
+            plans[0].own_port[0] = 2
+            saved = {key: value.copy() for key, value in vars(plans[0]).items()
+                     if isinstance(value, np.ndarray)}
+            first = env._observation()
+            env.teacher_action()
+            second = env._observation()
+            self.assertEqual(update.call_count, 1)
+            for key, expected in saved.items():
+                np.testing.assert_array_equal(getattr(plans[0], key), expected)
+            for key in first:
+                torch.testing.assert_close(first[key], second[key])
+        plans[1].stage[0] = 2
+        env.reset_done(torch.tensor([True, False]))
+        self.assertTrue(np.all(plans[0].stage == -1))
+        self.assertEqual(plans[1].stage[0], 2)
 
 
 if __name__ == '__main__':
