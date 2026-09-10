@@ -102,6 +102,15 @@ class SwarmFlowTests(unittest.TestCase):
         np.testing.assert_array_equal(links, old)
         np.testing.assert_array_equal(desired, [[-.04, 0.], [-.04, 0.]])
 
+    def test_tiny_cohesion_corrections_keep_docks_enabled(self):
+        links = np.array([[False, True], [True, False]])
+        tiny = velocity_actions([[-.0005, 0.], [-.0005, 0.]], [0., 0.], links=links)
+        large = velocity_actions([[-.035, 0.], [-.035, 0.]], [0., 0.], links=links)
+        self.assertTrue(np.all(tiny[:, 3] == 1))
+        self.assertTrue(np.all(large[:, 3] == -1))
+        self.assertLess(abs(tiny[:, :2]).max(), .005)
+        self.assertGreater(abs(large[:, :2]).max(), .05)
+
 
 if __name__ == '__main__':
     unittest.main()

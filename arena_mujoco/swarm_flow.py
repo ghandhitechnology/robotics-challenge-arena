@@ -25,7 +25,9 @@ class FlowConfig:
     shape_gain: float = .20
     heading_gain: float = 5.
     max_yaw_rate: float = 1.2
+    steering_full_speed: float = .015
     release_heading: float = .55
+    release_min_speed: float = .012
     release_shear_speed: float = .025
 
 
@@ -166,6 +168,9 @@ def velocity_actions(desired_velocity, yaw, *, links=None, lift=-1., config=None
         error = np.where(error < -math.pi / 2, error + math.pi, error)
     error = np.where(speed > 1e-5, error, 0.)
     turn = np.clip(cfg.heading_gain * error, -cfg.max_yaw_rate, cfg.max_yaw_rate)
+    # Near a shared waypoint, tiny lateral corrections have a noisy direction.
+    # Scale their steering instead of requesting a full-rate turn in the pack.
+    turn *= np.minimum(speed / cfg.steering_full_speed, 1.)
     along = np.sum(desired * forward, axis=-1)
     # Reduce translation during large turns so the long body can reorient.
     along *= np.maximum(np.cos(error), 0.)
@@ -177,7 +182,8 @@ def velocity_actions(desired_velocity, yaw, *, links=None, lift=-1., config=None
     degree = graph.sum(-1)
     relative = desired[:, None, :] - desired[None, :, :]
     shear = np.max(np.linalg.norm(relative, axis=-1) * graph, axis=-1, initial=0.)
-    release = ((np.abs(error) > cfg.release_heading) & (degree <= 2) & (degree > 0))
+    release = ((np.abs(error) > cfg.release_heading) & (speed >= cfg.release_min_speed)
+               & (degree <= 2) & (degree > 0))
     release |= (shear > cfg.release_shear_speed) & (degree > 1)
     scale = DESIGN['wheel_radius_m'] * DESIGN['max_wheel_speed_rad_s']
     differential = turn * DESIGN['wheel_track_m'] / 2
