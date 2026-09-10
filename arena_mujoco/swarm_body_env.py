@@ -15,7 +15,7 @@ import torch
 
 from .builder import numbers
 from .swarm_env import FEATURES as TRANSPORT_FEATURES, SwarmVectorEnv, build_swarm_scene
-from .swarm_flow import DockingState, FlowConfig, compact_packing, flow_actions, body_telemetry, velocity_actions
+from .swarm_flow import DockingState, FlowConfig, compact_packing, connected_components, flow_actions, body_telemetry, velocity_actions
 from .swarm_magnets import MagneticCoupling, add_magnetic_docks
 
 
@@ -27,6 +27,7 @@ FEATURES = TRANSPORT_FEATURES + [
 APPROACH_FLOW = FlowConfig(steering_full_speed=.001, max_yaw_rate=2.5, heading_gain=6.)
 DEPLOY_FLOW = FlowConfig(consensus_steps=0)
 PAYLOAD_BODY_STANDOFF = .24
+BODY_STOP_PAYLOAD_TOLERANCE = .035
 
 
 class SwarmBodyEnv(SwarmVectorEnv):
@@ -174,6 +175,20 @@ class SwarmBodyEnv(SwarmVectorEnv):
                                             obstacles=obstacles, docking=True, docking_state=self.body_docking[world],
                                             module_ids=members, return_guidance=True,
                                             config=DEPLOY_FLOW if self.body_phase[world] < 2 else None)
+                remaining = torch.linalg.vector_norm(self.goals[world]-qo[world, :, :2], dim=-1)
+                near_delivery = ((remaining < BODY_STOP_PAYLOAD_TOLERANCE) | ~self.object_active[world]).all()
+                if self.body_phase[world] >= 2 and near_delivery:
+                    # Rest the connected core while returning modules dock.
+                    # Persistent shape corrections can otherwise turn the
+                    # perimeter against its neighbors after transit ends.
+                    graph = self.body_links[world][np.ix_(members, members)]
+                    labels, _ = connected_components(graph)
+                    counts = np.bincount(labels)
+                    core = (labels == counts.argmax()) & (counts[labels] > 1)
+                    subset_action[core, :2] = 0.
+                    subset_action[core, 3] = 1.
+                    subset_field[core] = 0.
+                    guidance['active'][core] = False
                 action[members], field[members] = subset_action, subset_field
                 positions[members], headings[members], active[members] = guidance['positions'], guidance['yaw'], guidance['active']
             actions.append(action)

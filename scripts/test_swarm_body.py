@@ -130,6 +130,23 @@ class BodyEnvironmentTests(unittest.TestCase):
         self.assertEqual(float(after[0, 4, 40]), 0.)
         self.assertEqual(float(after[0, 4, 41]), -1.)
 
+    def test_core_stops_near_delivery_while_detached_modules_keep_their_plans(self):
+        env = self.env
+        env.body_phase[:] = 2
+        state = env._state()
+        env.goals[:] = state[1][..., :2] + torch.tensor([.02, 0.])
+        env.body_links[:, 4:39, 4:39] = True
+        for graph in env.body_links:
+            np.fill_diagonal(graph, False)
+        plan = env.body_docking[0]
+        plan.neighbor[39], plan.port[39], plan.own_port[39], plan.stage[39] = 4, 0, 2, 2
+        action, field, guidance = env._flow(state)
+        self.assertTrue(torch.all(action[:, 4:39, :2] == 0))
+        self.assertTrue(torch.all(action[:, 4:39, 3] == 1))
+        self.assertTrue(torch.all(field[:, 4:39] == 0))
+        self.assertTrue(bool(guidance['active'][0, 39]))
+        self.assertGreater(float(action[0, 39, :2].abs().max()), 0.)
+
 
 if __name__ == '__main__':
     unittest.main()
