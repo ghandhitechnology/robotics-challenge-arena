@@ -132,6 +132,9 @@ def evaluate(model, env, stage, args, device, policy="learned"):
                 "terminal_all_robot_min_travel_m": info.get("all_robot_min_travel"),
                 "magnetic_link_formations": info.get("magnetic_link_formations"),
                 "magnetic_link_releases": info.get("magnetic_link_releases"),
+                "initial_connected_seconds": info.get("initial_connected_seconds"),
+                "middle_connected_control_fraction": info.get("middle_connected_control_fraction"),
+                "new_magnetic_neighbor_pairs": info.get("new_magnetic_neighbor_pairs"),
             }
             terminal_metrics = {name: torch.as_tensor(value, device=device)
                                 for name, value in terminal_metrics.items() if value is not None}

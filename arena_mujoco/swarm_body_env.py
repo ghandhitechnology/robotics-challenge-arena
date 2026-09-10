@@ -38,9 +38,17 @@ class SwarmBodyEnv(SwarmVectorEnv):
         self.magnets = [MagneticCoupling(self.model, self.metadata["robots"])
                         for _ in range(self.num_envs)]
         E, N = self.num_envs, self.num_robots
+        self.object_is_cylinder = np.array([obj["kind"] == "cylinder" for obj in self.metadata["objects"]])
         self.magnet_command = torch.ones((E, N), device=self.device)
         self.body_motor_gain = np.full((E, N), .00045)
         self.body_links = np.zeros((E, N, N), dtype=bool)
+        self.body_initial_links = np.zeros((E, N, N), dtype=bool)
+        self.body_new_links = np.zeros((E, N, N), dtype=bool)
+        self.body_release_started = torch.zeros(E, dtype=torch.bool)
+        self.body_initial_connected_run = torch.zeros(E, dtype=torch.long)
+        self.body_initial_connected_best = torch.zeros(E, dtype=torch.long)
+        self.body_middle_steps = torch.zeros(E, dtype=torch.long)
+        self.body_middle_connected_steps = torch.zeros(E, dtype=torch.long)
         self.body_phase = torch.zeros(E, dtype=torch.long)
         self.body_approach_stage = torch.zeros((E, N), dtype=torch.long)
         self.body_initial = torch.zeros((E, N, 2))
@@ -107,12 +115,17 @@ class SwarmBodyEnv(SwarmVectorEnv):
             self.magnets[world].reset()
         self.magnet_command[ids] = 1
         self.body_links[ids.numpy()] = False
+        self.body_initial_links[ids.numpy()] = False
+        self.body_new_links[ids.numpy()] = False
+        self.body_release_started[ids] = False
         self.body_phase[ids] = 0
         self.body_approach_stage[ids] = torch.where(self.robot_indices % 2 == 0, -1, -2)
         self.body_initial[ids] = packing[:, :2]
         self.body_initial_centroid[ids] = packing[:, :2].mean(0)
         self.body_waypoint[ids] = self._tensor([.80, .885])
-        for name in ("body_connected_steps", "body_link_formations", "body_link_releases", "body_hold"):
+        for name in ("body_connected_steps", "body_link_formations", "body_link_releases", "body_hold",
+                     "body_initial_connected_run", "body_initial_connected_best", "body_middle_steps",
+                     "body_middle_connected_steps"):
             getattr(self, name)[ids] = 0
 
     def _flow(self, state):
@@ -213,7 +226,9 @@ class SwarmBodyEnv(SwarmVectorEnv):
                     action[world, robot] = self._tensor(command[0])
                     action[world, robot, 2:] = self._tensor([-1., -1.])
                 elif phase == 0 and stage == 3:
-                    turn = np.clip(6*heading_error, -2., 2.)
+                    yaw_rate = float(self.qvel[world, self.robot_dadr[robot]+5])
+                    turn = np.clip(6*heading_error + .65*np.sign(heading_error)*(abs(heading_error) > .006)
+                                   - .7*yaw_rate, -2., 2.)
                     action[world, robot] = self._tensor([-turn*.0105/.14, turn*.0105/.14, -1., -1.])
                 elif phase == 0 and stage == 4:
                     delta = targets[world, robot]-qr[world, robot, :2]
@@ -222,11 +237,19 @@ class SwarmBodyEnv(SwarmVectorEnv):
                     along = float(delta@forward)
                     lateral = float(delta@right)
                     speed = np.clip(2*along, -.012, .012)
-                    turn = np.clip(8*heading_error-30*lateral, -2., 2.)
+                    yaw_rate = float(self.qvel[world, self.robot_dadr[robot]+5])
+                    turn = np.clip(6*heading_error + .65*np.sign(heading_error)*(abs(heading_error) > .006)
+                                   - .7*yaw_rate, -2., 2.)
+                    if abs(heading_error) > .01:
+                        speed = 0.
                     action[world, robot] = self._tensor([(speed-turn*.0105)/.14,
                                                         (speed+turn*.0105)/.14, -1., -1.])
                 else:
                     action[world, robot, :3] = contact_action[world, robot]
+                    if phase == 2 and self.body_phase[world] < 2:
+                        remaining = float((self.goals[world, obj]-qo[world, obj, :2])@self.axis[world, obj])
+                        carry = min(.014, max(0., .7*remaining)) * float(self.pair_sign[robot])
+                        action[world, robot, :2] -= carry/.14
                     action[world, robot, 3] = 1 if phase in (1, 2, 3, 5) else -1
         return action
 
@@ -237,9 +260,17 @@ class SwarmBodyEnv(SwarmVectorEnv):
         actions = self.command.numpy()[world]
         lift_target = self.lift_target.numpy()[world]
         enabled = (self.magnet_command[world].numpy() > 0) & self.active[world].numpy().astype(bool)
+        phase = self.phase[world, self.assignment].numpy()
+        cylinder = self.carrier[world].numpy() & self.object_is_cylinder[self.assignment.numpy()]
+        differential_gain = np.where(cylinder & (phase == 2), .00045,
+                                     np.where(cylinder & (phase == 0) & (self.body_approach_stage[world].numpy() >= 2),
+                                              .00015, self.body_motor_gain[world]))
         for _ in range(self.substeps):
             wheel_velocity = data.qvel[self.wheel_dofs_np]
-            request = self.body_motor_gain[world, :, None] * (-20*actions[:, :2] - wheel_velocity)
+            error = -20*actions[:, :2]-wheel_velocity
+            common = self.body_motor_gain[world]*error.mean(-1)
+            differential = differential_gain*(error[:, 1]-error[:, 0])/2
+            request = np.column_stack([common-differential, common+differential])
             limit = np.where(request*wheel_velocity > 0,
                              .002*np.maximum(0, 1-np.abs(wheel_velocity)/26.1799388), .002)
             data.ctrl[self.actuator_ids_np[:, :2]] = np.clip(request, -limit, limit)
@@ -311,6 +342,7 @@ class SwarmBodyEnv(SwarmVectorEnv):
         previous_links = self.body_links.copy()
         previous_enabled = self.magnet_command > 0
         self.magnet_command.copy_(actions[..., 3].detach().clamp(-1, 1))
+        self.body_release_started |= (self.magnet_command <= 0).any(-1)
         state = self._state()
         qr, qo, yaw, _, _, _, _, _ = state
         target, wanted_yaw, _, _, _, _ = super()._targets(state)
@@ -332,7 +364,7 @@ class SwarmBodyEnv(SwarmVectorEnv):
         error = torch.linalg.vector_norm(target-qr[..., :2], dim=-1)
         heading_error = torch.atan2(torch.sin(wanted_yaw-yaw), torch.cos(wanted_yaw-yaw))
         tolerance = torch.where(stage == 2, .0015, .010)
-        arrived = ((stage >= 0) & (stage < 3) & (error < tolerance)) | ((stage == 3) & (heading_error.abs() < .04) & (error < .003))
+        arrived = ((stage >= 0) & (stage < 3) & (error < tolerance)) | ((stage == 3) & (heading_error.abs() < .006) & (error < .003))
         arrived &= self.carrier & (phase == 0) & (self.body_phase[:, None] > 0)
         self.body_approach_stage = torch.where(arrived, (stage+1).clamp(max=4), stage)
         peeled = (stage == -2) & (error < .003) & (self.body_phase[:, None] > 0)
@@ -342,7 +374,8 @@ class SwarmBodyEnv(SwarmVectorEnv):
         self.body_approach_stage = torch.where(waiting, 2, self.body_approach_stage)
         reposition = self.carrier & (phase == 0) & (stage >= 3) & (stage < 5) & (error > .003)
         self.body_approach_stage = torch.where(reposition, 2, self.body_approach_stage)
-        aligned_ready = (self.body_approach_stage >= 4) & ((stage >= 5) | ((error < .003) & (heading_error.abs() < .06)))
+        aligned_ready = (self.body_approach_stage >= 4) & ((stage >= 5) | ((error < .003) & (heading_error.abs() < .008)))
+        aligned_ready &= self.qvel[:, self.robot_dadr+5].abs() < .04
         pair_ready = aligned_ready[:, :2*self.num_objects].reshape(self.num_envs, self.num_objects, 2).all(-1)
         self.body_approach_stage = torch.where(self.carrier & pair_ready[:, self.assignment], 5, self.body_approach_stage)
         # Steer the supported grasp gradually toward the measured remaining
@@ -360,7 +393,8 @@ class SwarmBodyEnv(SwarmVectorEnv):
         released = info["delivered"] == self.object_active.sum(-1)
         self.body_phase = torch.where(released, 3, self.body_phase)
         mean_payload = (qo[..., :2]*self.object_active[..., None]).sum(1)/self.object_active.sum(-1, keepdim=True).clamp(min=1)
-        pickup_center = mean_payload + self._tensor([.17, 0.])
+        rearmost_payload = torch.where(self.object_active, qo[..., 0], -torch.inf).amax(-1)
+        pickup_center = torch.stack([rearmost_payload+.17, mean_payload[:, 1]], -1)
         self.body_waypoint = torch.where((self.body_phase == 1)[:, None], self._tensor([.80, .885]), self.body_waypoint)
         self.body_waypoint = torch.where((self.body_phase == 2)[:, None], pickup_center, self.body_waypoint)
         regroup_center = mean_payload + self._tensor([.17, 0.])
@@ -379,6 +413,19 @@ class SwarmBodyEnv(SwarmVectorEnv):
         component = torch.tensor([max(self._component_sizes(g)) for g in self.body_links])
         connected = component >= max(2, math.ceil(.8*self.num_robots))
         self.body_connected_steps += connected
+        before_release = ~self.body_release_started
+        self.body_initial_links |= self.body_links & before_release.numpy()[:, None, None]
+        self.body_new_links |= (self.body_links & ~previous_links & ~self.body_initial_links &
+                               self.body_release_started.numpy()[:, None, None])
+        new_neighbors = torch.as_tensor(np.triu(self.body_new_links, 1).sum((1, 2)))
+        self.body_initial_connected_run = torch.where(before_release & (component == self.num_robots),
+                                                      self.body_initial_connected_run+1, 0)
+        self.body_initial_connected_best = torch.maximum(self.body_initial_connected_best,
+                                                         self.body_initial_connected_run)
+        initial_connected_seconds = (self.body_initial_connected_best-1).clamp(min=0)*self.dt
+        self.body_middle_steps += self.body_release_started
+        self.body_middle_connected_steps += self.body_release_started & connected
+        middle_connected_fraction = self.body_middle_connected_steps/self.body_middle_steps.clamp(min=1)
         # Contact itself is expected. Penalize excessive penetration separately.
         severe = torch.zeros((self.num_envs, self.num_robots))
         payload_robot_contacts = torch.zeros(self.num_envs, dtype=torch.long)
@@ -409,8 +456,9 @@ class SwarmBodyEnv(SwarmVectorEnv):
         settled = torch.linalg.vector_norm(velocity, dim=-1).amax(-1) < .015
         finished = (released & (component == self.num_robots) & gathered & settled &
                     (payload_robot_contacts == 0) & (travel.amin(-1) > .20) &
-                    (self.body_connected_steps > 100) & (self.body_link_releases >= 2) &
-                    (self.body_link_formations >= self.num_robots))
+                    (initial_connected_seconds >= 1.) &
+                    (middle_connected_fraction >= .95) & (new_neighbors >= 1) &
+                    (self.body_link_releases >= 2))
         self.body_hold = torch.where(finished, self.body_hold+1, 0)
         success = self.body_hold >= 50
         failure = info["failure"]
@@ -420,6 +468,9 @@ class SwarmBodyEnv(SwarmVectorEnv):
                     magnetic_link_formations=self.body_link_formations.clone(), magnetic_link_releases=self.body_link_releases.clone(),
                     severe_robot_contacts=severe.sum(-1), all_robot_min_travel=travel.amin(-1),
                     payload_robot_contacts=payload_robot_contacts,
+                    initial_connected_seconds=initial_connected_seconds,
+                    middle_connected_control_fraction=middle_connected_fraction,
+                    new_magnetic_neighbor_pairs=new_neighbors,
                     connected_control_steps=self.body_connected_steps.clone())
         truncated = (self.steps >= self.max_steps) & ~success & ~failure
         return self._observation(), reward*self.active, success | failure, truncated, info

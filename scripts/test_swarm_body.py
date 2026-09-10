@@ -80,6 +80,16 @@ class BodyEnvironmentTests(unittest.TestCase):
         env.step(env.teacher_action())
         self.assertTrue(torch.all(env.body_approach_stage[:, [0, 2]] == 2))
 
+    def test_carry_teams_wait_until_both_payloads_are_supported(self):
+        env = self.env
+        env.body_phase[:] = 1
+        env.phase[:, 0] = 2
+        waiting = env.teacher_action()[:, :2, :2].mean(-1)
+        torch.testing.assert_close(waiting, torch.full_like(waiting, .15))
+        env.body_phase[:] = 2
+        carrying = env.teacher_action()[:, :2, :2].mean(-1)
+        torch.testing.assert_close(carrying, torch.tensor([[.25, .05], [.25, .05]]))
+
 
 if __name__ == '__main__':
     unittest.main()

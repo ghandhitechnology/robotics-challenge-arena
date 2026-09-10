@@ -28,3 +28,4 @@ jobs:
       - run: python scripts/test_swarm_magnets.py
       - run: python scripts/test_swarm_flow.py
       - run: python scripts/test_swarm_body.py
+      - run: python scripts/test_swarm_body_proof.py
