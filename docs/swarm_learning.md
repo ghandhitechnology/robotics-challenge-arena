@@ -271,7 +271,9 @@ it cannot produce `final_neural_proof=true`. Run the tamper checks with
 `python scripts/test_swarm_proof.py --fixture PATH_TO_TEACHER_PROOF --replay-physics`.
 
 After accepted training, record and render the neural proof, then build its
-download bundle:
+download bundle. The recorder's 40-second episode setting matches this training
+configuration; keep it matched when changing the training duration because the
+actor observes elapsed time as a fraction of the episode budget.
 
 ```bash
 python scripts/run_swarm.py --output output/swarm/proof

@@ -32,7 +32,8 @@ def main():
     p.add_argument("--objects", type=int, default=4)
     p.add_argument("--seed", type=int, default=20260911)
     p.add_argument("--difficulty", type=float, default=1.)
-    p.add_argument("--episode-seconds", type=float, default=60.)
+    p.add_argument("--episode-seconds", type=float, default=40.,
+                   help="Match the training episode duration to preserve the actor's time-feature scaling")
     p.add_argument("--hold-seconds", type=float, default=5.)
     p.add_argument("--timestep", type=float, default=.002)
     args = p.parse_args()
