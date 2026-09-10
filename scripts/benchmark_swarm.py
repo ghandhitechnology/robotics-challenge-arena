@@ -2,6 +2,7 @@
 """Measure the actual robot-contact model before choosing a training batch."""
 import argparse
 import hashlib
+import importlib
 import json
 import subprocess
 import sys
@@ -11,11 +12,11 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import numpy as np
 import torch
-from arena_mujoco.swarm_env import SwarmVectorEnv
 
 
 def main():
     p = argparse.ArgumentParser()
+    p.add_argument("--env-factory", default="arena_mujoco.swarm_env:SwarmVectorEnv")
     p.add_argument("--robots", type=int, default=40)
     p.add_argument("--objects", type=int, default=4)
     p.add_argument("--envs", type=int, default=4)
@@ -28,13 +29,15 @@ def main():
     device = "cuda:0" if a.backend == "warp" else "cpu"
     start = time.perf_counter()
     print("BENCHMARK_START", json.dumps(vars(a)), flush=True)
-    env = SwarmVectorEnv(num_envs=a.envs, num_robots=a.robots, num_objects=a.objects,
+    module_name, factory_name = a.env_factory.split(":")
+    factory = getattr(importlib.import_module(module_name), factory_name)
+    env = factory(num_envs=a.envs, num_robots=a.robots, num_objects=a.objects,
                          device=device, backend=a.backend, native_workers=a.native_workers)
     prepared = time.perf_counter() - start
     print("BENCHMARK_MODEL_READY", json.dumps({"nq": env.model.nq, "nv": env.model.nv,
             "geoms": env.model.ngeom, "preparation_seconds": prepared}), flush=True)
     warm = time.perf_counter()
-    env.step(env.teacher_action())
+    observation, *_ = env.step(env.teacher_action())
     if a.backend == "warp": torch.cuda.synchronize()
     compile_seconds = time.perf_counter() - warm
     print("BENCHMARK_COMPILED", compile_seconds, flush=True)
@@ -54,6 +57,9 @@ def main():
     if a.backend == "warp": torch.cuda.synchronize()
     elapsed = time.perf_counter() - start
     report = {**vars(a), "device": device,
+              "observation_dimensions": {key: int(observation[key].shape[-1])
+                                         for key in ("local", "neighbors", "global")},
+              "action_dimension": int(getattr(env, "action_dim", 3)),
               "gpu": torch.cuda.get_device_name(0) if a.backend == "warp" else None,
               "torch": torch.__version__, "preparation_seconds": prepared,
               "compile_seconds": compile_seconds, "measured_seconds": elapsed,
