@@ -67,9 +67,10 @@ def args():
 
 class ImitationTests(unittest.TestCase):
     def test_carrier_phases_and_roles_have_equal_mass(self):
-        local = torch.zeros(12, 32)
+        local = torch.zeros(12, 42)
         local[:4, 15] = 1
-        data = {"local": local, "phase": torch.tensor([0, 1, 1, 1] + [0] * 8),
+        phase = torch.tensor([0, 1, 1, 1] + [0] * 8)
+        data = {"local": local, "phase": phase,
                 "learning_weight": torch.tensor([4.] * 4 + [1.] * 8)}
         weight = demo_weights(data, True)
         self.assertAlmostEqual(float(weight[:4].sum()), float(weight[4:].sum()), places=5)
@@ -79,6 +80,10 @@ class ImitationTests(unittest.TestCase):
         self.assertTrue(torch.allclose(demo_weights(data), legacy / legacy.mean()))
         carriers_only = {key: value[:4] for key, value in data.items()}
         self.assertTrue(torch.isfinite(demo_weights(carriers_only, True)).all())
+        errors = demonstration_errors(
+            ToyActor(), {"obs": {"local": local, "phase": phase},
+                         "target": torch.zeros(12, 3), "weight": weight}, 3)
+        self.assertEqual(set(errors["groups"]), {"all", "formation", "carrier_phase_0", "carrier_phase_1"})
 
     def test_learner_visited_states_receive_teacher_labels(self):
         model, env = ToyActor(), ToyWorlds()

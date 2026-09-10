@@ -41,7 +41,7 @@ ENV_FACTORY = "arena_mujoco.swarm_body_env:SwarmBodyEnv"
 FORCE_THRESHOLD_N = .002
 MIN_TRANSIT_CONNECTED_FRACTION = .95
 START_BOUNDS = np.array([.863, .701, 1.143, 1.181])
-CONTRACT = {"local_dim": 40, "neighbor_dim": 12, "global_dim": 88, "action_dim": 4}
+CONTRACT = {"local_dim": 42, "neighbor_dim": 12, "global_dim": 92, "action_dim": 4}
 
 
 def source_hashes():
@@ -206,7 +206,7 @@ def audit_training(training, weight_hash, config, errors):
             and args.get("objects") == 2 and args.get("cpu_smoke") is False,
             "Training configuration is not the complete forty-module magnetic-body task", errors)
     require(training.get("config") == config and all(config.get(k) == v for k, v in CONTRACT.items()),
-            "Training/export feature contract must be 40 local, 12 neighbor, 88 global, 4 actions", errors)
+            "Training/export feature contract must be 42 local, 12 neighbor, 92 global, 4 actions", errors)
     return {"training_heldout_wilson_lower_95_recomputed": lower,
             "training_hardware_provenance": "reported A100/H100 CUDA optimization"}
 
@@ -329,8 +329,8 @@ def audit_recorded_arrays(trajectory, trace, model, metadata, report, errors):
         valid &= require(value.shape == shape and np.isfinite(value).all(), f"Invalid trajectory array: {key}", errors)
     steps = frames-1
     trace_shapes = {"times": (steps,), "actions": (steps, robots, 4),
-                    "local": (steps, robots, 40), "neighbors": (steps, robots, 6, 12),
-                    "neighbor_mask": (steps, robots, 6), "active": (steps, robots), "global": (steps, 88)}
+                    "local": (steps, robots, 42), "neighbors": (steps, robots, 6, 12),
+                    "neighbor_mask": (steps, robots, 6), "active": (steps, robots), "global": (steps, 92)}
     for key, shape in trace_shapes.items():
         valid &= require(trace[key].shape == shape and np.isfinite(trace[key]).all(),
                          f"Incomplete recording or invalid policy trace: {key}", errors)

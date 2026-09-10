@@ -19,8 +19,10 @@ from arena_mujoco.swarm_policy import (
 CONTRACTS = (
     {"name": "transport", "local_dim": 32, "neighbor_dim": 8,
      "global_dim": 72, "action_dim": 3, "features": TRANSPORT_FEATURES},
-    {"name": "magnetic_body", "local_dim": 40, "neighbor_dim": 12,
-     "global_dim": 88, "action_dim": 4, "features": BODY_FEATURES},
+    {"name": "magnetic_body_legacy", "local_dim": 40, "neighbor_dim": 12,
+     "global_dim": 88, "action_dim": 4, "features": BODY_FEATURES[:-2]},
+    {"name": "magnetic_body", "local_dim": 42, "neighbor_dim": 12,
+     "global_dim": 92, "action_dim": 4, "features": BODY_FEATURES},
 )
 
 
@@ -34,6 +36,7 @@ def main():
     assert BODY_FEATURES[len(TRANSPORT_FEATURES):] == [
         "body_centroid_right", "body_centroid_forward", "body_goal_right", "body_goal_forward",
         "magnets_enabled", "magnetic_degree", "magnetic_component_fraction", "body_phase",
+        "body_approach_stage", "docking_stage",
     ]
     max_export_error = 0.
     checked = {}

@@ -52,15 +52,17 @@ actor and has no demonstration-controller fallback.
 
 | Input or output | Shape | Contents |
 | --- | --- | --- |
-| Local observation | E × N × 40 | Local motion, object and target geometry, phase, contact feedback, body goal, magnetic degree and component fraction. |
+| Local observation | E × N × 42 | Local motion, object and target geometry, phase, contact feedback, body goal, magnetic degree and component fraction, approach stage, and docking stage. |
 | Neighbors | E × N × K × 12 | Relative neighbor state and measured magnetic connection. |
 | Neighbor mask | E × N × K | Valid neighbors. |
-| Critic state | E × 88 | Pooled local observations and task state. |
+| Critic state | E × 92 | Pooled local observations and task state. |
 | Action | E × N × 4 | Left wheel, right wheel, lift, magnet enable, each in [-1, 1]. |
 
 Reflection averaging exchanges wheel outputs, preserves lift and magnet enable,
 and reflects all robot-local lateral coordinates. Torch and NumPy implement the
 same operation. Previous wheel commands are also exchanged under reflection.
+The approach and docking stages at local indices 40 and 41 are unchanged by
+reflection. The lateral body coordinates at indices 32 and 34 change sign.
 
 | Research | Use in this implementation |
 | --- | --- |

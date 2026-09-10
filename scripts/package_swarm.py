@@ -190,8 +190,8 @@ def validate_policy(policy_dir: Path, proof_dir: Path, *, body=False) -> tuple[d
             f"The proof must complete {object_count} payloads with 40 robots")
     if body:
         require(report.get("task") == "magnetic_swarm_body_transport" and
-                report.get("policy_contract") == {"local_dim": 40, "neighbor_dim": 12,
-                                                  "global_dim": 88, "action_dim": 4},
+                report.get("policy_contract") == {"local_dim": 42, "neighbor_dim": 12,
+                                                  "global_dim": 92, "action_dim": 4},
                 "The body bundle needs the magnetic task and four-action policy")
     require(report.get("official_competition_score", "missing") is None,
             "The cooperative benchmark must not claim an official score")
@@ -499,9 +499,9 @@ assert (root / 'requirements-swarm.txt').is_file()
 from arena_mujoco.swarm_body_env import SwarmBodyEnv
 env = SwarmBodyEnv(num_envs=1, num_robots=40, num_objects=2)
 observation = env.reset()
-assert observation['local'].shape == (1, 40, 40)
+assert observation['local'].shape == (1, 40, 42)
 assert observation['neighbors'].shape == (1, 40, 6, 12)
-assert observation['global'].shape == (1, 88)
+assert observation['global'].shape == (1, 92)
 assert env.action_dim == 4 and len(env.magnets) == 1
 env.close()
 """

@@ -73,7 +73,7 @@ def record_body(directory, *, policy_type="neural", weights=None, training_repor
             artifacts.add(name)
         policy = NumpySwarmPolicy(directory/"weights.npz")
         if any(getattr(policy.config, key) != value for key, value in CONTRACT.items()):
-            raise ValueError("Checkpoint must use 40 local, 12 neighbor, 88 global features and four actions")
+            raise ValueError("Checkpoint must use 42 local, 12 neighbor, 92 global features and four actions")
         report["weights_sha256"] = digest(directory/"weights.npz")
         report["training_report_sha256"] = digest(directory/"training.json")
         audit_training(json.loads((directory/"training.json").read_text()), report["weights_sha256"],

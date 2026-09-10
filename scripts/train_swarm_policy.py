@@ -187,7 +187,7 @@ MAX_DEMO_SAMPLES = 2_000_000
 def demo_weights(data, balance_roles=False):
     weight = data.get("learning_weight", torch.ones(len(data["local"]), device=data["local"].device)).clone()
     if balance_roles:
-        if data["local"].shape[-1] not in (32, 40) or "phase" not in data:
+        if data["local"].shape[-1] not in (32, 40, 42) or "phase" not in data:
             raise ValueError("Role balancing requires a swarm observation and phase labels")
         carrier = data["local"][:, 15] > .5
         weight.zero_()
@@ -266,7 +266,7 @@ def demonstration_errors(model, dataset, batch_size):
         weight = dataset["weight"][start:start + batch_size]
         weighted_error += (error.mean(-1) * weight).sum()
         groups = {"all": torch.ones(len(error), dtype=torch.bool, device=error.device)}
-        if batch["local"].shape[-1] in (32, 40) and "phase" in batch:
+        if batch["local"].shape[-1] in (32, 40, 42) and "phase" in batch:
             carrier = batch["local"][:, 15] > .5
             groups["formation"] = ~carrier
             for phase in torch.unique(batch["phase"][carrier]).tolist():
@@ -531,7 +531,7 @@ def main():
     config = PolicyConfig(local_dim=obs["local"].shape[-1], neighbor_dim=obs["neighbors"].shape[-1],
                           global_dim=obs["global"].shape[-1], hidden=args.hidden,
                           action_dim=getattr(env, "action_dim", 3),
-                          mirror=obs["local"].shape[-1] in (32, 40) and not args.disable_reflection)
+                          mirror=obs["local"].shape[-1] in (32, 40, 42) and not args.disable_reflection)
     checkpoint = None
     if args.resume:
         checkpoint = torch.load(args.resume, map_location=device, weights_only=False)

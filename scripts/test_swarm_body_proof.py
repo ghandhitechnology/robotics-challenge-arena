@@ -120,7 +120,7 @@ class BodyTaskTests(unittest.TestCase):
         config = PolicyConfig(**CONTRACT, mirror=True)
         actor = make_actor_critic(config)
         rng = np.random.default_rng(10)
-        trace = {"local": rng.normal(size=(257, 2, 40)).astype(np.float32),
+        trace = {"local": rng.normal(size=(257, 2, 42)).astype(np.float32),
                  "neighbors": rng.normal(size=(257, 2, 1, 12)).astype(np.float32),
                  "neighbor_mask": np.ones((257, 2, 1), dtype=bool),
                  "active": np.ones((257, 2), dtype=np.float32)}
@@ -161,6 +161,12 @@ class BodyTaskTests(unittest.TestCase):
         self.assertTrue(any('80% success' in error for error in errors), errors)
         self.assertTrue(any('magnetic-body task' in error for error in errors), errors)
         self.assertTrue(any('4 actions' in error for error in errors), errors)
+
+        legacy = copy.deepcopy(training)
+        legacy['config'].update(local_dim=40, global_dim=88)
+        errors = []
+        audit_training(legacy, 'abc', legacy['config'], errors)
+        self.assertTrue(any('42 local' in error for error in errors), errors)
 
 
 class BodyArtifactTests(unittest.TestCase):

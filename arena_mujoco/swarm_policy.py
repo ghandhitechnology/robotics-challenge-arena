@@ -16,13 +16,13 @@ def mirror_observation(obs):
     """Reflect robot-local lateral coordinates and exchange previous wheels.
 
     Supports Torch and NumPy. Privileged critic state and neighborhood membership
-    are unchanged; only the actor's 32/8-feature input contract is reflected.
+    are unchanged; only supported actor input contracts are reflected.
     """
     result = dict(obs)
     for key in ("local", "neighbors"):
         value = obs[key]
         result[key] = value.clone() if hasattr(value, "clone") else np.array(value, copy=True)
-    negate = MIRROR_LOCAL_NEGATE + ([32, 34] if obs["local"].shape[-1] == 40 else [])
+    negate = MIRROR_LOCAL_NEGATE + ([32, 34] if obs["local"].shape[-1] in (40, 42) else [])
     result["local"][..., negate] *= -1
     result["local"][..., [22, 23]] = obs["local"][..., [23, 22]]
     result["neighbors"][..., MIRROR_NEIGHBOR_NEGATE] *= -1
@@ -42,7 +42,8 @@ class PolicyConfig:
     def __post_init__(self):
         if self.hidden % self.heads:
             raise ValueError("hidden must be divisible by heads")
-        if self.mirror and (self.local_dim, self.neighbor_dim, self.action_dim) not in {(32, 8, 3), (40, 12, 4)}:
+        supported = {(32, 8, 3), (40, 12, 4), (42, 12, 4)}
+        if self.mirror and (self.local_dim, self.neighbor_dim, self.action_dim) not in supported:
             raise ValueError("Reflection requires a supported transport or magnetic-body feature contract")
 
 

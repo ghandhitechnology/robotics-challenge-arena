@@ -114,8 +114,8 @@ def verified_sources(args):
     require(report.get("magnetic_force_threshold_n") == .002,
             "Load-bearing connectivity must use the verified 2 mN threshold")
     contract = report.get("policy_contract", {})
-    require(contract.get("local_dim") == 40 and contract.get("neighbor_dim") == 12 and
-            contract.get("global_dim") == 88 and contract.get("action_dim") == 4,
+    require(contract.get("local_dim") == 42 and contract.get("neighbor_dim") == 12 and
+            contract.get("global_dim") == 92 and contract.get("action_dim") == 4,
             "Proof does not use the four-action magnetic-body policy contract")
     require(isinstance(report.get("requested_hold_seconds"), (int, float)) and
             math.isfinite(report["requested_hold_seconds"]) and
@@ -181,7 +181,7 @@ def verified_sources(args):
     require(actions.shape[1] == report["robot_count"], "Policy trace robot count differs from the report")
     require(local.ndim == 3 and local.shape[:2] == actions.shape[:2],
             "Policy trace local observations do not match the actions")
-    require(local.shape[2] == 40, "Policy trace does not use the 40-feature body observation")
+    require(local.shape[2] == 42, "Policy trace does not use the 42-feature body observation")
     require(active.shape == actions.shape[:2] and np.all(active > .5),
             "All 40 modules must be active throughout the proof")
     features = report.get("local_feature_names", [])
