@@ -15,7 +15,7 @@ import torch
 
 from .builder import numbers
 from .swarm_env import FEATURES as TRANSPORT_FEATURES, SwarmVectorEnv, build_swarm_scene
-from .swarm_flow import compact_packing, flow_actions, body_telemetry, velocity_actions
+from .swarm_flow import FlowConfig, compact_packing, flow_actions, body_telemetry, velocity_actions
 from .swarm_magnets import MagneticCoupling, add_magnetic_docks
 
 
@@ -23,6 +23,7 @@ FEATURES = TRANSPORT_FEATURES + [
     "body_centroid_right", "body_centroid_forward", "body_goal_right", "body_goal_forward",
     "magnets_enabled", "magnetic_degree", "magnetic_component_fraction", "body_phase",
 ]
+APPROACH_FLOW = FlowConfig(steering_full_speed=.001, max_yaw_rate=2.5, heading_gain=6.)
 
 
 class SwarmBodyEnv(SwarmVectorEnv):
@@ -107,10 +108,10 @@ class SwarmBodyEnv(SwarmVectorEnv):
         self.magnet_command[ids] = 1
         self.body_links[ids.numpy()] = False
         self.body_phase[ids] = 0
-        self.body_approach_stage[ids] = torch.where(self.robot_indices % 2 == 0, 2, 0)
+        self.body_approach_stage[ids] = torch.where(self.robot_indices % 2 == 0, -1, -2)
         self.body_initial[ids] = packing[:, :2]
         self.body_initial_centroid[ids] = packing[:, :2].mean(0)
-        self.body_waypoint[ids] = self._tensor([.745, .885])
+        self.body_waypoint[ids] = self._tensor([.80, .885])
         for name in ("body_connected_steps", "body_link_formations", "body_link_releases", "body_hold"):
             getattr(self, name)[ids] = 0
 
@@ -151,13 +152,18 @@ class SwarmBodyEnv(SwarmVectorEnv):
         sign = self.pair_sign[None, :]
         side = torch.where(self.assignment == 0, -1., 1.)[None, :]
         radius = self.object_radius[self.assignment][None, :]
-        outboard = obj + torch.stack([torch.full_like(sign.expand_as(phase), .075),
+        outboard = obj + torch.stack([torch.full_like(sign.expand_as(phase), .060),
                                        (side*.075).expand_as(phase)], -1)
         far_side = obj + torch.stack([-(radius+.055).expand_as(phase),
                                       (side*.075).expand_as(phase)], -1)
         pregrasp = obj + torch.stack([(sign*(radius+.042)).expand_as(phase), torch.zeros_like(phase)], -1)
         approach = torch.where((stage == 0)[..., None], outboard,
                               torch.where((stage == 1)[..., None], far_side, pregrasp))
+        # Boundary partners leave in sequence. The outside module first rolls
+        # straight clear of the packed shoulders before turning around its load.
+        peel = torch.stack([obj[..., 0]+.060, self.body_initial[..., 1]], -1)
+        approach = torch.where((stage == -2)[..., None], peel, approach)
+        approach = torch.where((stage == -1)[..., None], qr[..., :2], approach)
         approaching = self.carrier & (phase == 0) & (stage < 5)
         target = torch.where(approaching[..., None], approach, target)
         delta = target-qr[..., :2]
@@ -165,6 +171,7 @@ class SwarmBodyEnv(SwarmVectorEnv):
         nav_error = torch.atan2(torch.sin(navigation_yaw-yaw), torch.cos(navigation_yaw-yaw))
         navigation_yaw = torch.where(nav_error.abs() > math.pi/2, navigation_yaw+math.pi, navigation_yaw)
         wanted_yaw = torch.where(approaching & (stage < 3), navigation_yaw, wanted_yaw)
+        wanted_yaw = torch.where(approaching & (stage == -1), yaw, wanted_yaw)
         _, field = self._flow(state)
         flow_target = qr[..., :2] + field
         flow_yaw = torch.atan2(-field[..., 0], field[..., 1])
@@ -201,7 +208,8 @@ class SwarmBodyEnv(SwarmVectorEnv):
                     vector = (targets[world, robot]-qr[world, robot, :2]).numpy()
                     norm = np.linalg.norm(vector)
                     desired = vector / max(norm, 1e-6) * min(.035, 2*norm)
-                    command = velocity_actions(desired[None], np.array([float(yaw[world, robot])]))
+                    command = velocity_actions(desired[None], np.array([float(yaw[world, robot])]),
+                                               config=APPROACH_FLOW)
                     action[world, robot] = self._tensor(command[0])
                     action[world, robot, 2:] = self._tensor([-1., -1.])
                 elif phase == 0 and stage == 3:
@@ -309,7 +317,7 @@ class SwarmBodyEnv(SwarmVectorEnv):
         heading_error = torch.atan2(torch.sin(wanted_yaw-yaw), torch.cos(wanted_yaw-yaw))
         aligned = (torch.linalg.vector_norm(target-qr[..., :2], dim=-1) < .015) & (heading_error.abs() < .2)
         phase = self.phase[:, self.assignment]
-        pinch = self.carrier & (phase < 5) & ((phase > 0) | aligned)
+        pinch = self.carrier & (phase < 5) & ((phase > 0) | (aligned & (self.body_approach_stage >= 5)))
         self.body_motor_gain[:] = np.where(pinch.numpy(), .00015, .00045)
         _, _, _, truncated, info = super().step(actions[..., :3])
         for world, magnets in enumerate(self.magnets):
@@ -317,24 +325,43 @@ class SwarmBodyEnv(SwarmVectorEnv):
         qr, qo, _, _, _, velocity, _, _ = self._state()
         centroid = qr[..., :2].mean(1)
         distance = torch.linalg.vector_norm(self.body_waypoint-centroid, dim=-1)
-        self.body_phase = torch.where((self.body_phase == 0) & (centroid[:, 0] < .77), 1, self.body_phase)
+        self.body_phase = torch.where((self.body_phase == 0) & (centroid[:, 0] < .81), 1, self.body_phase)
         target, wanted_yaw, _, _, phase, _ = self._targets()
         yaw = self._state()[2]
         stage = self.body_approach_stage
         error = torch.linalg.vector_norm(target-qr[..., :2], dim=-1)
         heading_error = torch.atan2(torch.sin(wanted_yaw-yaw), torch.cos(wanted_yaw-yaw))
-        arrived = ((stage < 3) & (error < .010)) | ((stage == 3) & (heading_error.abs() < .12))
+        tolerance = torch.where(stage == 2, .0015, .010)
+        arrived = ((stage >= 0) & (stage < 3) & (error < tolerance)) | ((stage == 3) & (heading_error.abs() < .04) & (error < .003))
         arrived &= self.carrier & (phase == 0) & (self.body_phase[:, None] > 0)
         self.body_approach_stage = torch.where(arrived, (stage+1).clamp(max=4), stage)
-        pair_ready = self.body_approach_stage[:, :2*self.num_objects].reshape(self.num_envs, self.num_objects, 2).amin(-1) >= 4
+        peeled = (stage == -2) & (error < .003) & (self.body_phase[:, None] > 0)
+        self.body_approach_stage = torch.where(peeled, 0, self.body_approach_stage)
+        partner_outside = self.body_approach_stage[:, self.partner] >= 1
+        waiting = (stage == -1) & partner_outside & (self.body_phase[:, None] > 0)
+        self.body_approach_stage = torch.where(waiting, 2, self.body_approach_stage)
+        reposition = self.carrier & (phase == 0) & (stage >= 3) & (stage < 5) & (error > .003)
+        self.body_approach_stage = torch.where(reposition, 2, self.body_approach_stage)
+        aligned_ready = (self.body_approach_stage >= 4) & ((stage >= 5) | ((error < .003) & (heading_error.abs() < .06)))
+        pair_ready = aligned_ready[:, :2*self.num_objects].reshape(self.num_envs, self.num_objects, 2).all(-1)
         self.body_approach_stage = torch.where(self.carrier & pair_ready[:, self.assignment], 5, self.body_approach_stage)
+        # Steer the supported grasp gradually toward the measured remaining
+        # goal vector, so lateral drift cannot strand a payload beside its goal.
+        remaining = self.goals-qo[..., :2]
+        wanted_angle = torch.atan2(remaining[..., 1], remaining[..., 0])
+        current_angle = torch.atan2(self.axis[..., 1], self.axis[..., 0])
+        correction = torch.atan2(torch.sin(wanted_angle-current_angle), torch.cos(wanted_angle-current_angle))
+        corrected_angle = current_angle + correction.clamp(-.005, .005)
+        direction = torch.stack([torch.cos(corrected_angle), torch.sin(corrected_angle)], -1)
+        steer = (self.phase == 2) & (torch.linalg.vector_norm(remaining, dim=-1) > .009)
+        self.axis = torch.where(steer[..., None], direction, self.axis)
         ready_to_carry = ((self.phase >= 2) | ~self.object_active).all(-1)
         self.body_phase = torch.where(ready_to_carry & (self.body_phase < 2), 2, self.body_phase)
         released = info["delivered"] == self.object_active.sum(-1)
         self.body_phase = torch.where(released, 3, self.body_phase)
         mean_payload = (qo[..., :2]*self.object_active[..., None]).sum(1)/self.object_active.sum(-1, keepdim=True).clamp(min=1)
-        pickup_center = mean_payload + self._tensor([.055, 0.])
-        self.body_waypoint = torch.where((self.body_phase == 1)[:, None], self._tensor([.745, .885]), self.body_waypoint)
+        pickup_center = mean_payload + self._tensor([.17, 0.])
+        self.body_waypoint = torch.where((self.body_phase == 1)[:, None], self._tensor([.80, .885]), self.body_waypoint)
         self.body_waypoint = torch.where((self.body_phase == 2)[:, None], pickup_center, self.body_waypoint)
         regroup_center = mean_payload + self._tensor([.17, 0.])
         self.body_waypoint = torch.where((self.body_phase == 3)[:, None], regroup_center, self.body_waypoint)

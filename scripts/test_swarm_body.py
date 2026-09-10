@@ -67,6 +67,19 @@ class BodyEnvironmentTests(unittest.TestCase):
         pressing = env.teacher_action()[:, 0, :2]
         self.assertGreater(float(pressing.mean()), .1)
 
+    def test_outside_gripper_leaves_before_its_waiting_partner(self):
+        env = self.env
+        env.body_phase[:] = 1
+        command = env.teacher_action()
+        self.assertTrue(torch.all(command[:, [0, 2], :2] == 0))
+        self.assertTrue(torch.all(command[:, :4, 3] == -1))
+        self.assertGreater(float(command[:, [1, 3], :2].mean()), 0)
+        env.step(command)
+        self.assertTrue(torch.all(env.body_approach_stage[:, [0, 2]] == -1))
+        env.body_approach_stage[:, [1, 3]] = 1
+        env.step(env.teacher_action())
+        self.assertTrue(torch.all(env.body_approach_stage[:, [0, 2]] == 2))
+
 
 if __name__ == '__main__':
     unittest.main()
