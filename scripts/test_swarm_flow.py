@@ -193,6 +193,16 @@ class SwarmFlowTests(unittest.TestCase):
         self.assertGreater(actions[4, :2].mean(), 0.)
         np.testing.assert_array_equal(state.release_steps, before)
 
+    def test_docking_does_not_release_a_large_detached_body(self):
+        poses = compact_packing(12)
+        graph = np.zeros((12, 12), bool)
+        graph[:7, :7] = True
+        graph[7:, 7:] = True
+        np.fill_diagonal(graph, False)
+        state = DockingState(12)
+        state.update(poses[:, :2], poses[:, 3], graph)
+        self.assertFalse(state.guidance(poses[:, :2], poses[:, 3])['release'].any())
+
 
 if __name__ == '__main__':
     unittest.main()

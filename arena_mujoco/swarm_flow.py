@@ -414,7 +414,7 @@ class DockingState:
         labels, _ = connected_components(graph)
         counts = np.bincount(labels)
         largest = int(np.argmax(counts)) if len(counts) else -1
-        detached_group = (labels != largest) & (counts[labels] > 1)
+        detached_group = (labels != largest) & (counts[labels] > 1) & (counts[labels] <= 4)
         forward, right = _axes(yaw)
         for label in np.unique(labels[detached_group]):
             group = labels == label
