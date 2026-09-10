@@ -159,6 +159,8 @@ checks, which determined the backend used for this job.
 restores the model, optimizer, stage, and update counter. Set `--updates` to the
 desired total count when resuming. Physics states are reset on resume.
 An anchored resume collects fresh demonstrations for the restored stage.
+`--skip-initial-eval` skips the baseline before the first PPO update, which can
+save a repeated audit on resume. Scheduled validation and all final audits still run.
 Two consecutive stage-3 validation passes with at least 32 episodes, 80% success,
 and a 60% Wilson lower bound stop optimization early. The unseen final audit still
 runs. `--eval-max-steps 0` automatically allows enough control steps to finish

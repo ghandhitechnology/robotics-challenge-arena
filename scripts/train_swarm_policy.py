@@ -298,6 +298,7 @@ def main():
     parser.add_argument("--stage-eval-episodes", type=int, default=8, help="Evaluation episodes for curriculum stages 0–2")
     parser.add_argument("--eval-interval", type=int, default=20)
     parser.add_argument("--eval-max-steps", type=int, default=0, help="Explicit evaluation control-step cap; 0 derives enough steps for every episode")
+    parser.add_argument("--skip-initial-eval", action="store_true", help="Skip the initial warmstart or resume baseline evaluation")
     parser.add_argument("--stage-success", type=float, default=.7)
     parser.add_argument("--min-stage-updates", type=int, default=20)
     parser.add_argument("--start-stage", type=int, choices=range(4), default=0)
@@ -388,10 +389,14 @@ def main():
             del warmstart_result
         export_policy(model, out / "warmstart.npz")
         obs = tensor_obs(env.reset(), device)
-    baseline = evaluate(model, validation_env, stage, args, device)
-    baseline["policy"] = "warmstart" if not args.resume else "resumed"
-    print(json.dumps({"phase": "baseline", **baseline}), flush=True)
-    evaluations = [baseline]
+    evaluations = []
+    if args.skip_initial_eval:
+        progress(args, {"phase": "initial_evaluation_skipped", "reason": "--skip-initial-eval"})
+    else:
+        baseline = evaluate(model, validation_env, stage, args, device)
+        baseline["policy"] = "warmstart" if not args.resume else "resumed"
+        print(json.dumps({"phase": "baseline", **baseline}), flush=True)
+        evaluations.append(baseline)
     stage_warmstarts = []
     best = (-1, -1.)
     updates_at_stage = checkpoint.get("updates_at_stage", 0) if checkpoint else 0
