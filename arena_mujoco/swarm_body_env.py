@@ -24,6 +24,7 @@ FEATURES = TRANSPORT_FEATURES + [
     "magnets_enabled", "magnetic_degree", "magnetic_component_fraction", "body_phase",
 ]
 APPROACH_FLOW = FlowConfig(steering_full_speed=.001, max_yaw_rate=2.5, heading_gain=6.)
+PAYLOAD_BODY_STANDOFF = .24
 
 
 class SwarmBodyEnv(SwarmVectorEnv):
@@ -422,10 +423,10 @@ class SwarmBodyEnv(SwarmVectorEnv):
         self.body_phase = torch.where(released, 3, self.body_phase)
         mean_payload = (qo[..., :2]*self.object_active[..., None]).sum(1)/self.object_active.sum(-1, keepdim=True).clamp(min=1)
         rearmost_payload = torch.where(self.object_active, qo[..., 0], -torch.inf).amax(-1)
-        pickup_center = torch.stack([rearmost_payload+.17, mean_payload[:, 1]], -1)
+        pickup_center = torch.stack([rearmost_payload+PAYLOAD_BODY_STANDOFF, mean_payload[:, 1]], -1)
         self.body_waypoint = torch.where((self.body_phase == 1)[:, None], self._tensor([.80, .885]), self.body_waypoint)
         self.body_waypoint = torch.where((self.body_phase == 2)[:, None], pickup_center, self.body_waypoint)
-        regroup_center = mean_payload + self._tensor([.17, 0.])
+        regroup_center = mean_payload + self._tensor([PAYLOAD_BODY_STANDOFF, 0.])
         self.body_waypoint = torch.where((self.body_phase == 3)[:, None], regroup_center, self.body_waypoint)
         self._update_docking(self._state())
         metrics = []
