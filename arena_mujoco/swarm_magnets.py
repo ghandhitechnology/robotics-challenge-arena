@@ -102,7 +102,7 @@ class MagneticCoupling:
 
     Call mj_step1(model, data), apply(data, enabled), mj_step2(model, data) each
     native physics substep. The scene must use Euler/implicit integration, not
-    RK4. apply overwrites xfrc_applied ONLY on the listed module root bodies;
+    RK4. apply overwrites xfrc_applied ONLY on bodies that own docking sites;
     callers must add any other module-body loads after apply. All payload and
     other body entries are untouched. No qpos, qvel, equality or actuator edits.
 
@@ -119,16 +119,31 @@ class MagneticCoupling:
     def __init__(self, model, specs, parameters=PARAMETERS):
         self.model, self.parameters = model, parameters
         self.robot_bodies = np.array([model.body(s["name"]).id for s in specs], dtype=int)
+        if np.any(self.robot_bodies == 0) or len(np.unique(self.robot_bodies)) != len(specs):
+            raise ValueError("Module roots must be distinct non-world bodies")
+        roots = set(self.robot_bodies)
+        for body in self.robot_bodies:
+            ancestor = int(model.body_parentid[body])
+            while ancestor:
+                if ancestor in roots:
+                    raise ValueError("Module root subtrees must not overlap")
+                ancestor = int(model.body_parentid[ancestor])
         self.site_ids = np.array([[model.site(n).id for n in s["magnetic_sites"]]
                                   for s in specs], dtype=int)
         if self.site_ids.ndim != 2 or not self.site_ids.size:
             raise ValueError("Each robot must have the same nonzero number of docks")
         self.num_robots, self.ports = self.site_ids.shape
         self.owners = np.repeat(np.arange(self.num_robots), self.ports)
-        self.body_ids = self.robot_bodies[self.owners]
         self.flat_sites = self.site_ids.ravel()
-        if np.any(model.site_bodyid[self.flat_sites] != self.body_ids):
-            raise ValueError("Dock sites must belong directly to module root bodies")
+        self.body_ids = np.asarray(model.site_bodyid[self.flat_sites], dtype=int)
+        for body, owner in zip(self.body_ids, self.owners):
+            ancestor = int(body)
+            while ancestor and ancestor != self.robot_bodies[owner]:
+                ancestor = int(model.body_parentid[ancestor])
+            if ancestor != self.robot_bodies[owner]:
+                raise ValueError("Dock sites must belong to their module root or its descendants")
+        self.force_bodies = np.unique(self.body_ids)
+        self._articulated_ports = np.any(self.body_ids != self.robot_bodies[self.owners])
         self._pair_a, self._pair_b = np.triu_indices(len(self.flat_sites), k=1)
         keep = self.owners[self._pair_a] != self.owners[self._pair_b]
         self._pair_a, self._pair_b = self._pair_a[keep], self._pair_b[keep]
@@ -136,10 +151,9 @@ class MagneticCoupling:
         body_pair_id = np.zeros((self.num_robots, self.num_robots), dtype=int)
         body_pair_id[self._body_a, self._body_b] = np.arange(len(self._body_a))
         self._port_body_pair = body_pair_id[self.owners[self._pair_a], self.owners[self._pair_b]]
-        # Every recessed magnetic center remains in a sphere about its module
-        # origin under arbitrary 3D rotation. Triangle inequality bounds every
-        # possible interacting port pair; no orientation or time assumption is
-        # involved. Model-local site transforms remain fixed after binding.
+        # Root-mounted ports have a constant reach under arbitrary rotation.
+        # Descendant ports use their current world transforms each substep,
+        # so hinges and sliders cannot move a port outside the broadphase.
         port_reach = np.linalg.norm(model.site_pos[self.site_ids], axis=-1) + parameters.center_inset_m
         self._body_reach = port_reach.max(axis=1)
         self._body_pair_range2 = (self._body_reach[self._body_a] +
@@ -148,8 +162,15 @@ class MagneticCoupling:
 
     def _candidate_ports(self, data):
         centers = data.xpos[self.robot_bodies]
+        if self._articulated_ports:
+            reach = (np.linalg.norm(data.site_xpos[self.site_ids] - centers[:, None], axis=-1)
+                     + self.parameters.center_inset_m).max(axis=1)
+            ranges2 = (reach[self._body_a] + reach[self._body_b]
+                       + self.parameters.radius_m + 1e-12)**2
+        else:
+            ranges2 = self._body_pair_range2
         delta = centers[self._body_b] - centers[self._body_a]
-        nearby = np.einsum("ij,ij->i", delta, delta) <= self._body_pair_range2
+        nearby = np.einsum("ij,ij->i", delta, delta) <= ranges2
         # Keep the original lexicographic port order, including equal-distance
         # tie breaks used when unoccupied ports acquire a partner.
         keep = nearby[self._port_body_pair]
@@ -195,7 +216,7 @@ class MagneticCoupling:
         if enabled.shape != self.site_ids.shape or not np.all(np.isfinite(enabled)):
             raise ValueError("enabled must be a finite robot or robot-by-port array")
         enabled = enabled.astype(bool).ravel()
-        data.xfrc_applied[self.robot_bodies] = 0.
+        data.xfrc_applied[self.force_bodies] = 0.
         p = self.parameters
         normals = data.site_xmat[self.flat_sites].reshape(-1, 3, 3)[:, :, 2]
         face_positions = data.site_xpos[self.flat_sites]

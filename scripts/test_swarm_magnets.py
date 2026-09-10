@@ -54,7 +54,109 @@ def run(model, data, coupling, specs, seconds, enabled=(True, True), speeds=None
         raise AssertionError('MuJoCo warning during magnetic test')
 
 
+def articulated_scene():
+    root = ET.fromstring('<mujoco><option gravity="0 0 0"/><worldbody/></mujoco>')
+    world = root.find('worldbody')
+    specs = []
+    for index, side in enumerate((1, -1)):
+        name = f'module_{index}'
+        body = ET.SubElement(world, 'body', name=name, pos=f'{-side*.035} 0 0')
+        ET.SubElement(body, 'freejoint', name=name+'_free')
+        ET.SubElement(body, 'geom', type='sphere', size='.006', mass='.02')
+        lobe = ET.SubElement(body, 'body', name=name+'_lobe', pos=f'{side*.02} 0 0')
+        ET.SubElement(lobe, 'joint', name=name+'_hinge', axis='0 1 0')
+        ET.SubElement(lobe, 'geom', type='sphere', size='.007', mass='.01')
+        ET.SubElement(lobe, 'site', name=name+'_port', pos=f'{side*.0146} 0 .004',
+                      quat=f'.707106781187 0 {side*.707106781187} 0')
+        specs.append(dict(name=name, magnetic_sites=[name+'_port']))
+    payload = ET.SubElement(world, 'body', name='payload', pos='.3 0 0')
+    ET.SubElement(payload, 'freejoint')
+    ET.SubElement(payload, 'geom', type='sphere', size='.01', mass='.1')
+    model = mujoco.MjModel.from_xml_string(ET.tostring(root, encoding='unicode'))
+    data = mujoco.MjData(model)
+    data.qpos[model.joint('module_0_hinge').qposadr[0]] = .015
+    data.qpos[model.joint('module_1_hinge').qposadr[0]] = .015
+    mujoco.mj_forward(model, data)
+    return model, data, MagneticCoupling(model, specs), specs
+
+
 class MagneticTests(unittest.TestCase):
+    def test_articulated_ports_apply_balanced_wrenches_to_their_lobes(self):
+        model, data, coupling, _ = articulated_scene()
+        untouched = np.setdiff1d(np.arange(model.nbody), coupling.force_bodies)
+        data.xfrc_applied[untouched] = np.arange(6) + .25
+        coupling.apply(data, [True, True])
+        self.assertTrue(coupling.interacting_pairs)
+        bodies = coupling.force_bodies
+        loads = data.xfrc_applied[bodies]
+        np.testing.assert_allclose(loads[:, :3].sum(0), 0, atol=1e-14)
+        moment = loads[:, 3:] + np.cross(data.xipos[bodies], loads[:, :3])
+        np.testing.assert_allclose(moment.sum(0), 0, atol=1e-14)
+        np.testing.assert_array_equal(data.xfrc_applied[untouched],
+                                     np.tile(np.arange(6)+.25, (len(untouched), 1)))
+        coupling.apply(data, [False, True])
+        self.assertFalse(np.any(data.xfrc_applied[bodies]))
+
+    def test_articulated_port_potential_gradient_matches_hinge_torque(self):
+        model, data, coupling, _ = articulated_scene()
+        coupling.apply(data, [True, True])
+        generalized = np.zeros(model.nv)
+        for body in coupling.force_bodies:
+            mujoco.mj_applyFT(model, data, data.xfrc_applied[body, :3],
+                             data.xfrc_applied[body, 3:], data.xipos[body],
+                             int(body), generalized)
+        initial = data.qpos.copy()
+        for index in range(2):
+            joint = model.joint(f'module_{index}_hinge')
+            adr, dof = int(joint.qposadr[0]), int(joint.dofadr[0])
+            self.assertGreater(abs(generalized[dof]), 1e-5)
+            energies = []
+            for sign in (-1, 1):
+                data.qpos[:] = initial
+                data.qpos[adr] += sign*1e-7
+                mujoco.mj_forward(model, data)
+                coupling.reset()
+                coupling.apply(data, [True, True])
+                energies.append(coupling.last_potential_j)
+            self.assertAlmostEqual(-(energies[1]-energies[0])/2e-7,
+                                   generalized[dof], delta=2e-8)
+
+    def test_articulated_broadphase_tracks_moving_ports(self):
+        class AllPairsCoupling(MagneticCoupling):
+            def _candidate_ports(self, data):
+                return self._pair_a, self._pair_b
+
+        model, data, fast, specs = articulated_scene()
+        reference = AllPairsCoupling(model, specs)
+        initial = data.qpos.copy()
+        tested_interactions = 0
+        for angle in np.linspace(-1.2, 1.2, 49):
+            data.qpos[:] = initial
+            for index in range(2):
+                data.qpos[model.joint(f'module_{index}_hinge').qposadr[0]] = angle
+            mujoco.mj_forward(model, data)
+            # Translate the second root to retain a small face gap at each
+            # hinge angle. These are broadphase fixtures, not a motion test.
+            normal = data.site_xmat[fast.site_ids[0, 0]].reshape(3, 3)[:, 2]
+            offset = (data.site_xpos[fast.site_ids[0, 0]] + .0008*normal
+                      - data.site_xpos[fast.site_ids[1, 0]])
+            adr = model.joint('module_1_free').qposadr[0]
+            data.qpos[adr:adr+3] += offset
+            mujoco.mj_forward(model, data)
+            fast.apply(data, [True, True])
+            wrench = data.xfrc_applied.copy()
+            reference.apply(data, [True, True])
+            np.testing.assert_array_equal(data.xfrc_applied, wrench)
+            self.assertEqual(fast.interacting_pairs, reference.interacting_pairs)
+            tested_interactions += len(fast.interacting_pairs)
+        self.assertEqual(tested_interactions, 49)
+
+    def test_ports_cannot_belong_to_another_module_or_payload(self):
+        model, _, _, specs = articulated_scene()
+        specs[0]['magnetic_sites'] = specs[1]['magnetic_sites']
+        with self.assertRaisesRegex(ValueError, 'module root or its descendants'):
+            MagneticCoupling(model, specs)
+
     def test_broadphase_matches_all_pairs_through_three_dimensional_motion(self):
         from arena_mujoco.swarm_flow import compact_packing
 
