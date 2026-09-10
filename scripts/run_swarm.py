@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import platform
 import subprocess
 import sys
 import time
@@ -126,6 +127,8 @@ def main():
               "completed_objects": int(info["delivered"][0]) if info is not None else 0,
               "completion_time_s": successful_at, "final_hold_s": held, "final_hold_valid": bool(hold_valid),
               "simulator": "native_MuJoCo", "mujoco": mujoco_version(), "physics_timestep_s": args.timestep,
+              "runtime": {"python": platform.python_version(), "system": platform.system(),
+                          "machine": platform.machine(), "numpy": np.__version__, "torch": torch.__version__},
               "control_timestep_s": env.dt, "seed": args.seed, "difficulty": args.difficulty,
               "episode_seconds": args.episode_seconds, "requested_hold_seconds": args.hold_seconds,
               "wall_seconds": time.perf_counter() - start, "failure": failure,

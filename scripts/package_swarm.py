@@ -20,7 +20,8 @@ from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 ROOT = Path(__file__).resolve().parents[1]
 PROOF_NAMES = ("scene.xml", "metadata.json", "trajectory.npz", "policy_trace.npz")
 POLICY_NAMES = ("checkpoint.pt", "weights.npz", "warmstart.npz", "history.jsonl", "training.json")
-OPTIONAL_POLICY_NAMES = ("bc_initial.npz", "best.npz", "dagger.json", "dagger.npz", "progress.json")
+OPTIONAL_POLICY_NAMES = ("bc_initial.npz", "best.npz", "dagger.json", "dagger.npz", "progress.json",
+                         "demonstration_summary.json", "run_manifest.json")
 VIDEO_PROJECT_FILES = (
     "BRIEF.md",
     "README.md",

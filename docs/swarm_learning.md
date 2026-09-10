@@ -261,7 +261,8 @@ checked against geometry in the quick audit.
 It compares every resulting pose, timestamp, contact event, and actor observation,
 including velocity inputs. Successful replay must reproduce task completion and
 the full five-second hold. It requires the recorded MuJoCo version and matching
-source files. The video renderer runs this full replay before rendering either
+source files. The report also records Python, NumPy, Torch, operating system, and
+processor architecture. The video renderer runs this full replay before rendering either
 camera view.
 
 The default verifier requires accepted A100/H100 training and matching weights.
