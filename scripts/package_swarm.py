@@ -92,6 +92,15 @@ CAD_FILES = (
     "robot.xml",
     "swarm_module.blend",
 )
+BODY_SOURCE_FILES = (
+    "arena_mujoco/swarm_body_env.py", "arena_mujoco/swarm_flow.py", "arena_mujoco/swarm_magnets.py",
+    "scripts/run_swarm_body.py", "scripts/verify_swarm_body.py", "scripts/render_swarm_body_video.py",
+    "scripts/test_swarm_body.py", "scripts/test_swarm_body_proof.py", "scripts/test_swarm_flow.py",
+    "scripts/test_swarm_magnets.py",
+)
+BODY_CAD_FILES = tuple(name for name in CAD_FILES if name != "swarm_module.blend") + (
+    "swarm_body_robot.blend", "swarm_body_robot_design.json", "magnetic_validation.json", "bundle_manifest.json",
+)
 ZIP_TIME = (1980, 1, 1, 0, 0, 0)
 
 
@@ -156,7 +165,7 @@ def logical_files(files: dict[str, BundleFile], directory: Path, logical_dir: st
         add_file(files, directory / name, f"{logical_dir}/{name}", category)
 
 
-def validate_policy(policy_dir: Path, proof_dir: Path) -> tuple[dict, dict, dict, dict, dict[str, str]]:
+def validate_policy(policy_dir: Path, proof_dir: Path, *, body=False) -> tuple[dict, dict, dict, dict, dict[str, str]]:
     for name in POLICY_NAMES:
         require((policy_dir / name).is_file(), f"Accepted policy artifact is missing: {policy_dir / name}")
     for name in (*PROOF_NAMES, "report.json", "verification.json"):
@@ -173,8 +182,16 @@ def validate_policy(policy_dir: Path, proof_dir: Path) -> tuple[dict, dict, dict
     require(report.get("success") is True and report.get("failure") is None,
             "The native proof report is not successful")
     require(report.get("simulator") == "native_MuJoCo", "The proof was not recorded in native MuJoCo")
-    require(report.get("robot_count") == 40 and report.get("object_count") == 4 and
-            report.get("completed_objects") == 4, "The proof must complete four payloads with 40 robots")
+    object_count = 2 if body else 4
+    evidence_kind = "neural_magnetic_body" if body else "neural_transport"
+    require(report.get("robot_count") == 40 and report.get("object_count") == object_count and
+            report.get("completed_objects") == object_count,
+            f"The proof must complete {object_count} payloads with 40 robots")
+    if body:
+        require(report.get("task") == "magnetic_swarm_body_transport" and
+                report.get("policy_contract") == {"local_dim": 40, "neighbor_dim": 12,
+                                                  "global_dim": 88, "action_dim": 4},
+                "The body bundle needs the magnetic task and four-action policy")
     require(report.get("official_competition_score", "missing") is None,
             "The cooperative benchmark must not claim an official score")
     require(training.get("weights_sha256") == weight_hash and report.get("weights_sha256") == weight_hash,
@@ -185,7 +202,7 @@ def validate_policy(policy_dir: Path, proof_dir: Path) -> tuple[dict, dict, dict
             "Saved verification is not a final neural proof")
     require(verification.get("physics_replayed") is True,
             "Saved verification does not contain a successful native physics replay")
-    require(verification.get("evidence_kind") == "neural_transport",
+    require(verification.get("evidence_kind") == evidence_kind,
             "Saved verification identifies teacher or unknown evidence")
     require(verification.get("errors") == [], "Saved proof verification contains errors")
     checks = verification.get("checks")
@@ -200,6 +217,10 @@ def validate_policy(policy_dir: Path, proof_dir: Path) -> tuple[dict, dict, dict
     for name in PROOF_NAMES:
         require(artifact_hashes.get(name) == sha256(proof_dir / name),
                 f"Proof report hash mismatch for {name}")
+    if body:
+        for name in ("weights.npz", "training.json"):
+            require(artifact_hashes.get(name) == sha256(proof_dir / name) == sha256(policy_dir / name),
+                    f"Body proof and policy disagree on {name}")
     source_hashes = report.get("source_hashes")
     require(isinstance(source_hashes, dict) and source_hashes,
             "Proof report has no source hash manifest")
@@ -225,7 +246,7 @@ def close_duration(left: object, right: object, tolerance: float = 0.08) -> bool
 
 def validate_render(project: Path, view: str, policy_dir: Path, proof_dir: Path,
                     training: dict, report: dict, verification: dict, metadata: dict,
-                    proof_hashes: dict[str, str]) -> tuple[Path, Path]:
+                    proof_hashes: dict[str, str], *, body=False) -> tuple[Path, Path]:
     manifest_path = project / "render-manifest.json"
     manifest = json_object(manifest_path)
     expected_hash_keys = {
@@ -234,15 +255,19 @@ def validate_render(project: Path, view: str, policy_dir: Path, proof_dir: Path,
         "trajectory.npz": "trajectory_sha256",
         "policy_trace.npz": "policy_trace_sha256",
     }
-    require(manifest.get("view") == view.removeprefix("swarm-"),
+    require(manifest.get("view") == view.rsplit("-", 1)[-1],
             f"{view} render manifest identifies the wrong view")
     require(manifest.get("partial_replay") is False, f"{view} is a partial render")
+    if body:
+        require(manifest.get("diagnostic") is False, f"{view} is a diagnostic render")
     require(manifest.get("report_sha256") == sha256(proof_dir / "report.json"),
             f"{view} render manifest does not match the proof report")
     for proof_name, manifest_key in expected_hash_keys.items():
         require(manifest.get(manifest_key) == proof_hashes[proof_name],
                 f"{view} render manifest does not match {proof_name}")
-    require(manifest.get("proof_verifier_sha256") == sha256(ROOT / "scripts/verify_swarm_proof.py"),
+    verifier = "scripts/verify_swarm_body.py" if body else "scripts/verify_swarm_proof.py"
+    evidence_kind = "neural_magnetic_body" if body else "neural_transport"
+    require(manifest.get("proof_verifier_sha256") == sha256(ROOT / verifier),
             f"{view} render manifest does not match the packaged verifier")
     native_video = project / "assets/trajectory.mp4"
     require(native_video.is_file() and not native_video.is_symlink() and
@@ -252,7 +277,7 @@ def validate_render(project: Path, view: str, policy_dir: Path, proof_dir: Path,
     render_check = manifest.get("proof_verification")
     require(isinstance(render_check, dict) and render_check.get("valid") is True and
             render_check.get("final_neural_proof") is True and
-            render_check.get("evidence_kind") == "neural_transport",
+            render_check.get("evidence_kind") == evidence_kind,
             f"{view} render manifest is not tied to final neural evidence")
 
     require(json_object(project / "source-report.json") == report,
@@ -300,12 +325,14 @@ def is_job_log(path: Path) -> bool:
             name.startswith("slurm-"))
 
 
-def collect_job_logs(policy_dir: Path, swarm_output: Path) -> list[tuple[Path, str]]:
+def collect_job_logs(policy_dir: Path, swarm_output: Path, *, policy_name="policy") -> list[tuple[Path, str]]:
     found: dict[str, Path] = {}
     for path in policy_dir.rglob("*") if policy_dir.is_dir() else ():
         if path.is_file() and not path.is_symlink() and is_job_log(path):
-            logical = f"output/swarm/policy/{path.relative_to(policy_dir).as_posix()}"
+            logical = f"output/swarm/{policy_name}/{path.relative_to(policy_dir).as_posix()}"
             found[logical] = path
+    if policy_name != "policy":
+        return [(path, logical) for logical, path in sorted(found.items())]
     for directory_name in ("logs", "jobs"):
         directory = swarm_output / directory_name
         if directory.is_dir():
@@ -323,7 +350,9 @@ def collect_job_logs(policy_dir: Path, swarm_output: Path) -> list[tuple[Path, s
 def collect_files(args, training: dict, report: dict, verification: dict,
                   metadata: dict, proof_hashes: dict[str, str]) -> tuple[dict[str, BundleFile], dict]:
     files: dict[str, BundleFile] = {}
-    for name in SOURCE_FILES:
+    body = getattr(args, "body", False)
+    policy_name, proof_name, cad_name = ("body_policy", "body_proof", "body_robot") if body else ("policy", "proof", "robot")
+    for name in SOURCE_FILES + (BODY_SOURCE_FILES if body else ()):
         add_file(files, ROOT / name, name, "source")
     for name in REQUIREMENT_FILES:
         add_file(files, ROOT / name, name, "requirements")
@@ -332,35 +361,50 @@ def collect_files(args, training: dict, report: dict, verification: dict,
     for name in report["source_hashes"]:
         add_file(files, ROOT / name, name, "proof_source")
 
-    cad_dir = ROOT / "output/swarm/robot"
-    logical_files(files, cad_dir, "output/swarm/robot", CAD_FILES, "robot_cad")
+    cad_dir = ROOT / "output/swarm" / cad_name
+    logical_files(files, cad_dir, f"output/swarm/{cad_name}", BODY_CAD_FILES if body else CAD_FILES, "robot_cad")
     parts = sorted((cad_dir / "parts").glob("*.stl"))
-    require(parts, "Robot CAD parts are missing")
+    require(len(parts) == (13 if body else 9), "Robot CAD part count does not match the module")
+    cad = json_object(cad_dir / "cad_manifest.json")
+    require(len(cad.get("parts", [])) == len(parts), "CAD manifest omits module parts")
+    for part in cad["parts"]:
+        relative = portable_path(part["stl"])
+        source = cad_dir / relative
+        require(source.is_file() and part.get("sha256") == sha256(source),
+                f"CAD part differs from its geometry manifest: {relative}")
+    if body:
+        require(cad.get("variant") == "magnetic_body" and len(cad.get("sites", [])) == 4,
+                "Body CAD must contain all four magnetic ports")
+        for name, count in (("contact_validation.json", 6), ("magnetic_validation.json", 2)):
+            coupons = json.loads((cad_dir / name).read_text())
+            require(isinstance(coupons, list) and len(coupons) == count and
+                    all(item.get("passed") is True for item in coupons), f"CAD mechanism tests failed: {name}")
     for path in parts:
-        add_file(files, path, f"output/swarm/robot/parts/{path.name}", "robot_cad")
+        add_file(files, path, f"output/swarm/{cad_name}/parts/{path.name}", "robot_cad")
 
-    logical_files(files, args.policy_dir, "output/swarm/policy", POLICY_NAMES, "accepted_policy")
+    logical_files(files, args.policy_dir, f"output/swarm/{policy_name}", POLICY_NAMES, "accepted_policy")
     for name in OPTIONAL_POLICY_NAMES:
         path = args.policy_dir / name
         if path.is_file():
-            add_file(files, path, f"output/swarm/policy/{name}", "policy_support")
+            add_file(files, path, f"output/swarm/{policy_name}/{name}", "policy_support")
     reported_exports = training.get("imitation_exports", {})
     require(isinstance(reported_exports, dict), "Training imitation_exports must be an object")
     for name in reported_exports:
         require(isinstance(name, str) and PurePosixPath(name).name == name and name.endswith(".npz"),
                 f"Training report names an unsafe imitation export: {name!r}")
-        add_file(files, args.policy_dir / name, f"output/swarm/policy/{name}",
+        add_file(files, args.policy_dir / name, f"output/swarm/{policy_name}/{name}",
                  "imitation_policy")
-    for path, logical in collect_job_logs(args.policy_dir, ROOT / "output/swarm"):
+    for path, logical in collect_job_logs(args.policy_dir, ROOT / "output/swarm", policy_name=policy_name):
         add_file(files, path, logical, "training_job_log", allow_empty=True)
 
-    logical_files(files, args.proof_dir, "output/swarm/proof",
-                  (*PROOF_NAMES, "report.json", "verification.json"), "native_proof")
+    proof_names = (*PROOF_NAMES, "report.json", "verification.json") + (("weights.npz", "training.json") if body else ())
+    logical_files(files, args.proof_dir, f"output/swarm/{proof_name}", proof_names, "native_proof")
 
     render_summary = {}
-    for view, project in (("swarm-top", args.top_project), ("swarm-side", args.side_project)):
+    prefix = "swarm-body" if body else "swarm"
+    for view, project in ((f"{prefix}-top", args.top_project), (f"{prefix}-side", args.side_project)):
         master, attachment = validate_render(project, view, args.policy_dir, args.proof_dir,
-                                             training, report, verification, metadata, proof_hashes)
+                                             training, report, verification, metadata, proof_hashes, body=body)
         logical_files(files, project, f"videos/{view}", VIDEO_PROJECT_FILES, "video_source")
         add_file(files, master, f"videos/{view}/renders/{view}.mp4", "video_master")
         add_file(files, attachment, f"videos/{view}/renders/{view}-pr.mp4", "video_attachment")
@@ -374,19 +418,20 @@ def collect_files(args, training: dict, report: dict, verification: dict,
     require(len(revision) == 40, "Could not determine the repository source revision")
     manifest = {
         "schema_version": 1,
-        "bundle": "swarm_complete",
+        "bundle": "swarm_body_complete" if body else "swarm_complete",
+        "task": "magnetic_swarm_body_transport" if body else "cooperative_transport",
         "source_revision": revision,
         "proof_source_revision": report["source_commit"],
         "policy": {
             "acceptance_passed": True,
             "weights_sha256": training["weights_sha256"],
-            "training_report": "output/swarm/policy/training.json",
+            "training_report": f"output/swarm/{policy_name}/training.json",
         },
         "proof": {
             "final_neural_proof": True,
             "physics_replayed": True,
-            "report": "output/swarm/proof/report.json",
-            "verification": "output/swarm/proof/verification.json",
+            "report": f"output/swarm/{proof_name}/report.json",
+            "verification": f"output/swarm/{proof_name}/verification.json",
         },
         "renders": render_summary,
         "job_logs": sorted(item.path for item in files.values() if item.category == "training_job_log"),
@@ -425,7 +470,7 @@ def atomic_write(path: Path, payload: bytes) -> None:
     os.replace(temporary, path)
 
 
-def clean_reproduction_check(bundle: ZipFile, records: list[dict]) -> None:
+def clean_reproduction_check(bundle: ZipFile, records: list[dict], *, body=False) -> None:
     """Import the packaged native swarm source from an otherwise clean directory."""
     categories = {"source", "proof_source", "requirements", "arena_input"}
     selected = [f"swarm_complete/{record['path']}" for record in records
@@ -447,6 +492,17 @@ assert Path(arena_mujoco.__file__).resolve().is_relative_to(root)
 xml, metadata = build_swarm_scene(num_robots=2, num_objects=1, timestep=.002)
 assert '<mujoco' in xml and len(metadata['robots']) == 2 and len(metadata['objects']) == 1
 assert (root / 'requirements-swarm.txt').is_file()
+"""
+        if body:
+            check += """
+from arena_mujoco.swarm_body_env import SwarmBodyEnv
+env = SwarmBodyEnv(num_envs=1, num_robots=40, num_objects=2)
+observation = env.reset()
+assert observation['local'].shape == (1, 40, 40)
+assert observation['neighbors'].shape == (1, 40, 6, 12)
+assert observation['global'].shape == (1, 88)
+assert env.action_dim == 4 and len(env.magnets) == 1
+env.close()
 """
         completed = subprocess.run([sys.executable, "-c", check], cwd=extracted,
                                    env=environment, text=True, capture_output=True)
@@ -482,7 +538,7 @@ def build_archive(output: Path, files: dict[str, BundleFile], manifest: dict) ->
             require(len(names) == len(set(names)) and
                     all(name.startswith("swarm_complete/") and ".." not in PurePosixPath(name).parts
                         for name in names), "Archive contains duplicate or nonportable paths")
-            clean_reproduction_check(bundle, records)
+            clean_reproduction_check(bundle, records, body=manifest.get("task") == "magnetic_swarm_body_transport")
         os.replace(temporary, output)
         atomic_write(manifest_sidecar, manifest_payload)
         sidecar_payload = (
@@ -497,22 +553,24 @@ def build_archive(output: Path, files: dict[str, BundleFile], manifest: dict) ->
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--policy-dir", type=Path, default=ROOT / "output/swarm/policy")
-    parser.add_argument("--proof-dir", type=Path, default=ROOT / "output/swarm/proof")
-    parser.add_argument("--top-project", type=Path, default=ROOT / "videos/swarm-top")
-    parser.add_argument("--side-project", type=Path, default=ROOT / "videos/swarm-side")
-    parser.add_argument("--output", type=Path, default=ROOT / "output/swarm/swarm_complete.zip")
+    parser.add_argument("--body", action="store_true", help="Package the forty-module magnetic body and its two-payload proof")
+    parser.add_argument("--policy-dir", type=Path)
+    parser.add_argument("--proof-dir", type=Path)
+    parser.add_argument("--top-project", type=Path)
+    parser.add_argument("--side-project", type=Path)
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args(argv)
-    args.policy_dir = args.policy_dir.resolve()
-    args.proof_dir = args.proof_dir.resolve()
-    args.top_project = args.top_project.resolve()
-    args.side_project = args.side_project.resolve()
-    args.output = args.output.resolve()
+    prefix = "swarm-body" if args.body else "swarm"
+    args.policy_dir = (args.policy_dir or ROOT / "output/swarm" / ("body_policy" if args.body else "policy")).resolve()
+    args.proof_dir = (args.proof_dir or ROOT / "output/swarm" / ("body_proof" if args.body else "proof")).resolve()
+    args.top_project = (args.top_project or ROOT / "videos" / f"{prefix}-top").resolve()
+    args.side_project = (args.side_project or ROOT / "videos" / f"{prefix}-side").resolve()
+    args.output = (args.output or ROOT / "output/swarm" / ("swarm_body_complete.zip" if args.body else "swarm_complete.zip")).resolve()
     if args.output.suffix.lower() != ".zip":
         parser.error("--output must end in .zip")
     try:
         training, report, verification, metadata, proof_hashes = validate_policy(
-            args.policy_dir, args.proof_dir)
+            args.policy_dir, args.proof_dir, body=args.body)
         files, manifest = collect_files(args, training, report, verification, metadata, proof_hashes)
         manifest_path, checksums_path = build_archive(args.output, files, manifest)
     except (BundleError, OSError, subprocess.CalledProcessError) as error:
