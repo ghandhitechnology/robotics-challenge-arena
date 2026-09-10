@@ -24,6 +24,7 @@ FEATURES = TRANSPORT_FEATURES + [
     "magnets_enabled", "magnetic_degree", "magnetic_component_fraction", "body_phase",
 ]
 APPROACH_FLOW = FlowConfig(steering_full_speed=.001, max_yaw_rate=2.5, heading_gain=6.)
+DEPLOY_FLOW = FlowConfig(consensus_steps=0)
 PAYLOAD_BODY_STANDOFF = .24
 
 
@@ -170,7 +171,8 @@ class SwarmBodyEnv(SwarmVectorEnv):
                                             yaw[world, members].numpy(), self.body_waypoint[world].numpy(),
                                             links=self.body_links[world][np.ix_(members, members)], shape_radii=(.15, .145),
                                             obstacles=obstacles, docking=True, docking_state=self.body_docking[world],
-                                            module_ids=members, return_guidance=True)
+                                            module_ids=members, return_guidance=True,
+                                            config=DEPLOY_FLOW if self.body_phase[world] < 2 else None)
                 action[members], field[members] = subset_action, subset_field
                 positions[members], headings[members], active[members] = guidance['positions'], guidance['yaw'], guidance['active']
             actions.append(action)
