@@ -9,7 +9,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from arena_mujoco.swarm_flow import (DockingState, FlowConfig, body_telemetry, compact_packing, flow_actions,
-                                     local_velocity_field, velocity_actions)
+                                     local_velocity_field, velocity_actions, _clear_docking_poses)
 
 
 class SwarmFlowTests(unittest.TestCase):
@@ -202,6 +202,35 @@ class SwarmFlowTests(unittest.TestCase):
         state = DockingState(12)
         state.update(poses[:, :2], poses[:, 3], graph)
         self.assertFalse(state.guidance(poses[:, :2], poses[:, 3])['release'].any())
+
+    def test_clear_dock_endpoint_does_not_imply_a_clear_rolling_lane(self):
+        core = np.array([[.5, .5], [.5248, .528], [.5248, .584]])
+        yaw = np.zeros(3)
+        target = np.array([[.5248, .472]])
+        self.assertTrue(_clear_docking_poses(target, np.zeros(1), core, yaw, [])[0])
+        # The north approach crosses two occupied chassis even though its final
+        # pose is free; the south approach reaches the same dock unobstructed.
+        offsets = np.array([.208, -.072])
+        swept = target+np.column_stack((np.zeros(2), offsets/2))
+        clear = _clear_docking_poses(swept, np.zeros(2), core, yaw, [],
+                                     half_lengths=.0276+np.abs(offsets)/2)
+        np.testing.assert_array_equal(clear, [False, True])
+
+    def test_reserved_port_is_replanned_if_another_module_occupies_it(self):
+        pos = np.array([[.5, .5], [.5248, .528], [.5496, .5], [.59, .50], [.2, .2]])
+        yaw = np.array([0., 0., 0., .3, 0.])
+        graph = np.zeros((5, 5), bool)
+        graph[0, 1] = graph[1, 0] = graph[1, 2] = graph[2, 1] = True
+        state = DockingState(5)
+        state.update(pos, yaw, graph)
+        initial = state.guidance(pos, yaw)
+        owner, port = initial['neighbor'][3], initial['port'][3]
+        self.assertGreaterEqual(owner, 0)
+        pos[4], yaw[4] = initial['final_positions'][3], initial['yaw'][3]
+        graph[owner, 4] = graph[4, owner] = True
+        state.update(pos, yaw, graph)
+        updated = state.guidance(pos, yaw)
+        self.assertFalse(updated['neighbor'][3] == owner and updated['port'][3] == port)
 
 
 if __name__ == '__main__':

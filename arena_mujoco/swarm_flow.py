@@ -208,9 +208,10 @@ def velocity_actions(desired_velocity, yaw, *, links=None, lift=-1., config=None
 _DOCK_XY = np.array([[-.012, -.014], [-.012, .014], [.012, -.014], [.012, .014]])
 
 
-def _clear_docking_poses(centers, headings, positions, yaw, ignored):
+def _clear_docking_poses(centers, headings, positions, yaw, ignored, *, half_lengths=None):
     """Conservative oriented-footprint clearance for proposed attachment poses."""
     cf, cr = _axes(headings)
+    lengths = np.full(len(centers), .0276) if half_lengths is None else np.asarray(half_lengths)
     of, ort = _axes(yaw)
     # Footprint center is 0.5 mm ahead of the root reference.
     delta = (positions[None] + .0005*of[None]
@@ -220,7 +221,7 @@ def _clear_docking_poses(centers, headings, positions, yaw, ignored):
     for axis in axes:
         distance = np.abs(np.sum(delta*axis, axis=-1))
         own = (.0121*np.abs(np.sum(cr[:, None]*axis, axis=-1))
-               + .0276*np.abs(np.sum(cf[:, None]*axis, axis=-1)))
+               + lengths[:, None]*np.abs(np.sum(cf[:, None]*axis, axis=-1)))
         other = (.0121*np.abs(np.sum(ort[None]*axis, axis=-1))
                  + .0276*np.abs(np.sum(of[None]*axis, axis=-1)))
         separated |= distance >= own+other
@@ -228,9 +229,28 @@ def _clear_docking_poses(centers, headings, positions, yaw, ignored):
     return separated.all(axis=-1)
 
 
+def _clear_docking_rectangles(centers, headings, half_lengths, obstacles):
+    """SAT clearance of straight rolling corridors against payload rectangles."""
+    if not len(obstacles):
+        return np.ones(len(centers), bool)
+    rect = np.asarray(obstacles, float)
+    obstacle_center = (rect[:, :2]+rect[:, 2:])/2
+    obstacle_half = (rect[:, 2:]-rect[:, :2])/2
+    forward, right = _axes(headings)
+    delta = obstacle_center[None]-centers[:, None]-.0005*forward[:, None]
+    separated = np.zeros((len(centers), len(rect)), bool)
+    for axis in (right[:, None], forward[:, None], np.array([1., 0.]), np.array([0., 1.])):
+        distance = np.abs(np.sum(delta*axis, axis=-1))
+        own = (.0121*np.abs(np.sum(right[:, None]*axis, axis=-1))
+               + half_lengths[:, None]*np.abs(np.sum(forward[:, None]*axis, axis=-1)))
+        other = np.sum(obstacle_half[None]*np.abs(axis), axis=-1)
+        separated |= distance >= own+other
+    return separated.all(axis=-1)
+
+
 def docking_targets(positions, yaw, links, *, obstacles=(),
                     arena_bounds=(0., 0., 1.143, 1.181), capture_distance=.0015,
-                    search_distance=.24, reserved_ports=None):
+                    search_distance=.35, reserved_ports=None):
     """Choose free shoulder ports for isolated modules to rejoin nearby bodies.
 
     Targets follow the current body geometry. No lattice slots or module IDs
@@ -244,7 +264,8 @@ def docking_targets(positions, yaw, links, *, obstacles=(),
         raise ValueError("docking needs Nx2 positions, N headings and NxN links")
     result = dict(positions=pos.copy(), yaw=yaw.copy(), active=np.zeros(n, bool),
                   neighbor=np.full(n, -1, int), port=np.full(n, -1, int),
-                  own_port=np.full(n, -1, int), axis_flip=np.zeros(n, bool))
+                  own_port=np.full(n, -1, int), axis_flip=np.zeros(n, bool),
+                  staging_offset=np.zeros(n))
     if n < 2:
         return result
     graph = graph | graph.T
@@ -308,6 +329,25 @@ def docking_targets(positions, yaw, links, *, obstacles=(),
             lo, hi = np.asarray(obstacle[:2]), np.asarray(obstacle[2:])
             intersects = np.all(center_xy+half_xy > lo, axis=-1) & np.all(center_xy-half_xy < hi, axis=-1)
             valid &= ~intersects
+        # A free endpoint can still be trapped behind occupied modules. Each
+        # candidate needs one entirely clear straight rolling lane, represented
+        # by its swept oriented footprint rather than discrete path samples.
+        extent = np.sum((pos[anchors][None]-targets[:, None])*tf[:, None], axis=-1)
+        offsets = np.column_stack((extent.min(axis=-1)-.070, extent.max(axis=-1)+.070))
+        staging = targets[:, None]+offsets[..., None]*tf[:, None]
+        swept = targets[:, None]+.5*offsets[..., None]*tf[:, None]
+        swept_heading = np.repeat(target_yaw, 2)
+        swept_length = (.0276+.5*np.abs(offsets)).ravel()
+        clear = _clear_docking_poses(swept.reshape(-1, 2), swept_heading, virtual, virtual_yaw,
+                                     robot, half_lengths=swept_length).reshape(-1, 2)
+        clear &= _clear_docking_rectangles(swept.reshape(-1, 2), swept_heading,
+                                           swept_length, obstacles).reshape(-1, 2)
+        clear &= np.all(staging+.0005*tf[:, None]-half_xy[:, None] >= [xmin+.002, ymin+.002], axis=-1)
+        clear &= np.all(staging+.0005*tf[:, None]+half_xy[:, None] <= [xmax-.002, ymax-.002], axis=-1)
+        lane_cost = np.where(clear, np.linalg.norm(staging-pos[robot], axis=-1)+.3*np.abs(offsets), np.inf)
+        lane = np.argmin(lane_cost, axis=-1)
+        staging_offset = offsets[np.arange(len(targets)), lane]
+        valid &= clear.any(axis=-1)
         difference = np.arctan2(np.sin(target_yaw-yaw[robot]), np.cos(target_yaw-yaw[robot]))
         approach = targets-pos[robot]
         # A nearly sideways final approach cannot be driven by these wheels.
@@ -327,6 +367,7 @@ def docking_targets(positions, yaw, links, *, obstacles=(),
         result['port'][robot] = ports[best]
         result['own_port'][robot] = int(2*(own_sign[best] > 0)+(own_y[best] > 0))
         result['axis_flip'][robot] = abs(target_yaw[best]-yaw[owners[best]]) > math.pi/2
+        result['staging_offset'][robot] = staging_offset[best]
         reserved[owners[best], ports[best]] = True
         virtual[robot], virtual_yaw[robot] = targets[best], target_yaw[best]
     return result
@@ -426,8 +467,22 @@ class DockingState:
             self.release_steps[ids[group]] = 70
         for i, robot in enumerate(ids):
             destination = local.get(int(self.neighbor[robot]))
+            occupied = False
+            if destination is not None and self.stage[robot] >= 0:
+                linked = np.flatnonzero(graph[destination] & (np.arange(len(ids)) != i))
+                if len(linked):
+                    af, ar = _axes(yaw[destination:destination+1])
+                    dock = _DOCK_XY[self.port[robot]]
+                    site = pos[destination]+dock[0]*ar[0]+dock[1]*af[0]
+                    normal = np.sign(dock[0])*ar[0]
+                    nf, nr = _axes(yaw[linked])
+                    sites = (pos[linked, None]+_DOCK_XY[None, :, :1]*nr[:, None]
+                             +_DOCK_XY[None, :, 1:]*nf[:, None])
+                    normals = np.sign(_DOCK_XY[None, :, :1])*nr[:, None]
+                    occupied = bool(((np.linalg.norm(sites-site, axis=-1) < .006)
+                                     & (np.sum(normals*normal, axis=-1) < -.5)).any())
             if (graph[i].any() or destination is None or labels[destination] != largest
-                    or self.release_steps[robot] > 0):
+                    or occupied or self.release_steps[robot] > 0):
                 self.stage[robot] = -1
                 self.neighbor[robot] = -1
         guidance = self.guidance(pos, yaw, module_ids=ids)
@@ -462,9 +517,7 @@ class DockingState:
                 continue
             target, target_yaw = choices['positions'][i], choices['yaw'][i]
             forward, right = _axes(np.array([target_yaw]))
-            component = pos[labels == labels[destination]]
-            extent = (component-target)@forward[0]
-            offsets = np.array([extent.min()-.070, extent.max()+.070])
+            offsets = np.full(2, choices['staging_offset'][i])
             staging = target+offsets[:, None]*forward[0]
             headings = np.full(2, target_yaw)
             valid = _clear_docking_poses(staging, headings, pos, yaw, i)
@@ -563,14 +616,25 @@ def flow_actions(positions, velocities, yaw, waypoint, **kwargs):
                     if docking_state is not None else docking_targets(pos, heading, kwargs['links'],
                                    obstacles=kwargs.get('obstacles', ()),
                                    arena_bounds=kwargs.get('arena_bounds', (0., 0., 1.143, 1.181))))
-        if docking_state is not None and len(kwargs.get('obstacles', ())):
+        if docking_state is not None:
             # Only approach routing bends around payloads. Alignment and final
             # rolling retain the physical port axis. Expose the same deflected
             # pose to the policy that the wheel controller receives.
             for robot in np.flatnonzero(guidance['active'] & (guidance['stage'] == 0)):
+                navigation_obstacles = list(kwargs.get('obstacles', ()))
+                destination = guidance['neighbor'][robot]
+                if destination >= 0:
+                    labels, _ = connected_components(kwargs['links'])
+                    group = labels == labels[destination]
+                    gf, gr = _axes(heading[group])
+                    half = .0121*np.abs(gr)+.0276*np.abs(gf)
+                    center = pos[group]+.0005*gf
+                    lower = (center-half).min(axis=0)-.010
+                    upper = (center+half).max(axis=0)+.010
+                    navigation_obstacles.append([*lower, *upper])
                 navigation = local_velocity_field(
                     pos[robot:robot+1], np.zeros((1, 2)), heading[robot:robot+1],
-                    guidance['positions'][robot], obstacles=kwargs['obstacles'],
+                    guidance['positions'][robot], obstacles=navigation_obstacles,
                     arena_bounds=kwargs.get('arena_bounds', (0., 0., 1.143, 1.181)),
                     config=FlowConfig(speed=.030, obstacle_margin=.020))[0]
                 guidance['positions'][robot] = pos[robot]+navigation/.8
