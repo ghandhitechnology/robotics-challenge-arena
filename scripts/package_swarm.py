@@ -65,6 +65,7 @@ SOURCE_FILES = (
     "scripts/test_swarm_evaluation.py",
     "scripts/test_swarm_imitation.py",
     "scripts/test_swarm_proof.py",
+    "scripts/test_swarm_rewards.py",
     "scripts/train_swarm_policy.py",
     "scripts/verify_swarm_policy.py",
     "scripts/verify_swarm_proof.py",

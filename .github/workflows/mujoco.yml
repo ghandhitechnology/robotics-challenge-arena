@@ -24,3 +24,4 @@ jobs:
       - run: python scripts/test_swarm_proof.py
       - run: python scripts/test_swarm_evaluation.py
       - run: python scripts/test_swarm_imitation.py
+      - run: python scripts/test_swarm_rewards.py

@@ -87,7 +87,11 @@ The environment computes rewards from object movement and contact state.
 Transport progress should depend on the object being supported above its starting
 height. Approach shaping uses improvement in grasp distance, with its weight
 reduced after contact. Pickup and settled delivery bonuses are paid once per
-object per episode. Dropping a lifted object, unstable contact, actuator effort,
+object per episode. A supported transport arms a drop latch. Unplanned arena
+contact or clearance falling to 1.5 mm triggers one penalty; supported regrasp
+can arm it again. Planned lowering disarms it. Brief airborne pad-contact losses
+use the existing contact-asymmetry cost and recovery logic.
+Dropping a lifted object, unstable contact, actuator effort,
 and abrupt commands incur costs. Exact implemented coefficients belong beside
 the environment's reward calculation and appear in its configuration.
 
@@ -202,6 +206,12 @@ drifted away. Wheel-command RMSE on the carrier's own transport states was
 0.064/0.068, compared with 0.0095/0.0118 on a held-out teacher trajectory. These
 measurements motivated collecting examples under the learner's own control.
 
+The initial reward also charged every loss of two-pad support as a drop. In that
+native trace, the first cylinder incurred 13 such events while none of those
+frames touched the arena. The corrected reward tracks unplanned grounding with
+the latch described above. Contact dynamics and task completion criteria stay
+the same.
+
 `--dagger-rounds` enables physical dataset aggregation before PPO. Each control
 step labels the current observation with the demonstration controller's action.
 A per-world draw chooses whether the teacher or learned actor advances physics.
@@ -235,6 +245,8 @@ before replacing it and records every export's meaning in `training.json`.
 `python scripts/test_swarm_imitation.py` checks learner-state labeling, the policy
 mixture, role weights, dataset capping, bounded fitting diagnostics, and saved
 exploration on resume.
+`python scripts/test_swarm_rewards.py` checks delayed grounding, planned lowering,
+regrasp, bounce suppression, and reset behavior.
 
 ## Verifying and packaging the result
 

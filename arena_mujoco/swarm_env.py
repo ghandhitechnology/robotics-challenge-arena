@@ -236,7 +236,7 @@ class SwarmVectorEnv:
         self.phase_steps = torch.zeros((E, O), dtype=torch.long, device=self.device)
         self.ever_lifted = torch.zeros((E, O), dtype=torch.bool, device=self.device)
         self.delivered = torch.zeros((E, O), dtype=torch.bool, device=self.device)
-        self.supported_previous = torch.zeros((E, O), dtype=torch.bool, device=self.device)
+        self.drop_armed = torch.zeros((E, O), dtype=torch.bool, device=self.device)
         self.contact_hold = torch.zeros((E, O), dtype=torch.long, device=self.device)
         self.settle_hold = torch.zeros((E, O), dtype=torch.long, device=self.device)
         self.lost_support_hold = torch.zeros((E, O), dtype=torch.long, device=self.device)
@@ -307,7 +307,7 @@ class SwarmVectorEnv:
         self.command[ids, :, 2] = -1
         self.lift_target[ids] = 0
         self.previous_action[ids] = self.command[ids]
-        for name in ("steps", "phase", "phase_steps", "ever_lifted", "delivered", "supported_previous", "contact_hold", "settle_hold", "lost_support_hold", "pad_contact", "robot_collisions", "object_floor_contact"):
+        for name in ("steps", "phase", "phase_steps", "ever_lifted", "delivered", "drop_armed", "contact_hold", "settle_hold", "lost_support_hold", "pad_contact", "robot_collisions", "object_floor_contact"):
             getattr(self, name)[ids] = 0
         if self.backend == "native":
             for local, e in enumerate(ids.tolist()):
@@ -590,8 +590,7 @@ class SwarmVectorEnv:
         self.settle_hold = torch.where(settled, self.settle_hold + 1, 0)
         newly_delivered = (self.settle_hold >= 50) & ~self.delivered & self.ever_lifted & self.object_active
         self.delivered |= newly_delivered
-        dropped = self.supported_previous & ~supported & (old_phase == 2)
-        self.supported_previous = supported.clone()
+        dropped = self._drop_events(supported, clearance)
         obj_progress = 30 * (old_distance - distance) * supported * (old_phase == 2)
         obj_reward = obj_progress + 2 * pickup.float() + 10 * newly_delivered.float() - 2 * dropped.float()
         target_after = self._targets()[0]
@@ -630,6 +629,16 @@ class SwarmVectorEnv:
         info["formation_goal_error"] = formation_error
         info["formation_settled"] = formation_settled
         return self._observation(), reward, terminated, truncated, info
+
+    def _drop_events(self, supported, clearance):
+        # Remember airborne transport through contact loss and recovery. Charge
+        # once on grounding, and disarm before an intentional phase-3 lowering.
+        self.drop_armed |= supported & (self.phase == 2) & self.object_active
+        self.drop_armed &= (self.phase < 3) & self.object_active
+        grounded = self.object_floor_contact.bool() | (clearance <= .0015)
+        dropped = self.drop_armed & grounded
+        self.drop_armed &= ~dropped
+        return dropped
 
     def native_snapshot(self, world=0):
         if self.backend == "native":
