@@ -160,7 +160,9 @@ NumPy parity, and compatibility with older exports.
 | `training.json` | Device, configuration, demonstration counts, PPO counts, held-out evaluation, and weights SHA-256. |
 
 Validation uses seed offset 100000. Final evaluation uses offset 200000 and the
-full deployment stage, plus a zero-action baseline. The acceptance flag requires
+full deployment stage, plus a zero-action baseline. Evaluation assigns a fixed,
+balanced episode quota to each world and waits for every quota, so fast successes
+cannot replace slower failed episodes. The acceptance flag requires
 40 robots, at least two active objects, at least 32 held-out episodes, at least
 80% success, a 95% Wilson lower bound of 60%, and a success advantage above the
 zero baseline of more than 20 percentage points. Policy optimization must use CUDA.

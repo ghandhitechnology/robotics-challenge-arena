@@ -88,6 +88,12 @@ def evaluate(model, env, stage, args, device, policy="learned"):
     env.set_curriculum(stage_spec(stage, args))
     obs = tensor_obs(env.reset(), device)
     completed, successes, deliveries, returns = [], [], [], []
+    world_count = obs["active"].shape[0]
+    # Fix each world's sample size before rollout so fast successes cannot
+    # replace slower failures in the validation sample.
+    quotas = [required_episodes // world_count + int(world < required_episodes % world_count)
+              for world in range(world_count)]
+    counted = [0] * world_count
     episode_return = torch.zeros(obs["active"].shape[0], device=device)
     # A bounded evaluation must not hang if an environment fails to terminate.
     batches = (required_episodes + obs["active"].shape[0] - 1) // obs["active"].shape[0]
@@ -112,13 +118,14 @@ def evaluate(model, env, stage, args, device, policy="learned"):
             success = torch.as_tensor(info["success"], device=device)
             delivered = torch.as_tensor(info["delivered"], device=device)
             for idx in torch.where(done)[0].tolist():
-                if len(completed) >= required_episodes:
-                    break
+                if counted[idx] >= quotas[idx]:
+                    continue
+                counted[idx] += 1
                 completed.append(idx)
                 successes.append(float(success[idx]))
                 deliveries.append(float(delivered[idx]))
                 returns.append(float(episode_return[idx]))
-            if len(completed) >= required_episodes:
+            if counted == quotas:
                 break
             episode_return[done] = 0
             obs = tensor_obs(env.reset_done(done), device)
@@ -131,8 +138,9 @@ def evaluate(model, env, stage, args, device, policy="learned"):
     lower = (p + z*z/(2*n) - z*np.sqrt(p*(1-p)/n + z*z/(4*n*n))) / (1 + z*z/n)
     return {"policy": policy, "stage": stage, "episodes": n, "success_rate": p,
             "success_wilson_lower_95": float(lower), "mean_delivered": float(np.mean(deliveries)),
-            "mean_return": float(np.mean(returns)), "complete": n == required_episodes,
-            "required_episodes": required_episodes}
+            "mean_return": float(np.mean(returns)), "complete": counted == quotas,
+            "required_episodes": required_episodes, "episode_quotas": quotas,
+            "episodes_per_world": counted}
 
 
 def warmstart(model, optimizer, env, args, device, demo_steps=None, bc_updates=None):
@@ -513,7 +521,7 @@ def main():
               "native_workers": env.native_workers,
               "cuda_optimization": next(model.parameters()).device.type == "cuda",
               "backend": args.backend, "config": asdict(config), "parameters": sum(p.numel() for p in model.parameters()),
-              "warmstart": warmstart_report, "ppo_updates": len(history), "environment_steps": environment_steps,
+              "warmstart": warmstart_report, "ppo_updates": update, "ppo_updates_this_process": len(history), "environment_steps": environment_steps,
               "stage_warmstarts": stage_warmstarts,
               "bc_anchor_coef": args.bc_anchor_coef, "stopping_reason": stopping_reason,
               "agent_steps": agent_steps,

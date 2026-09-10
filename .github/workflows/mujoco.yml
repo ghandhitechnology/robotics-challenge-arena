@@ -22,3 +22,4 @@ jobs:
       - run: python -m pip install 'torch>=2.6,<3' --index-url https://download.pytorch.org/whl/cpu
       - run: python scripts/verify_swarm_policy.py
       - run: python scripts/test_swarm_proof.py
+      - run: python scripts/test_swarm_evaluation.py
