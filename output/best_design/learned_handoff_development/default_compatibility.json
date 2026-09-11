@@ -1,0 +1,14 @@
+{
+  "geometric": {
+    "time": true,
+    "qpos": true,
+    "qvel": true,
+    "command": true
+  },
+  "30mm": {
+    "time": true,
+    "qpos": true,
+    "qvel": true,
+    "command": true
+  }
+}

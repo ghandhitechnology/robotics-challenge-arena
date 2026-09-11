@@ -1,0 +1,21 @@
+{
+  "method": "Contact geometry replay from recorded qpos and qvel; no contact forces inferred.",
+  "grasp_s": 15.419999999996893,
+  "release_s": null,
+  "carry_window_end_s": 35.0,
+  "first_height_below_20mm_while_carrying_s": 18.799999999999994,
+  "first_sample_tool_separation_above_15mm_while_carrying_s": 18.799999999999994,
+  "seed": 1300600412,
+  "success": false,
+  "failures": {
+    "lab": "lab dropped Biological_Sample_01 in transit"
+  },
+  "cross_robot_contact_pairs": {
+    "fleet_kit_kit_chute_0_front / fleet_lab_robot_comp_pad_left_upper": {
+      "first_s": 18.73999999999992,
+      "last_s": 18.73999999999992,
+      "samples": 3,
+      "minimum_distance_m": -0.00010873322621759123
+    }
+  }
+}

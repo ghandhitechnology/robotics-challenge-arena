@@ -16,21 +16,32 @@ release = next((event["time_s"] for event in events if event["event"] == "releas
 carry_end = release - 1.3 if release is not None else 35.
 model = mujoco.MjModel.from_xml_path(str(directory / "scene.xml"))
 data = mujoco.MjData(model)
+geom_names = tuple(model.geom(index).name for index in range(model.ngeom))
+sample_geom = model.geom("Biological_Sample_01_geom").id
+lab_geoms = np.array([name.startswith("fleet_lab_") for name in geom_names])
+peer_geoms = np.array([name.startswith("fleet_") and not name.startswith("fleet_lab_")
+                       for name in geom_names])
+sample_body = data.body("Biological_Sample_01")
+lab_body = data.body("fleet_lab_competition_robot")
+kit_body = data.body("fleet_kit_competition_robot")
+tool_site = data.site("fleet_lab_gripper_center")
 trace = np.load(directory / "trajectory.npz")
+times, positions, velocities = trace["time"], trace["qpos"], trace["qvel"]
 rows = []
 raised = False
 drop = None
 separation = None
-for index, time in enumerate(trace["time"]):
+for index, time in enumerate(times):
     if not 10 <= time <= 35:
         continue
     data.time = time
-    data.qpos[:] = trace["qpos"][index]
-    data.qvel[:] = trace["qvel"][index]
-    mujoco.mj_forward(model, data)
-    sample = data.body("Biological_Sample_01").xpos.copy()
-    lab = data.body("fleet_lab_competition_robot").xpos.copy()
-    tool = data.site("fleet_lab_gripper_center").xpos.copy()
+    data.qpos[:] = positions[index]
+    data.qvel[:] = velocities[index]
+    # Contact geometry needs only position computations, not the force solver.
+    mujoco.mj_fwdPosition(model, data)
+    sample = sample_body.xpos.copy()
+    lab = lab_body.xpos.copy()
+    tool = tool_site.xpos.copy()
     raised = raised or sample[2] > .03
     carrying = grasp is not None and grasp <= time < carry_end
     if carrying and raised and sample[2] < .02 and drop is None:
@@ -38,15 +49,15 @@ for index, time in enumerate(trace["time"]):
     if carrying and np.linalg.norm(sample-tool) > .015 and separation is None:
         separation = float(time)
     contacts = []
-    for contact in data.contact:
-        names = [model.geom(int(gid)).name for gid in contact.geom]
-        touches_sample = "Biological_Sample_01_geom" in names
-        cross_robot = (any(name.startswith("fleet_lab_") for name in names)
-                       and any(name.startswith("fleet_") and not name.startswith("fleet_lab_") for name in names))
-        if touches_sample or cross_robot:
-            contacts.append({"geoms": names, "distance_m": float(contact.dist)})
+    pairs = data.contact.geom
+    relevant = np.any(pairs == sample_geom, axis=1)
+    relevant |= np.any(lab_geoms[pairs], axis=1) & np.any(peer_geoms[pairs], axis=1)
+    for contact_index in np.flatnonzero(relevant):
+        contact = data.contact[int(contact_index)]
+        names = [geom_names[int(gid)] for gid in pairs[contact_index]]
+        contacts.append({"geoms": names, "distance_m": float(contact.dist)})
     rows.append({"time_s": float(time), "sample_xyz": sample.tolist(), "lab_xyz": lab.tolist(),
-                 "kit_xyz": data.body("fleet_kit_competition_robot").xpos.tolist(),
+                 "kit_xyz": kit_body.xpos.tolist(),
                  "tool_xyz": tool.tolist(), "sample_tool_distance_m": float(np.linalg.norm(sample-tool)),
                  "contacts": contacts})
 result = {"method": "Contact geometry replay from recorded qpos and qvel; no contact forces inferred.",

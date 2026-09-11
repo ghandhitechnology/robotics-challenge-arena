@@ -1,0 +1,208 @@
+{
+  "conclusion": "No larger distance handoff improved the nominal hybrid. The optional source feature was removed after archiving this experiment.",
+  "restored_commit": "f16f2f2e87f037f5ba6380662b541931c06637a7",
+  "experimental_patch": "experiment.patch",
+  "experimental_patch_sha256": "12fb0670f47e549a0cc6e51146cca86c7bab6ff42365ed91df62315cea2c4eea",
+  "experimental_sources": {
+    "arena_mujoco/best_mission.py": {
+      "snapshot": "experimental_best_mission.py",
+      "sha256": "99da4d3929c628d704d12f991f2a6a48e40d3e99f79be60bc785a6e97c69baa5"
+    },
+    "scripts/run_best_fleet.py": {
+      "snapshot": "experimental_run_best_fleet.py",
+      "sha256": "d5f54006edcb0529dc84ae3debadaf2dab8c06297c7c4b86aed896d6a45e8775"
+    }
+  },
+  "protocol": {
+    "seed": 0,
+    "randomized": false,
+    "distances_m": [
+      0.03,
+      0.05,
+      0.08
+    ],
+    "heading_rad": 0.08,
+    "drive_limits": [
+      0.48,
+      4
+    ],
+    "lab_drive_limits": [
+      0.35,
+      2.5
+    ],
+    "green_upper_first": true,
+    "source_sha256": {
+      "arena_spec.json": "26b10a4a5fc607ab58d1692d9fd9b4a2a466fd6bc789a7c9e7032066c5d4fbf1",
+      "best_design.json": "e1f7e2a01e4b3b548033d1fa822b3fd70e43338e45cf559cdd65767cc2740d19",
+      "competition_rules.json": "df44c749e89cdddb1e3d19535a4a13be4f7fb2623d7473dadfdd3d13be1fd1f0",
+      "arena_mujoco/best_fleet.py": "10e77a1665fb17a48d0291e3a837a989ccc325340fc003fd4f42052a88f70c8f",
+      "arena_mujoco/best_mission.py": "99da4d3929c628d704d12f991f2a6a48e40d3e99f79be60bc785a6e97c69baa5",
+      "arena_mujoco/best_routes.py": "bc7d1ce9309b88e86295a96ae2cd74ff9dc79c81d441add3facfe79c66ade28a",
+      "arena_mujoco/best_drive.py": "2bace81fe619a1ce9ea3fbfac9e20cd2fda4b1683afbe71bbcec1ab4b28a6fb0",
+      "arena_mujoco/builder.py": "172b4405c59b2ac6ef7142bde3e16bcf2697fe6dd2908fcff4c421007313e51b",
+      "arena_mujoco/geometry.py": "ecf1faf8282dacfb4da7c8fbc9624fb6b5e4dd66c5e2e08f362b433567bd2ff8",
+      "arena_mujoco/materials.py": "266e9b21c4179cda5b05058f88d328ffb69c6b18032f9dee7164e80a866bd2af",
+      "arena_mujoco/competition_robot.py": "ad1045d570526b41582f19bf091111e039b5a516de65d1c706ee11e5b50c9773",
+      "arena_mujoco/competition_scoring.py": "f882c3a1a0510a2d02d66342ddaad68cf06556ae4ca9873feed2cc3cbfc740f4",
+      "arena_mujoco/competition_events.py": "f6841726d246047b8211bdb51a86964ee53630a21d59e9f9ef9f4e3ba4abb5e2"
+    },
+    "weights_sha256": "dbe14271f520a306e2bf11f2338f70ef72accf28d34fc8650a5371ef2a3cef8e"
+  },
+  "results": [
+    {
+      "label": "30mm",
+      "success": false,
+      "declaration_seconds": 120.00000000020893,
+      "score": 140,
+      "settled_score": 140,
+      "hold_minimum": 140,
+      "hold_samples": 50,
+      "failures": {
+        "lab": "lab line timeout at deliver Biological_Sample_03: goal [0.96217473 0.58968831], pose [0.96217462 0.58820048]"
+      },
+      "sources_stable_during_run": true,
+      "source_sha256": {
+        "arena_spec.json": "26b10a4a5fc607ab58d1692d9fd9b4a2a466fd6bc789a7c9e7032066c5d4fbf1",
+        "best_design.json": "e1f7e2a01e4b3b548033d1fa822b3fd70e43338e45cf559cdd65767cc2740d19",
+        "competition_rules.json": "df44c749e89cdddb1e3d19535a4a13be4f7fb2623d7473dadfdd3d13be1fd1f0",
+        "arena_mujoco/best_fleet.py": "10e77a1665fb17a48d0291e3a837a989ccc325340fc003fd4f42052a88f70c8f",
+        "arena_mujoco/best_mission.py": "99da4d3929c628d704d12f991f2a6a48e40d3e99f79be60bc785a6e97c69baa5",
+        "arena_mujoco/best_routes.py": "bc7d1ce9309b88e86295a96ae2cd74ff9dc79c81d441add3facfe79c66ade28a",
+        "arena_mujoco/best_drive.py": "2bace81fe619a1ce9ea3fbfac9e20cd2fda4b1683afbe71bbcec1ab4b28a6fb0",
+        "arena_mujoco/builder.py": "172b4405c59b2ac6ef7142bde3e16bcf2697fe6dd2908fcff4c421007313e51b",
+        "arena_mujoco/geometry.py": "ecf1faf8282dacfb4da7c8fbc9624fb6b5e4dd66c5e2e08f362b433567bd2ff8",
+        "arena_mujoco/materials.py": "266e9b21c4179cda5b05058f88d328ffb69c6b18032f9dee7164e80a866bd2af",
+        "arena_mujoco/competition_robot.py": "ad1045d570526b41582f19bf091111e039b5a516de65d1c706ee11e5b50c9773",
+        "arena_mujoco/competition_scoring.py": "f882c3a1a0510a2d02d66342ddaad68cf06556ae4ca9873feed2cc3cbfc740f4",
+        "arena_mujoco/competition_events.py": "f6841726d246047b8211bdb51a86964ee53630a21d59e9f9ef9f4e3ba4abb5e2"
+      },
+      "learned_drive": {
+        "weights_sha256": "dbe14271f520a306e2bf11f2338f70ef72accf28d34fc8650a5371ef2a3cef8e",
+        "training_report_sha256": "8bc3e91e7d3fe3b30a20c7af51c5e04f6e38f9f772fcf35a2b77fef05f77485a",
+        "geometric_precision_distance_m": 0.03,
+        "geometric_precision_heading_rad": 0.08
+      },
+      "learned_calls": 6098,
+      "geometric_calls": 16356,
+      "report": "30mm/report.json"
+    },
+    {
+      "label": "50mm",
+      "success": false,
+      "declaration_seconds": 120.00000000020893,
+      "score": 140,
+      "settled_score": 140,
+      "hold_minimum": 140,
+      "hold_samples": 50,
+      "failures": {
+        "lab": "lab line timeout at deliver Biological_Sample_03: goal [0.96220448 0.58961415], pose [0.96215388 0.58819725]"
+      },
+      "sources_stable_during_run": true,
+      "source_sha256": {
+        "arena_spec.json": "26b10a4a5fc607ab58d1692d9fd9b4a2a466fd6bc789a7c9e7032066c5d4fbf1",
+        "best_design.json": "e1f7e2a01e4b3b548033d1fa822b3fd70e43338e45cf559cdd65767cc2740d19",
+        "competition_rules.json": "df44c749e89cdddb1e3d19535a4a13be4f7fb2623d7473dadfdd3d13be1fd1f0",
+        "arena_mujoco/best_fleet.py": "10e77a1665fb17a48d0291e3a837a989ccc325340fc003fd4f42052a88f70c8f",
+        "arena_mujoco/best_mission.py": "99da4d3929c628d704d12f991f2a6a48e40d3e99f79be60bc785a6e97c69baa5",
+        "arena_mujoco/best_routes.py": "bc7d1ce9309b88e86295a96ae2cd74ff9dc79c81d441add3facfe79c66ade28a",
+        "arena_mujoco/best_drive.py": "2bace81fe619a1ce9ea3fbfac9e20cd2fda4b1683afbe71bbcec1ab4b28a6fb0",
+        "arena_mujoco/builder.py": "172b4405c59b2ac6ef7142bde3e16bcf2697fe6dd2908fcff4c421007313e51b",
+        "arena_mujoco/geometry.py": "ecf1faf8282dacfb4da7c8fbc9624fb6b5e4dd66c5e2e08f362b433567bd2ff8",
+        "arena_mujoco/materials.py": "266e9b21c4179cda5b05058f88d328ffb69c6b18032f9dee7164e80a866bd2af",
+        "arena_mujoco/competition_robot.py": "ad1045d570526b41582f19bf091111e039b5a516de65d1c706ee11e5b50c9773",
+        "arena_mujoco/competition_scoring.py": "f882c3a1a0510a2d02d66342ddaad68cf06556ae4ca9873feed2cc3cbfc740f4",
+        "arena_mujoco/competition_events.py": "f6841726d246047b8211bdb51a86964ee53630a21d59e9f9ef9f4e3ba4abb5e2"
+      },
+      "learned_drive": {
+        "weights_sha256": "dbe14271f520a306e2bf11f2338f70ef72accf28d34fc8650a5371ef2a3cef8e",
+        "training_report_sha256": "8bc3e91e7d3fe3b30a20c7af51c5e04f6e38f9f772fcf35a2b77fef05f77485a",
+        "geometric_precision_distance_m": 0.05,
+        "geometric_precision_heading_rad": 0.08
+      },
+      "learned_calls": 5656,
+      "geometric_calls": 16880,
+      "report": "50mm/report.json"
+    },
+    {
+      "label": "80mm",
+      "success": false,
+      "declaration_seconds": 120.00000000020893,
+      "score": 120,
+      "settled_score": 120,
+      "hold_minimum": 120,
+      "hold_samples": 50,
+      "failures": {
+        "lab": "lab dropped Biological_Sample_01 in transit"
+      },
+      "sources_stable_during_run": true,
+      "source_sha256": {
+        "arena_spec.json": "26b10a4a5fc607ab58d1692d9fd9b4a2a466fd6bc789a7c9e7032066c5d4fbf1",
+        "best_design.json": "e1f7e2a01e4b3b548033d1fa822b3fd70e43338e45cf559cdd65767cc2740d19",
+        "competition_rules.json": "df44c749e89cdddb1e3d19535a4a13be4f7fb2623d7473dadfdd3d13be1fd1f0",
+        "arena_mujoco/best_fleet.py": "10e77a1665fb17a48d0291e3a837a989ccc325340fc003fd4f42052a88f70c8f",
+        "arena_mujoco/best_mission.py": "99da4d3929c628d704d12f991f2a6a48e40d3e99f79be60bc785a6e97c69baa5",
+        "arena_mujoco/best_routes.py": "bc7d1ce9309b88e86295a96ae2cd74ff9dc79c81d441add3facfe79c66ade28a",
+        "arena_mujoco/best_drive.py": "2bace81fe619a1ce9ea3fbfac9e20cd2fda4b1683afbe71bbcec1ab4b28a6fb0",
+        "arena_mujoco/builder.py": "172b4405c59b2ac6ef7142bde3e16bcf2697fe6dd2908fcff4c421007313e51b",
+        "arena_mujoco/geometry.py": "ecf1faf8282dacfb4da7c8fbc9624fb6b5e4dd66c5e2e08f362b433567bd2ff8",
+        "arena_mujoco/materials.py": "266e9b21c4179cda5b05058f88d328ffb69c6b18032f9dee7164e80a866bd2af",
+        "arena_mujoco/competition_robot.py": "ad1045d570526b41582f19bf091111e039b5a516de65d1c706ee11e5b50c9773",
+        "arena_mujoco/competition_scoring.py": "f882c3a1a0510a2d02d66342ddaad68cf06556ae4ca9873feed2cc3cbfc740f4",
+        "arena_mujoco/competition_events.py": "f6841726d246047b8211bdb51a86964ee53630a21d59e9f9ef9f4e3ba4abb5e2"
+      },
+      "learned_drive": {
+        "weights_sha256": "dbe14271f520a306e2bf11f2338f70ef72accf28d34fc8650a5371ef2a3cef8e",
+        "training_report_sha256": "8bc3e91e7d3fe3b30a20c7af51c5e04f6e38f9f772fcf35a2b77fef05f77485a",
+        "geometric_precision_distance_m": 0.08,
+        "geometric_precision_heading_rad": 0.08
+      },
+      "learned_calls": 4605,
+      "geometric_calls": 14302,
+      "report": "80mm/report.json"
+    },
+    {
+      "label": "geometric",
+      "success": true,
+      "declaration_seconds": 80.80000000002175,
+      "score": 160,
+      "settled_score": 160,
+      "hold_minimum": 160,
+      "hold_samples": 50,
+      "failures": {},
+      "sources_stable_during_run": true,
+      "source_sha256": {
+        "arena_spec.json": "26b10a4a5fc607ab58d1692d9fd9b4a2a466fd6bc789a7c9e7032066c5d4fbf1",
+        "best_design.json": "e1f7e2a01e4b3b548033d1fa822b3fd70e43338e45cf559cdd65767cc2740d19",
+        "competition_rules.json": "df44c749e89cdddb1e3d19535a4a13be4f7fb2623d7473dadfdd3d13be1fd1f0",
+        "arena_mujoco/best_fleet.py": "10e77a1665fb17a48d0291e3a837a989ccc325340fc003fd4f42052a88f70c8f",
+        "arena_mujoco/best_mission.py": "99da4d3929c628d704d12f991f2a6a48e40d3e99f79be60bc785a6e97c69baa5",
+        "arena_mujoco/best_routes.py": "bc7d1ce9309b88e86295a96ae2cd74ff9dc79c81d441add3facfe79c66ade28a",
+        "arena_mujoco/best_drive.py": "2bace81fe619a1ce9ea3fbfac9e20cd2fda4b1683afbe71bbcec1ab4b28a6fb0",
+        "arena_mujoco/builder.py": "172b4405c59b2ac6ef7142bde3e16bcf2697fe6dd2908fcff4c421007313e51b",
+        "arena_mujoco/geometry.py": "ecf1faf8282dacfb4da7c8fbc9624fb6b5e4dd66c5e2e08f362b433567bd2ff8",
+        "arena_mujoco/materials.py": "266e9b21c4179cda5b05058f88d328ffb69c6b18032f9dee7164e80a866bd2af",
+        "arena_mujoco/competition_robot.py": "ad1045d570526b41582f19bf091111e039b5a516de65d1c706ee11e5b50c9773",
+        "arena_mujoco/competition_scoring.py": "f882c3a1a0510a2d02d66342ddaad68cf06556ae4ca9873feed2cc3cbfc740f4",
+        "arena_mujoco/competition_events.py": "f6841726d246047b8211bdb51a86964ee53630a21d59e9f9ef9f4e3ba4abb5e2"
+      },
+      "learned_drive": null,
+      "learned_calls": 0,
+      "geometric_calls": 16182,
+      "report": "geometric/report.json"
+    }
+  ],
+  "trajectory_compatibility": {
+    "geometric": {
+      "time": true,
+      "qpos": true,
+      "qvel": true,
+      "command": true
+    },
+    "30mm": {
+      "time": true,
+      "qpos": true,
+      "qvel": true,
+      "command": true
+    }
+  }
+}

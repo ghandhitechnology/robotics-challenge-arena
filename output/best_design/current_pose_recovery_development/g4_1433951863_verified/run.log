@@ -1,0 +1,10 @@
+{
+  "success": false,
+  "declaration_seconds": 79.16000000001392,
+  "deployment_seconds": 16.499999999997183,
+  "failures": {
+    "green": "green line timeout at deploy: goal [0.83  0.931], pose [0.89982833 0.95189404]"
+  },
+  "wall_seconds": 71.68892604600114
+}
+score 130
