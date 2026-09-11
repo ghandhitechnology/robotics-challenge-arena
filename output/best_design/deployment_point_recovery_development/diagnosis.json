@@ -1,0 +1,21 @@
+{
+  "base_commit": "f16f2f2e87f037f5ba6380662b541931c06637a7",
+  "mechanism": "The fixed-heading line controller scales forward motion from along-track error. Once that error reaches zero, a remaining lateral error cannot be corrected. At a 0.35 rad steering cap, each 25 mm retreat provides at most about 9.1 mm ideal lateral correction, below the verified 20 mm YELLOW and 73 mm GREEN residuals.",
+  "change": "For RED, YELLOW, and GREEN during deploy only, a stalled line uses geometric point guidance toward the waypoint, with bearing recomputed from the current pose. It stops within half the requested position tolerance, restores the original heading, and resumes the original final position/heading checks.",
+  "bounds": "Each point-guidance recovery has an 8 s timeout and consumes one existing retry. Point guidance commands native wheel motors through Driver.tick.",
+  "preserved": "Final line and heading tolerances, retry count, scoring, physics, geometry, payload operations, and all loaded-role approach paths. KIT and LAB do not use this deployment recovery.",
+  "native_regressions": {
+    "command": "python -m unittest discover -s tests/mujoco -p test_best_mission.py -v",
+    "cases": 2,
+    "passed": 2,
+    "negative_control": "The new 75 mm pure cross-track deployment case times out on f16 with pose [0.28702326, 0.2997943] versus target [0.225, 0.300].",
+    "fixed_case": "Both the existing 16 mm recovery case and the new 75 mm empty-deployment case reach the requested final position and heading. The large-deviation test checks every sampled native state for external obstacle contacts and finds none.",
+    "initialization": "Robot qpos is set once before motion; subsequent motion uses native motors and contacts."
+  },
+  "g4_validation": "pending",
+  "source_sha256": {
+    "arena_mujoco/best_mission.py": "9e49311a8efaebec16b77dfe5e0a3b36f65f90b3a9d27eb01e1390b3b1afcc16",
+    "tests/mujoco/test_best_mission.py": "3a26481bb7d596839b31c1a09bc1fc38bcf3aaa48f4ae3a0c1b1688078f11b41"
+  },
+  "patch_sha256": "bc90e9e6f0b39e0c92af3502757dad0c4ce6bcbd4e1bbec55268aaf936936ecb"
+}

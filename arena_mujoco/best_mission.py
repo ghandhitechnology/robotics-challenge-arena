@@ -88,6 +88,15 @@ class Driver:
             lateral = float(error @ lateral_axis)
             if (abs(forward) < tolerance and abs(lateral) > max(tolerance, .0012)
                     and self.sim.data.time - began > 2.5 and retries > 0):
+                if self.phase == "deploy" and self.key in ("red", "yellow", "green"):
+                    # Empty couriers can face the waypoint directly. A short
+                    # retreat cannot remove a large error with the normal
+                    # approach steering limited to 0.35 radians.
+                    yield from self.recover_deployment(target, heading, tolerance)
+                    retries -= 1
+                    began = self.sim.data.time
+                    settled = 0
+                    continue
                 # A differential drive cannot correct sideways error in place.
                 # Retreat from the actual pose so the recovery waypoint is
                 # straight behind the robot, then correct on the reapproach.
@@ -105,6 +114,25 @@ class Driver:
             settled = settled + 1 if abs(forward) < tolerance and abs(lateral) < max(tolerance, .0012) else 0
             if self.sim.data.time - began > 12:
                 raise RuntimeError(f"{self.key} line timeout at {self.phase}: goal {target}, pose {position}")
+        yield from self.turn(heading)
+
+    def recover_deployment(self, target, heading, tolerance):
+        """Reach an empty courier's waypoint, then restore its approach heading."""
+        began = self.sim.data.time
+        settled = 0
+        while settled < 2:
+            position, current = self.sim.pose(self.key)
+            delta = target - position
+            distance = float(np.linalg.norm(delta))
+            if distance < tolerance / 2:
+                settled += 1
+                yield from self.tick()
+            else:
+                settled = 0
+                angle = wrap(math.atan2(delta[1], delta[0]) - current)
+                yield from self.tick(distance * max(0., math.cos(angle)), angle)
+            if self.sim.data.time - began > 8:
+                raise RuntimeError(f"{self.key} deployment recovery timeout: goal {target}, pose {position}")
         yield from self.turn(heading)
 
     def position(self, name):
