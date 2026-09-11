@@ -1,7 +1,7 @@
 """Build the five-robot concept in Blender, preserving unrelated scenes.
 
 Run through Blender MCP with exec(compile(...)) or:
-blender --background --python scripts/build_best_design_blender.py
+blender --background --python scripts/build_best_design_blender.py -- --render
 All design inputs use SI in best_design.json. Drawing helpers use mm.
 """
 from pathlib import Path
@@ -300,8 +300,8 @@ def build():
     dim((-62.5,-65,1),(62.5,-65,1),'125 overall',(0,-26),10)
     dim((62.5,-65,1),(62.5,85,1),'150',(35,0),10)
     dim((-55,0,2),(55,0,2),'110 track',(0,-112),9)
-    label('SHARED CONTACT ROBOT',(-175,157,1),17)
-    label('2 wheel motors + lift + coupled jaws',(-175,135,1),9,'muted')
+    label('SHARED CONTACT ROBOT',(-175,217,1),17)
+    label('2 wheel motors + lift + coupled jaws',(-175,195,1),9,'muted')
     label('50 mm tires',(-187,-52,1),9)
     line('wheel_leader',[(-105,-52,1),(-70,-30,1),(-55,0,30)],r=.5)
     label('65 x 30 compute',(-185,103,1),9)
@@ -364,4 +364,11 @@ def build():
 
 
 if __name__=='__main__':
-    build()
+    scenes=build()
+    if '--render' in sys.argv:
+        for scene,filename in scenes:
+            bpy.context.window.scene=scene
+            scene.render.filepath=str(OUT/filename)
+            bpy.ops.render.render(write_still=True)
+        bpy.context.window.scene=scenes[0][0]
+        bpy.ops.wm.save_as_mainfile(filepath=str(OUT/'best_design.blend'))
