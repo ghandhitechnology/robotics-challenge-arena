@@ -1,12 +1,16 @@
 {
   "reviewed_on": "2026-09-11",
   "creation_route": "Blender MCP execute_blender_code, Blender5.2.1 Cycles",
-  "visual_review": "All five final renders inspected. Text fits the frame; overall dimensions and role colors are readable. Disc section shows the0.4mm nominal gap; extended LAB view shows105mm reach.",
+  "visual_review": "All seven final renders inspected. The LAB camera moves with the tool carriage, the 12 x 12 mm optical bore is clear, and its sensor board is behind the optical center. The side section shows the anti-tip support and plate clearance. Dimension text is clear of geometry. All four KIT preloads remain visible.",
   "geometry_checks": {
     "all_five_start_envelopes_fit": true,
     "original_scene_preserved": true,
     "stl_binary_structure_valid": true,
-    "stl_triangle_count": 3684
+    "stl_triangle_count": 3684,
+    "kit_camera_height_mm": 109.011,
+    "lab_height_mm": 106.10000806650052,
+    "all_start_heights_below_110mm": true,
+    "lab_mass_kg": 0.474
   },
   "engineering_corrections": [
     "LAB40mm horizontal extension",
@@ -14,38 +18,55 @@
     "deck motor clearance pockets",
     "caster bracket joins deck",
     "downward camera volume",
-    "separate elevated disc pads above lab rim"
+    "separate elevated disc pads above lab rim",
+    "KIT replaces jaws/lift with three front gravity doors",
+    "four visible side-by-side preloads",
+    "KIT camera mast fits below110mm",
+    "LAB passive front ball at y20 mm with 0.5 mm floor gap",
+    "LAB camera uses a 12 x 12 mm clear frame aperture and rear sensor board",
+    "camera support posts stay outside the 58-degree view",
+    "LAB assembled mass budget 474 g",
+    "sixth start cell is available after KIT preloading"
   ],
   "files": {
     "best_design.blend": {
-      "bytes": 851831,
-      "sha256": "8d7fbdc72b8caaebcd2335dd0af0ac71efe5d2dab8092219244de7bbec807f29"
+      "bytes": 1048672,
+      "sha256": "eb2a83a81669bdc96591cd4eca2448aa7ff25e9a9dfc7f146e068d5c61b6e2e0"
     },
     "fleet_arena.png": {
-      "bytes": 3291729,
-      "sha256": "1bc7ef492236841ef46296591ac9368afddeb7aec0f15a1125c027b86a078aa9"
+      "bytes": 3282768,
+      "sha256": "23fef9948ec350e4eeca7524e0bd558423a675c3ce3e1bee4d993695b6887709"
     },
     "start_packing.png": {
-      "bytes": 3301061,
-      "sha256": "80bf3e325e904c2c5af17bef835cab59c9011d7e0995a00e9047c488f41be2b9"
+      "bytes": 3317080,
+      "sha256": "5a8e67ce9752eb4e4c08e2bf5869e1fe0cc7826817c709829ed5f4a1f847365b"
     },
     "shared_mechanism.png": {
       "bytes": 3164287,
-      "sha256": "e3863356633f3378e285d344278005b89786b610af652136fbb31376b96e230c"
+      "sha256": "326c8cff14e1a0e78ec563749e8e0c48095258187b08dd003b24bef56e9fe491"
     },
     "disc_clearance.png": {
       "bytes": 3020652,
-      "sha256": "d9b36acd2e41607c48a60acbeed0d951cba0d479d459af85c9fb6d28e5e40bd0"
+      "sha256": "a2add3df9fa5cf56376a2aed6379957ad310305ece20e788a1019150af80d913"
     },
     "lab_extension.png": {
-      "bytes": 3161813,
-      "sha256": "a987dd5f791a7f627f42b5b00aba31c65641b3ec1878d22e681d829c8a875da0"
+      "bytes": 3170105,
+      "sha256": "1fefe8de84d7d618538b61a8c16fab71fe448d8fb1363d8682ec24c8ebb78792"
+    },
+    "kit_magazine.png": {
+      "bytes": 3236407,
+      "sha256": "f9a0e5fbe4f77707f7827c0036ea61697a3a32e239be36929f0fc7018c6169da"
+    },
+    "lab_support_camera.png": {
+      "bytes": 3194976,
+      "sha256": "3392e37c90609ed08a04b92e1e5dde3f2ae868c87c9c861f4518a80727244cc1"
     },
     "chassis_fit_mockup_mm.stl": {
       "bytes": 184284,
       "sha256": "1db603db1f424bf64d4508813811015ffefb555490650a0b7f91bfc3177ed8e9"
     }
   },
-  "design_sha256": "55ff8583e8911bc9a5e9e01b294c06d2c126cdf9134a213024a89901e32b6bc4",
-  "scope": "Dimensioned CAD concept and fit checks. Fabrication, tolerance stack and full-task physical performance require separate evidence."
+  "design_sha256": "e1f7e2a01e4b3b548033d1fa822b3fd70e43338e45cf559cdd65767cc2740d19",
+  "scope": "Dimensioned CAD concept and fit checks. Native mission and onboard camera evidence are recorded in their separate reports; fabrication tolerances and assembled mass distribution require hardware measurements.",
+  "builder_sha256": "98a5ec609465053afddb6bebce2467bf37feb1df781a70acf833d8a3d3bf338a"
 }

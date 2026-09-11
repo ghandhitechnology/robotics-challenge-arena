@@ -133,6 +133,7 @@ def robot(role,origin=(0,0,0),aperture=26,lift=0,extension=0):
     """CAD packages actual component envelopes; parts are separate named meshes."""
     start=set(bpy.context.scene.objects);origin=Vector(origin)
     col='kit_role' if role=='kit' else role
+    entry=next(r for r in D['robots'] if r['id']==role)
     def B(n,p,s,m='deck',bevel=.6):return box(role+'_'+n,p,s,m,bevel)
     def C(n,p,r,d,m='silver',axis='Z'):return cyl(role+'_'+n,p,r,d,m,axis)
     deck=B('chassis_plate',(0,-20,27),(105,90,4),'deck',2)
@@ -159,6 +160,15 @@ def robot(role,origin=(0,0,0),aperture=26,lift=0,extension=0):
         B('wheel_guard',(sign*60,-3,53),(5,55,3),col,.8)
     C('rear_caster',(0,-53,8),8,8,'rubber','X')
     B('caster_mount',(0,-53,21),(18,17,12),'deck')
+    support=entry.get('front_anti_tip_caster')
+    if support:
+        ball=Vector(support['center_body_m'])*1000;ball.z+=25
+        bpy.ops.mesh.primitive_uv_sphere_add(segments=32,ring_count=16,radius=support['ball_radius_m'],location=ball*.001)
+        own(bpy.context.object,role+'_front_anti_tip_ball','silver')
+        bracket=Vector(support['bracket_center_body_m'])*1000;bracket.z+=25
+        housing=Vector(support['housing_center_body_m'])*1000;housing.z+=25
+        B('front_caster_bracket',bracket,Vector(support['bracket_size_m'])*1000,'deck',.3)
+        C('front_caster_housing',housing,support['housing_radius_m']*1000,support['housing_half_height_m']*2000,'silver')
     B('2S_battery',(0,-40,37),(54,32,15),'black',1.7)
     B('battery_strap',(0,-40,45),(10,35,1.4),col,.2)
     for x in (-28,28):
@@ -169,6 +179,34 @@ def robot(role,origin=(0,0,0),aperture=26,lift=0,extension=0):
     B('controller_and_IMU',(-31,-9,52),(30,25,2),'pcb',.3)
     B('MCU',(-31,-9,55),(8,8,3),'black',.3)
     B('regulator',(31,-13,47),(25,20,10),'pcb',.5)
+    if role=='kit':
+        # The payload drops ahead of the deck, wheels and electronics.
+        for x in (-45,45):B('rack_post',(x,23,32),(6,6,8),'silver',.4)
+        B('rack_bridge',(0,26,37),(117,6,8),col,.5)
+        for x in (-48,48):B('rack_brace',(x,30,39),(5,16,4),'silver',.5)
+        for chute in D['kit_magazine']['chutes']:
+            cx=chute['center_x_m']*1000;w=chute['outer_width_m']*1000
+            wall=(w-chute['clear_width_m']*1000)/2
+            for sign in (-1,1):
+                B(chute['id']+'_side',(cx+sign*(w/2-wall/2),51,56.5),(wall,32,29),col,.25)
+                B(chute['id']+'_end',(cx,51+sign*15.25,56.5),(w,1.5,29),col,.25)
+            B(chute['id']+'_gate',(cx,51,41.5),(w-1,32,1),'silver',.15)
+            C(chute['id']+'_hinge',(cx,35,42),1.5,w,'brass','X')
+            for kitx in chute['kit_x_m']:kit(kitx*1000,51,52)
+        for i,x in enumerate((-35,0,35)):
+            B('gate_servo_'+str(i),(x,19,62),(20,26,34),'black',1)
+            C('gate_horn_'+str(i),(x+11,19,65),5,2,'silver','X')
+            line(role+'_gate_link_'+str(i),[(x+11,19,69),(x+11,35,46)],'brass',.9)
+        for x in (-40,40):B('rear_camera_post',(x,-38,75.5),(4,4,57),'silver',.4)
+        B('camera_header',(0,-38,103),(85,8,4),col,.5)
+        B('camera_PCB',(0,-36,106),(25,24,1.6),'pcb',.2)
+        lens=C('camera_lens',(0,-28,103),4.5,8,'black','Y');lens.rotation_euler[0]=math.pi/4
+        glass=C('camera_glass',(0,-25,100),3.5,.5,'lab','Y');glass.rotation_euler[0]=math.pi/4
+        label('KIT / 4 PRELOADED',(0,-59,65),5,'white','CENTER')
+        created=set(bpy.context.scene.objects)-start
+        for o in created:
+            o.location+=origin*.001;o['robot_id']=role;o['design_concept']=True
+        return deck,created
     # 20 x 34 x 26 mm actuator envelopes from ROBOTIS drawing.
     B('lift_XL330',(31,17,62),(20,26,34),'black',1)
     C('lift_drum',(19,17,67),6,4,'brass','X')
@@ -201,15 +239,34 @@ def robot(role,origin=(0,0,0),aperture=26,lift=0,extension=0):
         C('extension_leadscrew',(-28,47,33+lift),1.5,64,'brass','Y')
         B('extension_encoder_motor',(-28,0,33+lift),(12,32,10),'silver',.5)
         B('extension_nut',(-28,35+extension,33+lift),(9,7,7),'brass',.4)
-    # Camera at the mast top. Its optics look toward the jaws and floor.
-    B('camera_bracket',(0,15,100),(28,23,3),col,.6)
-    B('camera_PCB',(0,17,104),(25,24,1.6),'pcb',.2)
-    lens=C('camera_lens',(0,25,101),4.5,8,'black','Y');lens.rotation_euler[0]=math.pi/4
-    glass=C('camera_glass',(0,28,98),3.5,.5,'lab','Y');glass.rotation_euler[0]=math.pi/4
+    if entry.get('inspection_camera'):
+        cam=entry['inspection_camera'];cy=65+extension
+        # Thin carbon tubes sit outside the camera's 58-degree field of view.
+        B('camera_outrigger',(0,55+extension,39+lift),(92,5,1),'deck',.2)
+        for x in (-44,44):C('camera_carbon_post',(x,55+extension,69.5+lift),1,60,'black')
+        B('camera_rear_header',(0,55+extension,100+lift),(92,5,1),'deck',.2)
+        body=B('inspection_camera_module',(0,cy,100+lift),(25,24,6),'black',.4)
+        bore=B('optical_bore_tool',(0,cy,100+lift),(12,12,12),'silver',0)
+        mod=body.modifiers.new('Clear optical bore','BOOLEAN');mod.object=bore;mod.operation='DIFFERENCE'
+        bpy.context.view_layer.objects.active=body;bpy.ops.object.modifier_apply(modifier=mod.name)
+        bpy.data.objects.remove(bore,do_unlink=True)
+        B('camera_PCB',(0,cy,105.3+lift),(25,24,1.6),'pcb',.2)
+        for x in (-10,10):
+            for y in (-9,9):C('camera_board_spacer',(x,cy+y,103.75+lift),1,1.5,'brass')
+        C('inspection_lens',(0,cy,97.1+lift),4.5,.5,'lab')
+        bpy.ops.object.empty_add(type='ARROWS',location=Vector((0,cy,104.1+lift))*.001)
+        optical=bpy.context.object;optical.name=PREFIX+role+'_inspection_optical_center';optical.empty_display_size=.008
+        optical['optical_axis']='local -Z';optical['vertical_fov_degrees']=cam['vertical_fov_degrees']
+        line(role+'_camera_flex',[(0,-39,57),(44,55+extension,39+lift),(44,55+extension,100+lift),(0,cy,104.1+lift)],'brass',.6)
+    else:
+        B('camera_bracket',(0,15,100),(28,23,3),col,.6)
+        B('camera_PCB',(0,17,104),(25,24,1.6),'pcb',.2)
+        lens=C('camera_lens',(0,25,101),4.5,8,'black','Y');lens.rotation_euler[0]=math.pi/4
+        glass=C('camera_glass',(0,28,98),3.5,.5,'lab','Y');glass.rotation_euler[0]=math.pi/4
+        line(role+'_camera_flex',[(0,-39,57),(-8,-13,67),(-8,17,102)],'brass',1.3)
     B('power_switch',(-40,-46,60),(8,10,7),'black',.5)
     C('status_LED',(39,-47,61),1.6,2,col)
     line(role+'_power_wire',[(-21,-38,44),(-25,-30,50),(-31,-9,54)],'red',.6)
-    line(role+'_camera_flex',[(0,-39,57),(-8,-13,67),(-8,17,102)],'brass',1.3)
     label(role.upper(),(0,-31,61),8,'white','CENTER')
     created=set(bpy.context.scene.objects)-start
     for o in created:
@@ -241,8 +298,9 @@ def arena():
         box('20mm_tape',(x,y,.075),(w,h,.15),'black',0)
     for row in A['placements']['cylinder_rows']:
         for x in A['placements']['cylinder_x']:cyl('patient_'+row['color'],(x,row['y'],10),10,20,row['color'])
-    for y in [1053,1098]:
-        for x in A['placements']['kit_x']:kit(x,y)
+    if not D['start']['kits_preloaded']:
+        for y in [1053,1098]:
+            for x in A['placements']['kit_x']:kit(x,y)
     for x,y in A['placements']['samples']:cyl('sample',(x,y,2.5),28,5,'black')
     labplate()
     for txt,p in [('HOSPITAL',(90,594,1)),('PCC',(90,155,1)),('PCC',(90,1050,1)),('QUARANTINE',(1000,245,1))]:label(txt,p,17,'white','CENTER')
@@ -269,7 +327,7 @@ def build():
     s=newscene('01_fleet_arena');scenes.append((s,'fleet_arena.png'))
     arena()
     for r in D['robots']:robot(r['id'],(*[v*1000 for v in r['start_xy_m']],0))
-    label('FIVE ROBOTS / ONE SHARED MECHANISM',(15,1280,1),38)
+    label('FIVE ROBOTS / SHARED DRIVE' ,(15,1280,1),38)
     label('KOSAC senior preliminary  |  16 scored objects  |  120 seconds',(15,1230,1),20,'muted')
     label('1143 x 1181 mm  /  fixed senior field',(571,-70,1),18,'white','CENTER')
     camera((1500,-1350,2400),(570,630,0),1820);lighting(3,(570,600,0))
@@ -280,16 +338,15 @@ def build():
         x=r['start_xy_m'][0]*1000-863;y=r['start_xy_m'][1]*1000-701
         robot(r['id'],(x,y,0))
         line('envelope',[(x-62.5,y-65,.5),(x+62.5,y-65,.5),(x+62.5,y+85,.5),(x-62.5,y+85,.5),(x-62.5,y-65,.5)],'muted',.3)
-    for y in [352,397]:
-        for x in [44,84]:kit(x,y)
-    label('4 original kits',(71,454,1),9,'white','CENTER')
+    label('VACANT',(71,409,1),12,'muted','CENTER')
+    label('4 kits preloaded on KIT',(71,386,1),7.5,'white','CENTER')
     label('STARTING FIT',(0,554,0),24)
     label('Five 125 x 150 mm robots. All dimensions in mm.',(0,527,0),10,'muted')
     dim((0,480,0),(280,480,0),'280 clear',(0,25),10)
     dim((0,0,0),(0,480,0),'480',(-29,0),10)
     dim((7.5,0,0),(272.5,0,0),'265 occupied',(0,-25),10)
     label('7.5 edge margin  /  15 column gap  /  7.5 row gap',(140,-55,0),8.5,'white','CENTER')
-    label('LAB reverses south first. The upper-left cell keeps the kit layout.',(140,-75,0),7.5,'muted','CENTER')
+    label('LAB reverses south first. KIT carries all four cubes before start.',(140,-75,0),7.5,'muted','CENTER')
     camera((125,230,900),(125,230,0),710);lighting(1,(140,240,0))
     s.render.resolution_x=1600;s.render.resolution_y=1900
     s=newscene('03_shared_mechanism');scenes.append((s,'shared_mechanism.png'))
@@ -342,20 +399,66 @@ def build():
     bpy.data.objects.remove(hole,do_unlink=True)
     cyl('seated_disc',(0,105,2.5),28,5,'black')
     label('LAB / EXTEND AFTER START',(-180,270,1),16)
-    label('40 mm horizontal stage keeps the wheels below the plate',(-180,248,1),8,'muted')
-    dim((87,0,1),(87,105,1),'105 tool reach',(15,0),9)
+    label('40 mm stage / downward carriage camera / passive anti-tip ball',(-180,248,1),7.7,'muted')
+    dim((87,0,1),(87,105,1),'105 tool reach',(48,0),9)
     dim((-55,25,1),(-55,30,1),'5 gap',(-37,0),7)
-    label('21 motors across the fleet',(0,-120,1),10,'white','CENTER')
-    label('4 per courier. LAB adds one screw-driven extension motor.',(0,-139,1),8,'muted','CENTER')
+    label('22 motors across the fleet',(0,-120,1),10,'white','CENTER')
+    label('3 couriers x 4. LAB x 5. KIT x 5.',(0,-139,1),8,'muted','CENTER')
     camera((340,-400,410),(0,70,30),640);lighting(.9,(0,60,20))
+    s=newscene('06_kit_magazine');scenes.append((s,'kit_magazine.png'))
+    robot('kit')
+    box('kit_bench',(0,25,-4),(440,390,8),'floor',2)
+    label('KIT / FOUR PRELOADED CUBES',(-190,210,1),15)
+    label('Three hinged doors. Hospital pair travels side by side.',(-190,189,1),8,'muted')
+    dim((-57.5,90,1),(59.5,90,1),'117 rack width',(0,36),9)
+    label('HOSPITAL x2',(-130,80,1),8,'white','CENTER')
+    line('H_payload_leader',[(-130,68,1),(-85,54,22),(-29.5,51,72)],r=.4)
+    label('PCC x1 + x1',(132,80,1),8,'white','CENTER')
+    line('PCC_payload_leader',[(132,67,1),(83,52,22),(44.5,51,72)],r=.4)
+    label('42 mm release height',(0,-111,1),10,'white','CENTER')
+    label('32 mm doors open down to 10 mm above the floor.',(0,-134,1),8,'muted','CENTER')
+    label('Three gate servos + two wheel motors',(0,-154,1),8,'muted','CENTER')
+    camera((300,-220,500),(0,35,30),510);lighting(.8,(0,30,20))
+    s=newscene('07_lab_support');scenes.append((s,'lab_support_camera.png'))
+    box('section_bench',(50,49,-3),(300,215,6),'floor',2)
+    # Side section: drawing X is robot forward Y; drawing Y is height above floor.
+    cyl('section_wheel',(0,25,1),25,2,'rubber')
+    cyl('section_axle',(0,25,3),3,2,'silver')
+    cyl('section_rear_ball',(-55,6,1),6,2,'silver')
+    box('section_deck',(-20,27,2),(90,4,2),'deck',.4)
+    box('section_caster_housing',(20,15,2),(16,10,2),'silver',.3)
+    box('section_caster_mount',(20,22.5,2),(16,5,2),'deck',.3)
+    cyl('section_anti_tip_ball',(20,6.5,3),6,2,'silver')
+    for cx,w in ((52.5,45),(157.5,45)):box('section_lab_plate',(cx,1.5,1),(w,3,2),'muted',.1)
+    box('section_disc',(105,2.5,2),(56,5,2),'black',.2)
+    box('section_camera',(105,100,1),(24,6,2),'black',.3)
+    box('section_camera_pcb',(105,105.3,1),(24,1.6,2),'pcb',.2)
+    line('section_camera_mount',[(95,38,2),(95,100,2),(105,100,2)],'silver',.7)
+    line('optical_axis',[(105,104.1,3),(105,7,3)],'line',.35)
+    label('LAB / FORWARD SUPPORT + INSPECTION',(-86,144,1),9)
+    label('474 g assembled mass budget. Side section; wheels on floor.',(-86,131,1),5,'muted')
+    dim((0,53,1),(20,53,1),'20 mm ahead of axle',(0,13),4.5)
+    dim((30,-3,1),(105,-3,1),'plate edge to slot: 75',(0,-18),4.5)
+    label('0.5 mm nominal floor gap',(-83,-17,1),4.6,'white')
+    line('caster_gap_leader',[(-15,-14,1),(20,-9,1),(20,.5,3)],r=.25)
+    label('104.1 mm optical height',(-84,106,1),4.6,'white')
+    line('optical_height_leader',[(26,107,1),(105,104.1,3)],r=.25)
+    label('4 mm before plate edge',(37,43,1),4.6,'white')
+    line('plate_clearance_leader',[(95,38,1),(29,18,1),(28,5,3)],r=.25)
+    label('Downward camera moves with jaw lift and 40 mm extension.',(-83,-36,1),4.4,'muted')
+    camera((50,52,700),(50,52,0),335);lighting(.45,(50,50,0))
+    s.render.resolution_x=2100;s.render.resolution_y=1500
     # Bounding-box audit uses start scene robot meshes and reserved envelope.
-    pack=bpy.data.scenes[PREFIX+'02_start_packing'];report={'units':'mm','robots':{},'original_scene_preserved':'Scene' in bpy.data.scenes,'design_sha256':hashlib.sha256((ROOT/'best_design.json').read_bytes()).hexdigest()}
+    pack=bpy.data.scenes[PREFIX+'02_start_packing'];report={'units':'mm','robots':{},'lab_mass_kg':next(r for r in D['robots'] if r['id']=='lab')['assembled_mass_budget_kg'],'original_scene_preserved':'Scene' in bpy.data.scenes,'design_sha256':hashlib.sha256((ROOT/'best_design.json').read_bytes()).hexdigest()}
     for r in D['robots']:
         objs=[o for o in pack.objects if o.get('robot_id')==r['id'] and o.type=='MESH']
         pts=[o.matrix_world@Vector(c) for o in objs for c in o.bound_box]
         lo=[min(p[i] for p in pts)*1000 for i in range(3)];hi=[max(p[i] for p in pts)*1000 for i in range(3)]
         report['robots'][r['id']]={'bounds_min':lo,'bounds_max':hi,'size':[hi[i]-lo[i] for i in range(3)],'inside_start':lo[0]>=0 and lo[1]>=0 and hi[0]<=280 and hi[1]<=480}
     (OUT/'cad_geometry_audit.json').write_text(json.dumps(report,indent=2)+'\n')
+    for scene,_ in scenes:
+        scene['design_sha256']=report['design_sha256']
+        scene['builder_sha256']=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     bpy.context.window.scene=scenes[0][0]
     bpy.ops.wm.save_as_mainfile(filepath=str(OUT/'best_design.blend'))
     (OUT/'render_jobs.json').write_text(json.dumps([{'scene':s.name,'file':f} for s,f in scenes],indent=2)+'\n')
