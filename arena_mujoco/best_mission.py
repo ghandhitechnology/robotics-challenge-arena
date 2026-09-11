@@ -89,8 +89,9 @@ class Driver:
             if (abs(forward) < tolerance and abs(lateral) > max(tolerance, .0012)
                     and self.sim.data.time - began > 2.5 and retries > 0):
                 # A differential drive cannot correct sideways error in place.
-                # Back away on the approach heading, then approach again.
-                yield from self.line(target - .025 * direction, heading=heading,
+                # Retreat from the actual pose so the recovery waypoint is
+                # straight behind the robot, then correct on the reapproach.
+                yield from self.line(position - .025 * direction, heading=heading,
                                      tolerance=.004, retries=retries - 1)
                 yield from self.line(target, heading=heading, tolerance=tolerance,
                                      retries=retries - 1)

@@ -1,0 +1,74 @@
+[
+  {
+    "seed": 1300600412,
+    "randomized": true,
+    "success": true,
+    "declaration_seconds": 77.00000000000361,
+    "departed": {
+      "lab": 10.059999999999864,
+      "red": 10.959999999999365,
+      "green": 12.839999999998323,
+      "yellow": 14.159999999997591,
+      "kit": 15.819999999996671
+    },
+    "failures": {},
+    "source_stable": true,
+    "score": 160,
+    "hold_minimum": 160,
+    "hold_samples": 50
+  },
+  {
+    "seed": 1567586323,
+    "randomized": true,
+    "success": true,
+    "declaration_seconds": 78.10000000000886,
+    "departed": {
+      "lab": 10.439999999999653,
+      "red": 11.379999999999132,
+      "green": 12.979999999998245,
+      "yellow": 14.639999999997325,
+      "kit": 16.29999999999694
+    },
+    "failures": {},
+    "source_stable": true,
+    "score": 160,
+    "hold_minimum": 160,
+    "hold_samples": 50
+  },
+  {
+    "seed": 0,
+    "randomized": false,
+    "success": true,
+    "declaration_seconds": 80.80000000002175,
+    "departed": {
+      "lab": 10.899999999999398,
+      "red": 11.159999999999254,
+      "green": 13.059999999998201,
+      "yellow": 14.479999999997414,
+      "kit": 16.21999999999684
+    },
+    "failures": {},
+    "source_stable": true,
+    "score": 160,
+    "hold_minimum": 160,
+    "hold_samples": 50
+  },
+  {
+    "seed": 1092317225,
+    "randomized": true,
+    "success": true,
+    "declaration_seconds": 86.30000000004802,
+    "departed": {
+      "lab": 11.339999999999154,
+      "red": 11.999999999998789,
+      "yellow": 15.359999999996926,
+      "kit": 17.11999999999794,
+      "green": 20.120000000001607
+    },
+    "failures": {},
+    "source_stable": true,
+    "score": 160,
+    "hold_minimum": 160,
+    "hold_samples": 50
+  }
+]
