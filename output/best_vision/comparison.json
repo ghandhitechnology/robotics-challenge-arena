@@ -1,0 +1,22 @@
+{
+  "dataset_manifest_sha256": "62a3e7d61b827ea9dc82b8c5ea8406e65e0848eb3aec2224d1dfa73ec7315fd8",
+  "control": {
+    "selected_epoch": 21,
+    "epochs_completed": 33,
+    "validation_loss": 0.03318068912873665,
+    "accuracy": 0.9966666666666667,
+    "mean_center_pixels": 0.986480176448822,
+    "p95_center_pixels": 2.2201313972473145,
+    "max_center_pixels": 25.91508674621582
+  },
+  "refined": {
+    "selected_epoch": 66,
+    "epochs_completed": 91,
+    "validation_loss": 0.03475317700455586,
+    "accuracy": 0.9976666666666667,
+    "mean_center_pixels": 0.8993363976478577,
+    "p95_center_pixels": 2.043285369873047,
+    "max_center_pixels": 24.922367095947266
+  },
+  "test_evaluation": "not run"
+}

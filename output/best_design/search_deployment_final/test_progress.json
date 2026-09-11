@@ -1,0 +1,38 @@
+{
+  "mode": "test",
+  "completed": 300,
+  "total": 300,
+  "elapsed_seconds": 987.1645460330001,
+  "last_episode": {
+    "profile": "fast_couriers_0.48_4",
+    "limits": [
+      0.48,
+      4.0
+    ],
+    "seed": 1721256125,
+    "success": true,
+    "score": 160,
+    "task_score": 160,
+    "declaration_seconds": 90.8000000000695,
+    "deployment_seconds": 17.43999999999833,
+    "failures": {},
+    "completed_robots": [
+      "kit",
+      "red",
+      "lab",
+      "yellow"
+    ],
+    "unfinished_robots": [],
+    "hold": {
+      "sample_interval_s": 0.1,
+      "samples": 50,
+      "minimum_score": 160,
+      "violations": []
+    },
+    "max_torque_nm": 0.02293123891535008,
+    "max_tilt_rad": 0.05213795827251987,
+    "physics_warning_count": 0,
+    "wall_seconds": 81.06567204100065,
+    "exception": null
+  }
+}

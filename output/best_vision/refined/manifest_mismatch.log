@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/content/robotics_best_design/scripts/train_best_vision.py", line 418, in <module>
+    main()
+    ~~~~^^
+  File "/content/robotics_best_design/scripts/train_best_vision.py", line 197, in main
+    dataset_manifest = generate_frozen_dataset(
+        args.dataset, config, split_counts, split_seeds, ROOT, force=args.force_generate)
+  File "/content/robotics_best_design/arena_mujoco/best_vision.py", line 458, in generate_frozen_dataset
+    raise ValueError(f"Dataset at {root} has a different configuration; use --force-generate")
+ValueError: Dataset at output/best_vision/dataset has a different configuration; use --force-generate

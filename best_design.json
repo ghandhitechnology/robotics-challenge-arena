@@ -1,0 +1,425 @@
+{
+  "schema_version": 1,
+  "name": "five_robot_specialist_fleet",
+  "scope": "national_senior_preliminary",
+  "design_status": "dimensioned engineering concept; hardware tolerances require measurement",
+  "units": "meters",
+  "count": 5,
+  "sources": {
+    "rules": "reference/challenge_2026_full.pdf",
+    "official_faq": "https://apply.kosac.re.kr/onlnRcpt/getBscInfo.do?pbancNo=2026-S729",
+    "arena": "arena_spec.json"
+  },
+  "shared_robot": {
+    "footprint_m": [
+      0.125,
+      0.15
+    ],
+    "footprint_bounds_local_m": [
+      [
+        -0.0625,
+        -0.065
+      ],
+      [
+        0.0625,
+        0.085
+      ]
+    ],
+    "height_m": 0.11,
+    "forward_axis": [
+      0,
+      1,
+      0
+    ],
+    "mass_budget_kg": 0.45,
+    "wheel_radius_m": 0.025,
+    "wheel_width_m": 0.008,
+    "wheel_track_m": 0.11,
+    "wheel_axle_y_m": 0.0,
+    "deck_size_m": [
+      0.105,
+      0.09,
+      0.004
+    ],
+    "deck_center_body_m": [
+      0,
+      -0.02,
+      0.027
+    ],
+    "tool_center_body_xy_m": [
+      0,
+      0.065
+    ],
+    "lift_range_m": [
+      0,
+      0.045
+    ],
+    "jaw_aperture_range_m": [
+      0.018,
+      0.068
+    ],
+    "sample_pad_floor_heights_m": [
+      0.0034,
+      0.0048
+    ],
+    "upper_pad_floor_heights_m": [
+      0.006,
+      0.016
+    ],
+    "max_motor_torque_nm": 0.025,
+    "max_wheel_speed_rad_s": 20,
+    "max_lift_force_n": 4,
+    "nominal_normal_force_per_jaw_n": 1,
+    "physical_motor_count": 4,
+    "cruise_target_m_s": 0.35,
+    "precision_approach_m_s": 0.025,
+    "electronics_reserved_volumes_m": {
+      "battery": [
+        0.054,
+        0.032,
+        0.015
+      ],
+      "compute": [
+        0.065,
+        0.03,
+        0.012
+      ],
+      "camera": [
+        0.025,
+        0.024,
+        0.012
+      ],
+      "motor_control": [
+        0.03,
+        0.025,
+        0.01
+      ]
+    },
+    "hardware": {
+      "drive": "2 encoder micro metal gearmotors, Pololu 5188 reference envelope32x12x10mm plus shaft",
+      "lift_grip": "2 ROBOTIS XL330-M288 reference actuators; cable drum lift and opposing rack jaws",
+      "compute": "Pi Zero 2 W-class 65x30mm board, controller MCU and IMU",
+      "camera": "onboard downward-forward camera with tool in view",
+      "battery": "2S pack with regulated6V drive and5V logic/servo rails"
+    },
+    "mechanism": "shared active parallel jaws, compliant upper cylinder/kit pads and thin elevated sample pads, cable lift on twin guide rods"
+  },
+  "start": {
+    "bounds_xy_m": [
+      0.863,
+      0.701,
+      1.143,
+      1.181
+    ],
+    "occupied_extent_xy_m": [
+      0.265,
+      0.465
+    ],
+    "column_gap_m": 0.015,
+    "row_gap_m": 0.0075,
+    "outer_margin_m": 0.0075,
+    "empty_cell": "upper_left remains vacant; all four kits are preloaded on KIT",
+    "kits_preloaded": true,
+    "deployment_order": [
+      "lab",
+      "red",
+      "yellow",
+      "kit",
+      "green"
+    ],
+    "deployment_note": "Reverse the lower-left LAB south beside laboratory first; release each following robot into vacated cells. Swept-volume deployment needs simulation verification."
+  },
+  "robots": [
+    {
+      "id": "lab",
+      "role": "three_samples_to_laboratory",
+      "start_xy_m": [
+        0.933,
+        0.7735
+      ],
+      "start_yaw_rad": 0,
+      "rgba": [
+        0.18,
+        0.5,
+        0.95,
+        1
+      ],
+      "target_count": 3,
+      "front_anti_tip_caster": {
+        "ball_radius_m": 0.006,
+        "center_body_m": [
+          0,
+          0.02,
+          -0.0185
+        ],
+        "floor_clearance_m": 0.0005,
+        "bracket_center_body_m": [
+          0,
+          0.02,
+          -0.0025
+        ],
+        "bracket_size_m": [
+          0.016,
+          0.016,
+          0.005
+        ],
+        "housing_center_body_m": [
+          0,
+          0.02,
+          -0.01
+        ],
+        "housing_radius_m": 0.008,
+        "housing_half_height_m": 0.005,
+        "mass_kg": {
+          "ball": 0.012,
+          "bracket": 0.004,
+          "housing": 0.002
+        },
+        "purpose": "Passive forward anti-tip support. Ball and housing remain behind the laboratory plate edge at the 105 mm tool reach.",
+        "native_evidence": "front_caster_20mm_gap_full: 160 points at 117.88 s; 50 hold checks retain 160; LAB peak pitch 2.44 degrees."
+      },
+      "assembled_mass_budget_kg": 0.474,
+      "inspection_camera": {
+        "optical_center_carriage_m": [
+          0,
+          0,
+          0.0841
+        ],
+        "optical_axis_carriage": [
+          0,
+          0,
+          -1
+        ],
+        "vertical_fov_degrees": 58,
+        "module_center_carriage_m": [
+          0,
+          0,
+          0.08
+        ],
+        "module_size_m": [
+          0.025,
+          0.024,
+          0.006
+        ],
+        "mass_kg": 0.006,
+        "initial_optical_height_m": 0.1041,
+        "initial_module_height_range_m": [
+          0.097,
+          0.1061
+        ],
+        "native_module_collision_enabled": true,
+        "mount": "Four frame walls surround a 12 x 12 mm clear optical aperture. The sensor board is behind the optical center. Two light posts attach the module to the moving tool carriage.",
+        "validation": "Onboard camera coupons use the matching transform; final loaded full-fleet validation includes this 6 g mass.",
+        "clear_aperture_m": [
+          0.012,
+          0.012
+        ],
+        "backplate_center_carriage_m": [
+          0,
+          0,
+          0.0853
+        ],
+        "backplate_size_m": [
+          0.025,
+          0.024,
+          0.0016
+        ],
+        "backplate_mass_kg": 0.002
+      }
+    },
+    {
+      "id": "red",
+      "role": "three_red_to_hospital",
+      "start_xy_m": [
+        1.073,
+        0.7735
+      ],
+      "start_yaw_rad": 0,
+      "rgba": [
+        0.84,
+        0.16,
+        0.2,
+        1
+      ],
+      "target_count": 3
+    },
+    {
+      "id": "yellow",
+      "role": "three_yellow_split_between_pccs",
+      "start_xy_m": [
+        0.933,
+        0.931
+      ],
+      "start_yaw_rad": 0,
+      "rgba": [
+        0.96,
+        0.66,
+        0.1,
+        1
+      ],
+      "target_count": 3
+    },
+    {
+      "id": "kit",
+      "role": "four_kits_hospital_two_each_pcc_one",
+      "start_xy_m": [
+        1.073,
+        0.931
+      ],
+      "start_yaw_rad": 0,
+      "rgba": [
+        0.73,
+        0.83,
+        0.88,
+        1
+      ],
+      "target_count": 4
+    },
+    {
+      "id": "green",
+      "role": "three_green_to_recovery",
+      "start_xy_m": [
+        1.073,
+        1.0885
+      ],
+      "start_yaw_rad": 0,
+      "rgba": [
+        0.13,
+        0.67,
+        0.42,
+        1
+      ],
+      "target_count": 3
+    }
+  ],
+  "sample_placement": {
+    "sample_diameter_m": 0.056,
+    "slot_diameter_m": 0.06,
+    "radial_clearance_m": 0.002,
+    "plate_height_m": 0.003,
+    "pad_bottom_rim_gap_m": 0.0004,
+    "strategy": "Grip the disc upper edge above the plate, lower onto slot floor, open sideways above rim, lift and reverse. No finger enters the annulus.",
+    "requirements": [
+      "measure plate thickness and flatness",
+      "bound total horizontal placement error below2mm; aim below1mm",
+      "confirm at least0.4mm vertical rim clearance under load",
+      "verify complete release and settle with camera"
+    ]
+  },
+  "alternatives": {
+    "four_robots": "fewer computers and less traffic, but kit tasks serialize with patient transport",
+    "six_robots": "A sixth 125 x 150 mm robot fits the vacant upper-left cell after kit preloading. It can split patient queues; two bounded native schedules failed due to KIT traffic, so no speed advantage is established.",
+    "forty_modules": "connection alignment, magnet load path, electronics packaging and forty-way traffic dominate a120s task",
+    "preloaded_kit_magazine": "Adopted as KIT baseline after sequential collection exceeded120s; physical three-gate drop tests required.",
+    "vacuum_lab": "keeps annulus clear but needs wood leakage measurement, pressure sensing and pump volume; not baseline"
+  },
+  "validation_contract": {
+    "required": [
+      "initial body and kit containment",
+      "collision-free deployment",
+      "wheel torque and slip",
+      "contact-only grasps and releases",
+      "all16elements scored under120s",
+      "onboard image observations for learned inference",
+      "repeat runs with friction, pose, motor and camera perturbations"
+    ],
+    "claims_excluded": [
+      "fabrication validated",
+      "hardware measured timing",
+      "globally optimal fleet size"
+    ]
+  },
+  "lab_extension": {
+    "axis_body": [
+      0,
+      1,
+      0
+    ],
+    "range_m": [
+      0,
+      0.04
+    ],
+    "max_force_n": 4,
+    "max_speed_m_s": 0.06,
+    "extended_tool_y_m": 0.105,
+    "extended_footprint_length_m": 0.19,
+    "physical_motor_count_lab": 5,
+    "physical_motor_count_fleet": 22,
+    "mechanism": "Twin linear rails with lead screw and encoder micro-motor on the lift carriage. Retract before start; extend for laboratory placement.",
+    "laboratory_side_approach": "Lab plate begins x.993; with robot heading east toolat1.068 axleat.963, tireedge.988 leaves5mm floor gap."
+  },
+  "kit_magazine": {
+    "replaces": "KIT lift and parallel jaws",
+    "physical_motor_count_kit": 5,
+    "physical_motor_count_fleet": 22,
+    "preloaded_kit_count": 4,
+    "outer_width_m": 0.117,
+    "chute_center_y_m": 0.051,
+    "chute_outer_depth_m": 0.032,
+    "floor_upper_face_m": 0.042,
+    "floor_thickness_m": 0.001,
+    "floor_center_height_m": 0.0415,
+    "wall_top_height_m": 0.071,
+    "gate_hinge_body_yz_m": [
+      0.035,
+      0.042
+    ],
+    "gate_axis_body": [
+      -1,
+      0,
+      0
+    ],
+    "gate_range_rad": [
+      0,
+      1.5707963267948966
+    ],
+    "max_gate_torque_nm": 0.06,
+    "max_gate_speed_rad_s": 2.5,
+    "gate_tip_min_height_open_m": 0.01,
+    "chutes": [
+      {
+        "id": "hospital",
+        "center_x_m": -0.0295,
+        "outer_width_m": 0.056,
+        "clear_width_m": 0.053,
+        "kit_x_m": [
+          -0.043,
+          -0.016
+        ],
+        "destination": "hospital",
+        "capacity": 2
+      },
+      {
+        "id": "pcc_upper",
+        "center_x_m": 0.0135,
+        "outer_width_m": 0.03,
+        "clear_width_m": 0.027,
+        "kit_x_m": [
+          0.0135
+        ],
+        "destination": "pcc_upper",
+        "capacity": 1
+      },
+      {
+        "id": "pcc_lower",
+        "center_x_m": 0.0445,
+        "outer_width_m": 0.03,
+        "clear_width_m": 0.027,
+        "kit_x_m": [
+          0.0445
+        ],
+        "destination": "pcc_lower",
+        "capacity": 1
+      }
+    ],
+    "kit_center_height_m": 0.052,
+    "mechanism": "Three servo-driven front bottom doors; hospital kits side by side. All chutes overhang the deck so cubes have a clear gravity path to the floor.",
+    "camera": "Rear mast observes all four cube faces; no stacked payloads",
+    "validation_required": [
+      "initial support and start containment",
+      "doors open without floor strike",
+      "all four cubes fall free and settle inside destinations",
+      "hospital pair remains separate in the overhead view"
+    ]
+  }
+}

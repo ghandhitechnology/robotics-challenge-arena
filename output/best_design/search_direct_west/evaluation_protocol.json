@@ -1,0 +1,14 @@
+{
+  "prepared_before_test": true,
+  "source_commit": "f506bc2df95ef7b2ebcefee8f07c1d234d0235ef",
+  "validation_generator_seed": 202609120,
+  "validation_episodes": 24,
+  "test_generator_seed": 202609121,
+  "test_episodes": 300,
+  "prior_test_seed_overlap": 0,
+  "test_seed_sha256": "dcc5766115929564a18ad742b26fccd5cc051aa4ae1b3f5e22caa5c8634ce4df",
+  "profile": "fast_couriers_0.48_4",
+  "primary_outcome": "All 160 points within 120 seconds, maintained throughout the five-second hold.",
+  "reporting": "Retain every failure and exception in the denominator. Report success rate, Wilson 95% lower bound and successful mission timing.",
+  "hardware_scope": "Simulation with engineering parameter distributions; physical robot qualification is unmeasured."
+}

@@ -1,0 +1,21 @@
+{
+  "pid": 239753,
+  "started_utc": "2026-09-11T14:59:48.553200+00:00",
+  "commit": "e2be32d42e5dd0b8486881919f37c2d4a13cc419",
+  "command": [
+    "/usr/bin/python3",
+    "/content/robotics_fleet_deployment_final/scripts/run_best_fleet.py",
+    "--seed",
+    "1092317225",
+    "--randomize",
+    "--drive-limits",
+    ".48",
+    "4",
+    "--lab-drive-limits",
+    ".35",
+    "2.5",
+    "--green-upper-first",
+    "--output",
+    "/content/robotics_fleet_deployment_final/output/best_design/deployment_recovery_development/g4_1092317225"
+  ]
+}

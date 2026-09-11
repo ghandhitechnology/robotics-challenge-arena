@@ -1,0 +1,28 @@
+{
+  "kind": "native MuJoCo saved-state simulation capture",
+  "view": "oblique",
+  "source_hashes": {
+    "scene.xml": "489f13b73f8127b47791a12adf3e49202321aea1251acdc11a8a2fadfd965919",
+    "trajectory.npz": "8cb589ccdc858c1b05dfef90c7516a75e51a15798c2e5f6cbfb429fc9f01c187",
+    "report.json": "b6406f559840224714e86551bfcb294be5b9dbcde27ba7d06c40f3bc5c26e787",
+    "metadata.json": "879afb231e307b049a42c182490a6f6f824a0a2226d3acd8ece6a64cb3a1cc06"
+  },
+  "source_directory": "output/best_design/final_frame_nominal",
+  "video_sha256": "656b2e4552a0fdd336becefd6d45bd6fe6e622341b1c186ec97689c118bab574",
+  "fps": 30,
+  "width": 960,
+  "height": 720,
+  "frame_count": 2539,
+  "playback_speed": 1.0,
+  "first_simulation_time": 0.02000000000000001,
+  "last_simulation_time": 84.6000000000399,
+  "sampling": "nearest saved state; no pose interpolation or physics advancement",
+  "robot_names": [
+    "fleet_lab_competition_robot",
+    "fleet_red_competition_robot",
+    "fleet_yellow_competition_robot",
+    "fleet_kit_competition_robot",
+    "fleet_green_competition_robot"
+  ],
+  "source_success": true
+}

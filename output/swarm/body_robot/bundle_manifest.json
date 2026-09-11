@@ -1,0 +1,206 @@
+{
+  "schema_version": 1,
+  "bundle": "swarm_body_robot_assets",
+  "variant": "magnetic_body",
+  "file_count_excluding_manifest": 33,
+  "files": [
+    {
+      "path": "output/swarm/body_robot/README.md",
+      "bytes": 1591,
+      "crc32": "ae863ed8",
+      "sha256": "36d35fa5c8e1b580fb41b1a4622a8895c390d3c3eabdfef9f3ab55e6617fd25e"
+    },
+    {
+      "path": "output/swarm/body_robot/assembly_reference_mm.stl",
+      "bytes": 639684,
+      "crc32": "cd009fbd",
+      "sha256": "3e12411bd312a4d0e9daeb8b01465a85cf27f64da64608a70e94d9453ddf19eb"
+    },
+    {
+      "path": "output/swarm/body_robot/cad_manifest.json",
+      "bytes": 9805,
+      "crc32": "8785fd22",
+      "sha256": "15cead36d98fb52eb5549a4a607ca052f6f1c17572e2fafdf98d93972a2b42b3"
+    },
+    {
+      "path": "output/swarm/body_robot/cad_validation.json",
+      "bytes": 1668,
+      "crc32": "a631d123",
+      "sha256": "16fc29b0d47fe510d2b8b33773d183455cac200d20e1dbca3d214a3bb8fc1f00"
+    },
+    {
+      "path": "output/swarm/body_robot/contact_detail.png",
+      "bytes": 1852713,
+      "crc32": "7642c44e",
+      "sha256": "f0e7651dc95662192e3bfb1b2e35514723c5815eb1c02f725e4bf697d2a08406"
+    },
+    {
+      "path": "output/swarm/body_robot/contact_validation.json",
+      "bytes": 8216,
+      "crc32": "ebb50a4d",
+      "sha256": "2a6d0c15c631af37477368981c06de61b9ace6d9f276bdc0e3b80bb497f1bd01"
+    },
+    {
+      "path": "output/swarm/body_robot/geometry.json",
+      "bytes": 23344,
+      "crc32": "cdcd1766",
+      "sha256": "d72bfd29a8f834da783db7d5607e449b8c1ea8d06899cbf15c845d4c82eb8988"
+    },
+    {
+      "path": "output/swarm/body_robot/magnetic_validation.json",
+      "bytes": 854,
+      "crc32": "f447d6d3",
+      "sha256": "566c82c124c1c3add49516cccea569cef28f01a663c652d0d935fc13b2b83aed"
+    },
+    {
+      "path": "output/swarm/body_robot/module.png",
+      "bytes": 114741,
+      "crc32": "d1f4fbfc",
+      "sha256": "38e707eca7935d3800f45f5f7bdc98903e38ff7192d36640a1f60778da64bfd9"
+    },
+    {
+      "path": "output/swarm/body_robot/module_overview.png",
+      "bytes": 1957913,
+      "crc32": "bb0b2d47",
+      "sha256": "59f69d27c184b4e081c8811bf7d0d623266155f6c22e5897d60d5a7bab573233"
+    },
+    {
+      "path": "output/swarm/body_robot/module_top.png",
+      "bytes": 1896017,
+      "crc32": "2fd98aee",
+      "sha256": "bb699a8ce6b0fb7c6dc2e87c168c20bfa7c7a3506922b2804c71f577aa2c2550"
+    },
+    {
+      "path": "output/swarm/body_robot/parts/swarm_00_ball_housing_mm.stl",
+      "bytes": 198484,
+      "crc32": "1e2a0404",
+      "sha256": "4347ab0c6b255d1aab23c7d2a36e2a1ff293bb288e55a3f503c87ce5a52c8e81"
+    },
+    {
+      "path": "output/swarm/body_robot/parts/swarm_00_magnet_0_housing_mm.stl",
+      "bytes": 684,
+      "crc32": "fa6bb980",
+      "sha256": "8aad372339e94353511a554720b312b457bb7897fd4764e61d29a77220f4e209"
+    },
+    {
+      "path": "output/swarm/body_robot/parts/swarm_00_magnet_1_housing_mm.stl",
+      "bytes": 684,
+      "crc32": "07a4f274",
+      "sha256": "2735fe9a90613ae5e2f8f9546a92ab7732f31612ff926db42a838d645491e584"
+    },
+    {
+      "path": "output/swarm/body_robot/parts/swarm_00_magnet_2_housing_mm.stl",
+      "bytes": 684,
+      "crc32": "1d8f8bfd",
+      "sha256": "2ec3384f1cbfc2c88ded201f65d4e43070bd9e922a4f3a98b3dcbf9811c6d8d0"
+    },
+    {
+      "path": "output/swarm/body_robot/parts/swarm_00_magnet_3_housing_mm.stl",
+      "bytes": 684,
+      "crc32": "e040c009",
+      "sha256": "c7610d184b4fe09592df6574a9be508abd420c78e65538f2d300746a2351b468"
+    },
+    {
+      "path": "output/swarm/body_robot/parts/swarm_00_pad_mm.stl",
+      "bytes": 684,
+      "crc32": "6514b1db",
+      "sha256": "347efc84d4dadadbc38c6021dddb725c2676de425d124cbbd39b45fac41fcb4d"
+    },
+    {
+      "path": "output/swarm/body_robot/parts/swarm_00_pad_upper_mm.stl",
+      "bytes": 684,
+      "crc32": "9141c6fb",
+      "sha256": "69c46c950e436e04fef9c09dfb9da687a6d562001221fd2852f3a923ef077989"
+    },
+    {
+      "path": "output/swarm/body_robot/parts/swarm_00_shell_front_mm.stl",
+      "bytes": 1484,
+      "crc32": "f8204782",
+      "sha256": "52b3b9508f0a0ca94ab9ae5815e970e7ef25c601a61078beeb18cfbce5133597"
+    },
+    {
+      "path": "output/swarm/body_robot/parts/swarm_00_shell_rear_mm.stl",
+      "bytes": 1484,
+      "crc32": "0bfd2eb1",
+      "sha256": "c7ce9425885606b4ba69ad437f965beaee0afcbc2cc0ddc89af783544f2c1561"
+    },
+    {
+      "path": "output/swarm/body_robot/parts/swarm_00_skid_front_mm.stl",
+      "bytes": 198484,
+      "crc32": "d16acd19",
+      "sha256": "8a4d751846e36f8381d1dce3e8b55ee9ceb62ec0bd0f922a44eeaf9230fcd102"
+    },
+    {
+      "path": "output/swarm/body_robot/parts/swarm_00_skid_rear_mm.stl",
+      "bytes": 198484,
+      "crc32": "7e88182c",
+      "sha256": "3e5f0b494d79e69a2985936372d7dc32121ab7c04fc5856e989a2e8dd65125dd"
+    },
+    {
+      "path": "output/swarm/body_robot/parts/swarm_00_tire_left_mm.stl",
+      "bytes": 19084,
+      "crc32": "d790d500",
+      "sha256": "96943a0ef0db565ad141121586a7dfa31fc8b8be78af5607a94fb09ec19cb257"
+    },
+    {
+      "path": "output/swarm/body_robot/parts/swarm_00_tire_right_mm.stl",
+      "bytes": 19084,
+      "crc32": "7003c5bf",
+      "sha256": "efa93d3a1c72d694019c7c098570a907eba8d5eb0aa3c650cff3a1e6c8a4b75c"
+    },
+    {
+      "path": "output/swarm/body_robot/robot.xml",
+      "bytes": 6524,
+      "crc32": "8f301e21",
+      "sha256": "121221bb1de915544e95049d27708024569d1ca837e4b05f1fc0bc045465f0c6"
+    },
+    {
+      "path": "output/swarm/body_robot/swarm_body_robot.blend",
+      "bytes": 237699,
+      "crc32": "ce4d5fe8",
+      "sha256": "d75eb65e164bf9b1affd616fdfb48ef296e04e8b14022174b9e539d7bff83307"
+    },
+    {
+      "path": "output/swarm/body_robot/swarm_body_robot_design.json",
+      "bytes": 5244,
+      "crc32": "a8eb9264",
+      "sha256": "ca239e0da7db4155d199a23f8dc2a44a171ef6f8ae328fb3292b2802ac750c69"
+    },
+    {
+      "path": "arena_mujoco/swarm_robot.py",
+      "bytes": 9774,
+      "crc32": "e5825071",
+      "sha256": "eee12f8ced089a22b2e204018a32418eabc2a35680bdcc11fb5cb748ea0a3338"
+    },
+    {
+      "path": "arena_mujoco/swarm_magnets.py",
+      "bytes": 13568,
+      "crc32": "5dc1c416",
+      "sha256": "a0f42a84fee3ef2704cf76935088cfbf94cc8c21d0c68eb33c362d6f97d59583"
+    },
+    {
+      "path": "scripts/export_swarm_robot.py",
+      "bytes": 14603,
+      "crc32": "8f6b990f",
+      "sha256": "a790bbdbbb9e78541bc745f3b79a776139157d757e7e4cac75580304569b640f"
+    },
+    {
+      "path": "scripts/render_swarm_robot.py",
+      "bytes": 14777,
+      "crc32": "e271cc3a",
+      "sha256": "2492f0e0c56e199e7e55e7f6a46c955e7d25048a9f75c94b57d5f13d4913ae2a"
+    },
+    {
+      "path": "docs/swarm_robot_design.md",
+      "bytes": 13645,
+      "crc32": "300436fa",
+      "sha256": "da1318ff03e4a9633a136228d2cbcbbcf2dc1d44bbe437821339b23aa14493f9"
+    },
+    {
+      "path": "requirements-mujoco.txt",
+      "bytes": 61,
+      "crc32": "a24fa04f",
+      "sha256": "8fd5e3eef093af22b31194106548cd90ccbbed660cdf4416463047c83b91d721"
+    }
+  ]
+}

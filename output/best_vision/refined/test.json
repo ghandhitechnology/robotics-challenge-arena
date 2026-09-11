@@ -1,0 +1,153 @@
+{
+  "claim_scope": "This report scores frozen crop perception. Fleet physics and mission success need separate tests.",
+  "classification": {
+    "accuracy": 0.997,
+    "confusion_true_rows_predicted_columns": [
+      [
+        498,
+        0,
+        0,
+        2,
+        0,
+        0
+      ],
+      [
+        0,
+        497,
+        0,
+        0,
+        3,
+        0
+      ],
+      [
+        1,
+        0,
+        499,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        500,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        499,
+        0
+      ],
+      [
+        0,
+        0,
+        2,
+        0,
+        0,
+        498
+      ]
+    ],
+    "expected_calibration_error_15_bin": 0.0010132139325141926,
+    "macro_f1": 0.9969999909999671,
+    "negative_log_likelihood": 0.013938291929662228,
+    "per_class": {
+      "background": {
+        "f1": 0.9969969969969971,
+        "precision": 0.9979959919839679,
+        "recall": 0.996,
+        "support": 500
+      },
+      "green": {
+        "f1": 0.998003992015968,
+        "precision": 0.9960159362549801,
+        "recall": 1.0,
+        "support": 500
+      },
+      "kit": {
+        "f1": 0.9960079840319361,
+        "precision": 0.9940239043824701,
+        "recall": 0.998,
+        "support": 500
+      },
+      "red": {
+        "f1": 0.9959919839679359,
+        "precision": 0.9979919678714859,
+        "recall": 0.994,
+        "support": 500
+      },
+      "sample": {
+        "f1": 0.9979959919839679,
+        "precision": 1.0,
+        "recall": 0.996,
+        "support": 500
+      },
+      "yellow": {
+        "f1": 0.997002997002997,
+        "precision": 0.9960079840319361,
+        "recall": 0.998,
+        "support": 500
+      }
+    }
+  },
+  "dataset_manifest_sha256": "62a3e7d61b827ea9dc82b8c5ea8406e65e0848eb3aec2224d1dfa73ec7315fd8",
+  "evaluation_role": "independent final evaluation after validation-based model selection",
+  "localization_all_foreground": {
+    "foreground_count": 2500,
+    "max_pixels": 9.167104721069336,
+    "mean_normalized": 0.012310934253036976,
+    "mean_pixels": 0.886387288570404,
+    "median_pixels": 0.7602585554122925,
+    "p95_pixels": 1.9769879579544067
+  },
+  "localization_correctly_classified_foreground": {
+    "foreground_count": 2493,
+    "max_pixels": 9.167104721069336,
+    "mean_normalized": 0.0122766625136137,
+    "mean_pixels": 0.8839197158813477,
+    "median_pixels": 0.7582961320877075,
+    "p95_pixels": 1.9749690294265747
+  },
+  "model_sha256": "7532f12a04597ea9b8388e399dad7c15a52e746b602bdb4c0c8abf598b942266",
+  "requested_gates": {
+    "failures": [],
+    "maximum_center_p95_pixels": null,
+    "minimum_accuracy": null,
+    "passed": true
+  },
+  "runtime": {
+    "device": "cuda",
+    "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.39",
+    "python": "3.13.15",
+    "torch_version": "2.11.0+cu128"
+  },
+  "schema_version": 1,
+  "test_examples": 3000,
+  "test_file_sha256": {
+    "centers": "1fcb910505212dd540e30bc3c3757259d29a661aedf02c2e5c3f337068b328ae",
+    "images": "18d0c8554562d1cdf03f5b97e52f70374035b86e03444005def11695dd09583d",
+    "labels": "66023a6eb18e337536884e5c47c2180faa44c7bafdc89edb24921554c4f322dd"
+  },
+  "test_seed": 20461012,
+  "timing": {
+    "inference_latency": {
+      "batch_1_end_to_end_milliseconds": {
+        "median": 0.4984445,
+        "p95": 0.5253474499999999
+      },
+      "batch_1_model_milliseconds": {
+        "median": 0.2508895,
+        "p95": 0.2617065
+      },
+      "batch_32_images_per_second": 937.6054128518589,
+      "iterations": 200
+    },
+    "test_evaluation_seconds": 1.6223103339998488,
+    "test_images_per_second": 1849.21462751422
+  }
+}

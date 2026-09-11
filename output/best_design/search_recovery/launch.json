@@ -1,0 +1,24 @@
+{
+  "name": "tune",
+  "pid": 231271,
+  "started_at_utc": "2026-09-11T14:35:17Z",
+  "requested_ref": "f16f2f2e87f037f5ba6380662b541931c06637a7",
+  "resolved_commit": "f16f2f2e87f037f5ba6380662b541931c06637a7",
+  "command": [
+    "/usr/bin/python3",
+    "scripts/optimize_best_fleet.py",
+    "tune",
+    "--profile",
+    "fast_couriers_0.48_4",
+    "--episodes",
+    "24",
+    "--seed",
+    "202609122",
+    "--workers",
+    "24",
+    "--output",
+    "output/best_design/search_recovery"
+  ],
+  "output": "/content/robotics_fleet_recovery_f16/output/best_design/search_recovery",
+  "log": "/content/robotics_fleet_recovery_f16/output/best_design/search_recovery/tune.log"
+}

@@ -1,0 +1,16 @@
+{
+  "prepared_before_test": true,
+  "source_commit": "f16f2f2e87f037f5ba6380662b541931c06637a7",
+  "validation_generator_seed": 202609122,
+  "validation_episodes": 24,
+  "test_generator_seed": 202609123,
+  "test_episodes": 300,
+  "prior_test_seed_count": 500,
+  "prior_test_seed_overlap": 0,
+  "test_seed_sha256": "f555b69dc7a308f46f3cb3f0d49c280bb9bef4075fac23e9989a6ba1c3808648",
+  "profile": "fast_couriers_0.48_4",
+  "primary_outcome": "All 160 points within 120 seconds, maintained throughout the five-second hold.",
+  "reporting": "Retain every failure and exception in the denominator. Report success rate, Wilson 95% lower bound and successful mission timing.",
+  "hardware_scope": "Simulation with engineering parameter distributions; physical robot qualification is unmeasured.",
+  "test_status": "Not launched. Two known G4 deployment failures persisted after the 24/24 validation. Superseded by the deployment point-guidance correction."
+}

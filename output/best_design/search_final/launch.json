@@ -1,0 +1,19 @@
+{
+  "requested_ref": "bbc54c3",
+  "resolved_commit": "bbc54c3e797ebcefbcca60c7e94aade5b687f872",
+  "checkout": "/content/robotics_fleet_search_bbc54c3",
+  "pid": 136366,
+  "started_at_utc": "2026-09-11T12:59:22Z",
+  "command": [
+    "/usr/bin/python3",
+    "scripts/optimize_best_fleet.py",
+    "tune",
+    "--output",
+    "output/best_design/search_final",
+    "--workers",
+    "12"
+  ],
+  "workers": 12,
+  "expected_trials": 54,
+  "output": "/content/robotics_fleet_search_bbc54c3/output/best_design/search_final"
+}

@@ -1,0 +1,12 @@
+{
+  "observed_at_utc": "2026-09-11T13:32:03Z",
+  "checkout": "/content/robotics_fleet_search_bbc54c3",
+  "commit": "bbc54c3e797ebcefbcca60c7e94aade5b687f872",
+  "model": "/content/robotics_fleet_search_bbc54c3/output/best_drive_final/model/weights.npz",
+  "dataset": "/content/robotics_fleet_search_bbc54c3/output/best_drive_final/dataset",
+  "gpu": {
+    "returncode": 0,
+    "stdout": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 0, 1115, 97887, 580.82.07, 0",
+    "stderr": ""
+  }
+}

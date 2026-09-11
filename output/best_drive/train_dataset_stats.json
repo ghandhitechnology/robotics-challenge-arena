@@ -1,0 +1,32 @@
+{
+  "observed_at_utc": "2026-09-11T12:20:41.233120+00:00",
+  "split": "train",
+  "file": "/content/robotics_competition_9ce70498/output/best_drive/dataset/train.npz",
+  "file_sha256": "a966db2ebeed42066624854cccb98fe4d5a62e4f0fb6fb85898959e588f39abc",
+  "manifest_sha256": "412610c17219f392518b2b514f7965d58fb53bd32c210a3ecd87c2f1e465c70a",
+  "examples": 73002,
+  "arrays": {
+    "observations": {
+      "shape": [
+        73002,
+        8
+      ],
+      "dtype": "float32",
+      "mean": 0.10510040819644928,
+      "std": 0.43140479922294617,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "targets": {
+      "shape": [
+        73002,
+        2
+      ],
+      "dtype": "float32",
+      "mean": 0.02559630386531353,
+      "std": 0.45876726508140564,
+      "min": -1.0,
+      "max": 1.0
+    }
+  }
+}

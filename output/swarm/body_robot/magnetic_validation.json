@@ -1,0 +1,30 @@
+[
+  {
+    "timestep_s": 0.001,
+    "join_duration_s": 0.1,
+    "release_drive_duration_s": 1.0,
+    "joined": true,
+    "joined_port_pairs": 2,
+    "peak_single_port_force_n": 0.1372324039698912,
+    "release_changed_pose": false,
+    "force_immediately_after_release_n": 0.0,
+    "interactions_after_release": 0,
+    "relative_shear_after_release_m": 0.12778339165373476,
+    "solver_warning_count": 0,
+    "passed": true
+  },
+  {
+    "timestep_s": 0.002,
+    "join_duration_s": 0.1,
+    "release_drive_duration_s": 1.0,
+    "joined": true,
+    "joined_port_pairs": 2,
+    "peak_single_port_force_n": 0.1372324039698912,
+    "release_changed_pose": false,
+    "force_immediately_after_release_n": 0.0,
+    "interactions_after_release": 0,
+    "relative_shear_after_release_m": 0.1207311677844191,
+    "solver_warning_count": 0,
+    "passed": true
+  }
+]

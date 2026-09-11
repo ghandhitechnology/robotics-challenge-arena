@@ -1,0 +1,83 @@
+diff --git a/arena_mujoco/best_mission.py b/arena_mujoco/best_mission.py
+index 9a8ee5d..55628fb 100644
+--- a/arena_mujoco/best_mission.py
++++ b/arena_mujoco/best_mission.py
+@@ -28,8 +28,11 @@ def mission_sources():
+ 
+ 
+ class Driver:
+-    def __init__(self, simulation, key, policy=None):
++    def __init__(self, simulation, key, policy=None, *,
++                 learned_precision_distance=.030, learned_precision_heading=.08):
+         self.sim, self.key, self.policy = simulation, key, policy
++        self.learned_precision_distance = learned_precision_distance
++        self.learned_precision_heading = learned_precision_heading
+         self.lift, self.jaw = .035, .025
+         self.phase = "waiting"
+         self.events = []
+@@ -63,7 +66,7 @@ class Driver:
+             error = wrap(goal - heading)
+             forward = float((anchor - position) @ np.array([math.cos(heading), math.sin(heading)]))
+             yield from self.tick(forward, error, target=anchor, target_heading=goal,
+-                                 precision=abs(error) < .08)
++                                 precision=abs(error) < self.learned_precision_heading)
+             settled = settled + 1 if abs(error) < tolerance else 0
+             if self.sim.data.time - began > 8:
+                 raise RuntimeError(f"{self.key} turn timeout at {self.phase}: {error:.4f}")
+@@ -101,7 +104,7 @@ class Driver:
+             angle = wrap(aim - current)
+             yield from self.tick(forward * max(0., math.cos(angle)), angle,
+                                  target=target, target_heading=heading,
+-                                 precision=np.linalg.norm(error) < .030)
++                                 precision=np.linalg.norm(error) < self.learned_precision_distance)
+             settled = settled + 1 if abs(forward) < tolerance and abs(lateral) < max(tolerance, .0012) else 0
+             if self.sim.data.time - began > 12:
+                 raise RuntimeError(f"{self.key} line timeout at {self.phase}: goal {target}, pose {position}")
+@@ -273,9 +276,13 @@ class Driver:
+ 
+ def run(*, seed=0, randomize=False, output=None, only=None, task_count=None,
+         maximum_seconds=120., time_penalty_per_second=.5, drive_limits=(.35, 2.5),
+-        drive_policy=None, lab_drive_limits=None, green_upper_first=False):
++        drive_policy=None, lab_drive_limits=None, green_upper_first=False,
++        learned_precision_distance=.030, learned_precision_heading=.08):
+     if not 0 <= time_penalty_per_second < 100 / 120:
+         raise ValueError("Time cost must stay below the reward for one 10-point delivery over a full match")
++    if any(not math.isfinite(value) or value <= 0
++           for value in (learned_precision_distance, learned_precision_heading)):
++        raise ValueError("Learned precision distance and heading must be finite and positive")
+     source_hashes = mission_sources()
+     overrides = {"lab": lab_drive_limits} if lab_drive_limits is not None else None
+     sim = FleetSimulation(seed=seed, randomize=randomize, only=only, drive_limits=drive_limits,
+@@ -301,11 +308,14 @@ def run(*, seed=0, randomize=False, output=None, only=None, task_count=None,
+             controller.reset(sim)
+         policy_record = {"weights_sha256": weight_hash,
+                          "training_report_sha256": hashlib.sha256(training_path.read_bytes()).hexdigest(),
+-                         "geometric_precision_distance_m": .030,
+-                         "geometric_precision_heading_rad": .08}
++                         "geometric_precision_distance_m": learned_precision_distance,
++                         "geometric_precision_heading_rad": learned_precision_heading}
+     else:
+         controllers = {}
+-    drivers = {key: Driver(sim, key, controllers.get(key)) for key in sim.robots}
++    drivers = {key: Driver(sim, key, controllers.get(key),
++                           learned_precision_distance=learned_precision_distance,
++                           learned_precision_heading=learned_precision_heading)
++               for key in sim.robots}
+     for driver in drivers.values():
+         driver.peers = drivers
+     began = time.perf_counter()
+diff --git a/scripts/run_best_fleet.py b/scripts/run_best_fleet.py
+index d97e92c..5708178 100644
+--- a/scripts/run_best_fleet.py
++++ b/scripts/run_best_fleet.py
+@@ -19,6 +19,10 @@ if __name__ == "__main__":
+     parser.add_argument("--time-penalty-per-second", type=float, default=.5)
+     parser.add_argument("--drive-limits", type=float, nargs=2, default=(.35, 2.5), metavar=("M_S", "RAD_S"))
+     parser.add_argument("--drive-policy", help="exported weights.npz or its model directory")
++    parser.add_argument("--learned-precision-distance", type=float, default=.030, metavar="M",
++                        help="switch learned travel to geometric docking within this distance")
++    parser.add_argument("--learned-precision-heading", type=float, default=.08, metavar="RAD",
++                        help="switch learned turns to geometric alignment within this angle")
+     parser.add_argument("--lab-drive-limits", type=float, nargs=2, metavar=("M_S", "RAD_S"))
+     parser.add_argument("--green-upper-first", action="store_true")
+     args = vars(parser.parse_args())

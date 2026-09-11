@@ -1,0 +1,86 @@
+[
+  {
+    "part": "assembly_reference_mm.stl",
+    "triangles": 12792,
+    "finite": true,
+    "closed_edges": true
+  },
+  {
+    "part": "swarm_00_shell_front_mm.stl",
+    "triangles": 28,
+    "finite": true,
+    "closed_edges": true
+  },
+  {
+    "part": "swarm_00_shell_rear_mm.stl",
+    "triangles": 28,
+    "finite": true,
+    "closed_edges": true
+  },
+  {
+    "part": "swarm_00_ball_housing_mm.stl",
+    "triangles": 3968,
+    "finite": true,
+    "closed_edges": true
+  },
+  {
+    "part": "swarm_00_skid_front_mm.stl",
+    "triangles": 3968,
+    "finite": true,
+    "closed_edges": true
+  },
+  {
+    "part": "swarm_00_skid_rear_mm.stl",
+    "triangles": 3968,
+    "finite": true,
+    "closed_edges": true
+  },
+  {
+    "part": "swarm_00_magnet_0_housing_mm.stl",
+    "triangles": 12,
+    "finite": true,
+    "closed_edges": true
+  },
+  {
+    "part": "swarm_00_magnet_1_housing_mm.stl",
+    "triangles": 12,
+    "finite": true,
+    "closed_edges": true
+  },
+  {
+    "part": "swarm_00_magnet_2_housing_mm.stl",
+    "triangles": 12,
+    "finite": true,
+    "closed_edges": true
+  },
+  {
+    "part": "swarm_00_magnet_3_housing_mm.stl",
+    "triangles": 12,
+    "finite": true,
+    "closed_edges": true
+  },
+  {
+    "part": "swarm_00_tire_left_mm.stl",
+    "triangles": 380,
+    "finite": true,
+    "closed_edges": true
+  },
+  {
+    "part": "swarm_00_tire_right_mm.stl",
+    "triangles": 380,
+    "finite": true,
+    "closed_edges": true
+  },
+  {
+    "part": "swarm_00_pad_mm.stl",
+    "triangles": 12,
+    "finite": true,
+    "closed_edges": true
+  },
+  {
+    "part": "swarm_00_pad_upper_mm.stl",
+    "triangles": 12,
+    "finite": true,
+    "closed_edges": true
+  }
+]

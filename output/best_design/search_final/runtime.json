@@ -1,0 +1,15 @@
+{
+  "observed_at_utc": "2026-09-11T12:59:22Z",
+  "checkout": "/content/robotics_fleet_search_bbc54c3",
+  "commit": "bbc54c3e797ebcefbcca60c7e94aade5b687f872",
+  "python": "3.13.15",
+  "gpu": {
+    "returncode": 0,
+    "stdout": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 0, 1115, 97887, 580.82.07, 0",
+    "stderr": ""
+  },
+  "physics_backend": "native MuJoCo CPU",
+  "torch_version": "2.11.0+cu128",
+  "torch_cuda": "12.8",
+  "cuda_available": true
+}

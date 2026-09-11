@@ -1,6 +1,7 @@
 import math
 import unittest
 
+from arena_mujoco.best_fleet import FleetSimulation
 from arena_mujoco.competition_events import (
     initialize_competition_events, robot_fully_outside,
     update_competition_events, validate_initial_setup,
@@ -81,6 +82,42 @@ class CompetitionEventTests(unittest.TestCase):
         self.assertEqual(events["robot_outside_count"], 2)
         self.assertTrue(events["human_intervention"])
         self.assertEqual(len(events["events"]), 3)
+
+    def test_fleet_overlapping_exits_and_independent_reentry(self):
+        sim = FleetSimulation()
+        self.assertTrue(sim.setup["valid"], sim.setup["errors"])
+        addresses = {key: int(sim.model.joint(f"fleet_{key}_competition_robot_free").qposadr[0])
+                     for key in ("red", "yellow")}
+        initial_x = {key: float(sim.data.qpos[address]) for key, address in addresses.items()}
+
+        def observe(red_outside, yellow_outside, count):
+            # Explicit native geometry snapshots test event transitions, without
+            # needing the drive controller to leave and re-enter the arena.
+            for key, outside in (("red", red_outside), ("yellow", yellow_outside)):
+                sim.data.qpos[addresses[key]] = -.5 if outside else initial_x[key]
+            sim.data.time += sim.control_dt
+            events = update_competition_events(sim.model, sim.data, sim.metadata)
+            self.assertEqual(events["robot_outside_count"], count)
+            self.assertEqual(events["robot_was_fully_outside"], red_outside or yellow_outside)
+            self.assertEqual(len(events["events"]), count)
+            score = sim.score()
+            self.assertEqual(score["penalty_points"], -10 * count)
+            if count:
+                self.assertFalse(score["official_success"])
+
+        observe(False, False, 0)
+        observe(True, False, 1)
+        observe(True, True, 2)  # Yellow exits while red remains outside.
+        observe(True, True, 2)  # Repeated observations do not add penalties.
+        observe(False, True, 2)
+        observe(True, True, 3)  # Red re-exits while yellow remains outside.
+        observe(True, False, 3)
+        observe(True, True, 4)
+        observe(False, False, 4)
+        observe(True, True, 6)  # Simultaneous exits count separately too.
+        self.assertEqual([event["robot"] for event in sim.metadata["competition_events"]["events"]],
+                         [f"fleet_{key}_competition_robot"
+                          for key in ("red", "yellow", "red", "yellow", "red", "yellow")])
 
 
 if __name__ == "__main__":

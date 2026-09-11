@@ -1,0 +1,839 @@
+{
+  "method": "matched native mission parameter search",
+  "source_sha256": {
+    "arena_spec.json": "26b10a4a5fc607ab58d1692d9fd9b4a2a466fd6bc789a7c9e7032066c5d4fbf1",
+    "best_design.json": "e1f7e2a01e4b3b548033d1fa822b3fd70e43338e45cf559cdd65767cc2740d19",
+    "competition_rules.json": "df44c749e89cdddb1e3d19535a4a13be4f7fb2623d7473dadfdd3d13be1fd1f0",
+    "arena_mujoco/best_fleet.py": "10e77a1665fb17a48d0291e3a837a989ccc325340fc003fd4f42052a88f70c8f",
+    "arena_mujoco/best_mission.py": "9e49311a8efaebec16b77dfe5e0a3b36f65f90b3a9d27eb01e1390b3b1afcc16",
+    "arena_mujoco/best_routes.py": "bc7d1ce9309b88e86295a96ae2cd74ff9dc79c81d441add3facfe79c66ade28a",
+    "arena_mujoco/best_drive.py": "2bace81fe619a1ce9ea3fbfac9e20cd2fda4b1683afbe71bbcec1ab4b28a6fb0",
+    "arena_mujoco/builder.py": "172b4405c59b2ac6ef7142bde3e16bcf2697fe6dd2908fcff4c421007313e51b",
+    "arena_mujoco/geometry.py": "ecf1faf8282dacfb4da7c8fbc9624fb6b5e4dd66c5e2e08f362b433567bd2ff8",
+    "arena_mujoco/materials.py": "266e9b21c4179cda5b05058f88d328ffb69c6b18032f9dee7164e80a866bd2af",
+    "arena_mujoco/competition_robot.py": "ad1045d570526b41582f19bf091111e039b5a516de65d1c706ee11e5b50c9773",
+    "arena_mujoco/competition_scoring.py": "f882c3a1a0510a2d02d66342ddaad68cf06556ae4ca9873feed2cc3cbfc740f4",
+    "arena_mujoco/competition_events.py": "f6841726d246047b8211bdb51a86964ee53630a21d59e9f9ef9f4e3ba4abb5e2",
+    "scripts/optimize_best_fleet.py": "3a7a80befb8bbe659d8c0e6edaf04a3f3a873b1fb2596478512bdf3d776be702"
+  },
+  "commit": "e2be32d42e5dd0b8486881919f37c2d4a13cc419",
+  "seeds": [
+    199873468,
+    187281671,
+    124931867,
+    179154201,
+    89219882,
+    779206999,
+    834423271,
+    241865562,
+    862499816,
+    452364377,
+    541723648,
+    140921644,
+    857572167,
+    202985343,
+    36986298,
+    404561363,
+    745259749,
+    544548876,
+    683862377,
+    979018716,
+    197451146,
+    128756293,
+    147671618,
+    130253141
+  ],
+  "episode_generator_seed": 202609124,
+  "randomized_physics": true,
+  "candidates": [
+    {
+      "name": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "lab_limits": [
+        0.35,
+        2.5
+      ],
+      "green_upper_first": true,
+      "episodes": 24,
+      "full_success_rate": 1.0,
+      "wilson_lower_95": 0.8620194241710247,
+      "mean_score": 160.0,
+      "minimum_score": 160,
+      "mean_task_objective": 1559.1604166666536,
+      "mean_success_seconds": 81.67916666669261,
+      "p95_success_seconds": 89.85000000006497,
+      "maximum_tilt_degrees": 13.057370622854673,
+      "exceptions": 0
+    }
+  ],
+  "elapsed_seconds": 105.26009294400137,
+  "episodes": [
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 36986298,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 89.00000000006091,
+      "deployment_seconds": 16.599999999997305,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab",
+        "yellow"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.024900711015846795,
+      "max_tilt_rad": 0.1279071581904255,
+      "physics_warning_count": 0,
+      "wall_seconds": 104.28736493799806,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 89219882,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 86.90000000005088,
+      "deployment_seconds": 16.999999999997794,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab",
+        "yellow"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.022348803997405128,
+      "max_tilt_rad": 0.043994788176858625,
+      "physics_warning_count": 0,
+      "wall_seconds": 80.04195982999954,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 124931867,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 80.6000000000208,
+      "deployment_seconds": 16.139999999996743,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab",
+        "yellow"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.024373057889428198,
+      "max_tilt_rad": 0.0963821301474414,
+      "physics_warning_count": 0,
+      "wall_seconds": 73.86859754100078,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 128756293,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 81.10000000002319,
+      "deployment_seconds": 16.43999999999711,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab",
+        "yellow"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.022160157008385854,
+      "max_tilt_rad": 0.04433029556661738,
+      "physics_warning_count": 0,
+      "wall_seconds": 75.35104923700055,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 130253141,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 80.80000000002175,
+      "deployment_seconds": 16.319999999996963,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab",
+        "yellow"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.024347132244649062,
+      "max_tilt_rad": 0.04940010165077476,
+      "physics_warning_count": 0,
+      "wall_seconds": 75.62280718200054,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 140921644,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 77.70000000000695,
+      "deployment_seconds": 16.03999999999662,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab",
+        "yellow"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.024932630964507638,
+      "max_tilt_rad": 0.04674744761777552,
+      "physics_warning_count": 0,
+      "wall_seconds": 96.24932845199874,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 147671618,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 87.30000000005279,
+      "deployment_seconds": 17.019999999997818,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab",
+        "yellow"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.023805270954267585,
+      "max_tilt_rad": 0.08523940605790636,
+      "physics_warning_count": 0,
+      "wall_seconds": 103.621043526,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 179154201,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 76.30000000000027,
+      "deployment_seconds": 15.719999999996727,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab",
+        "green"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.02452302912055342,
+      "max_tilt_rad": 0.1114507203855878,
+      "physics_warning_count": 0,
+      "wall_seconds": 72.29438044299968,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 187281671,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 76.90000000000313,
+      "deployment_seconds": 15.799999999996682,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab",
+        "yellow"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.023575911394974527,
+      "max_tilt_rad": 0.047402258093175685,
+      "physics_warning_count": 0,
+      "wall_seconds": 72.08028099999865,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 197451146,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 83.30000000003369,
+      "deployment_seconds": 16.739999999997476,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab",
+        "yellow"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.024458039290075707,
+      "max_tilt_rad": 0.10307504377816382,
+      "physics_warning_count": 0,
+      "wall_seconds": 100.12049732100058,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 199873468,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 88.30000000005757,
+      "deployment_seconds": 17.039999999997843,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab",
+        "yellow"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.023582457683381186,
+      "max_tilt_rad": 0.04464413177982068,
+      "physics_warning_count": 0,
+      "wall_seconds": 81.39714861600078,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 202985343,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 90.70000000006902,
+      "deployment_seconds": 17.279999999998136,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab",
+        "yellow"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.024488709216934135,
+      "max_tilt_rad": 0.10279391415478567,
+      "physics_warning_count": 0,
+      "wall_seconds": 82.00663759600138,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 241865562,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 76.19999999999979,
+      "deployment_seconds": 15.65999999999676,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.024844452638720288,
+      "max_tilt_rad": 0.2278941090219968,
+      "physics_warning_count": 0,
+      "wall_seconds": 72.57755594500122,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 404561363,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 75.89999999999836,
+      "deployment_seconds": 15.739999999996716,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.02326958067482497,
+      "max_tilt_rad": 0.060923016946122927,
+      "physics_warning_count": 0,
+      "wall_seconds": 94.52567486099724,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 452364377,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 79.50000000001555,
+      "deployment_seconds": 16.019999999996596,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab",
+        "yellow"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.02472934637508624,
+      "max_tilt_rad": 0.11732058971550278,
+      "physics_warning_count": 0,
+      "wall_seconds": 74.74504377700214,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 541723648,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 77.40000000000552,
+      "deployment_seconds": 15.899999999996627,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab",
+        "yellow"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.024925565902284737,
+      "max_tilt_rad": 0.12320436487172096,
+      "physics_warning_count": 0,
+      "wall_seconds": 73.31823586300015,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 544548876,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 76.80000000000265,
+      "deployment_seconds": 15.85999999999665,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.024489845834822735,
+      "max_tilt_rad": 0.11395935695105297,
+      "physics_warning_count": 0,
+      "wall_seconds": 95.96584472099858,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 683862377,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 82.70000000003083,
+      "deployment_seconds": 16.53999999999723,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab",
+        "yellow"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.024913924783871617,
+      "max_tilt_rad": 0.1187974024090489,
+      "physics_warning_count": 0,
+      "wall_seconds": 75.73956906500098,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 745259749,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 78.20000000000934,
+      "deployment_seconds": 15.879999999996638,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab",
+        "yellow"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.024954006147594757,
+      "max_tilt_rad": 0.12328203059171783,
+      "physics_warning_count": 0,
+      "wall_seconds": 73.84856595800011,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 779206999,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 77.00000000000361,
+      "deployment_seconds": 15.919999999996616,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.022150489643910976,
+      "max_tilt_rad": 0.04303658129874262,
+      "physics_warning_count": 0,
+      "wall_seconds": 71.83735304599759,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 834423271,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 89.00000000006091,
+      "deployment_seconds": 16.559999999997256,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab",
+        "yellow"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.024616645709306245,
+      "max_tilt_rad": 0.10807180882335317,
+      "physics_warning_count": 0,
+      "wall_seconds": 80.47160629599966,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 857572167,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 90.00000000006568,
+      "deployment_seconds": 17.11999999999794,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab",
+        "yellow"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.024639732917912553,
+      "max_tilt_rad": 0.1093345760976127,
+      "physics_warning_count": 0,
+      "wall_seconds": 80.69763705500009,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 862499816,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 76.70000000000218,
+      "deployment_seconds": 15.85999999999665,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.024604008583587744,
+      "max_tilt_rad": 0.1131461529893329,
+      "physics_warning_count": 0,
+      "wall_seconds": 72.21010404899789,
+      "exception": null
+    },
+    {
+      "profile": "fast_couriers_0.48_4",
+      "limits": [
+        0.48,
+        4.0
+      ],
+      "seed": 979018716,
+      "success": true,
+      "score": 160,
+      "task_score": 160,
+      "declaration_seconds": 82.00000000002748,
+      "deployment_seconds": 16.499999999997183,
+      "failures": {},
+      "completed_robots": [
+        "kit",
+        "red",
+        "lab",
+        "yellow"
+      ],
+      "unfinished_robots": [],
+      "hold": {
+        "sample_interval_s": 0.1,
+        "samples": 50,
+        "minimum_score": 160,
+        "violations": []
+      },
+      "max_torque_nm": 0.023828251954243786,
+      "max_tilt_rad": 0.0895747023044586,
+      "physics_warning_count": 0,
+      "wall_seconds": 76.12441453500287,
+      "exception": null
+    }
+  ],
+  "controller": "geometric task planner and motor feedback"
+}

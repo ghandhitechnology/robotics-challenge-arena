@@ -1,0 +1,42 @@
+[
+  {
+    "seed": 1300600412,
+    "success": true,
+    "declaration_seconds": 77.00000000000361,
+    "failures": {},
+    "sources_stable_during_run": true,
+    "randomized": true,
+    "score": 160,
+    "hold_minimum": 160
+  },
+  {
+    "seed": 1089188634,
+    "success": true,
+    "declaration_seconds": 76.40000000000074,
+    "failures": {},
+    "sources_stable_during_run": true,
+    "randomized": true,
+    "score": 160,
+    "hold_minimum": 160
+  },
+  {
+    "seed": 1912451760,
+    "success": true,
+    "declaration_seconds": 76.70000000000218,
+    "failures": {},
+    "sources_stable_during_run": true,
+    "randomized": true,
+    "score": 160,
+    "hold_minimum": 160
+  },
+  {
+    "seed": 0,
+    "success": true,
+    "declaration_seconds": 80.80000000002175,
+    "failures": {},
+    "sources_stable_during_run": true,
+    "randomized": false,
+    "score": 160,
+    "hold_minimum": 160
+  }
+]

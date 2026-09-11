@@ -20,7 +20,26 @@ python3 -m venv .venv
 
 ![MuJoCo 경기장](output/mujoco/arena_overview.png)
 
-## 시니어 예선 로봇과 학습 정책
+## 시니어 예선 5대 분업 설계
+
+LAB, RED, YELLOW, KIT, GREEN이 16개 운반 과제를 나눠 수행합니다. 125 × 150 mm 로봇 5대를 출발 구역에 배치하고, KIT에 의료 키트 4개를 미리 싣습니다. LAB은 수평 확장 집게, 전방 보조 캐스터와 이동식 검사 카메라를 사용합니다. 현재 선택한 기하 제어기는 KIT의 불필요한 교차로 왕복을 없애고, 출발 중 멈춘 무적재 RED·YELLOW·GREEN을 제한된 점 추종으로 복구합니다. 기본 물성 실행은 80.80초에 160점을 얻고 이후 5초 동안 점수를 유지했습니다. 동결한 `e2be32d` 소스의 무작위 최종 평가는 300회 중 299회를 성공했으며, 성공 실행의 평균은 80.684초, p95는 89.52초입니다. 성공률의 Wilson 95% 하한은 98.136%입니다.
+
+![5대 분업 설계](output/best_design/fleet_arena.png)
+
+```sh
+.venv/bin/python -m pip install -r requirements-best-design.txt
+.venv/bin/python scripts/run_best_fleet.py --drive-limits .48 4 \
+  --lab-drive-limits .35 2.5 --green-upper-first \
+  --output output/best_design/reproduction
+```
+
+G4에서 CNN 정제 모델을 91 epoch 학습하고 66 epoch 체크포인트를 선택했습니다. 같은 데이터로 학습한 대조 모델은 33 epoch를 실행했습니다. 정제 모델은 독립 시험 영상 3,000장의 99.70%를 분류했습니다. 최종 474 g LAB으로 시간 벌점 0.05/s와 0.5/s를 각각 학습했습니다. 검증 도달률은 40/40과 39/40이었으며, 도달률을 우선해 선택한 0.05/s 정책은 독립 주행 시험 목표 120개 중 119개에 도달했습니다.
+
+동결한 `e2be32d` 소스에서 학습 주행을 결합한 전체 실행은 120초에 140점으로 실패했습니다. LAB의 세 번째 샘플 직선 이동이 시간 초과되었고 GREEN은 완료하지 못했습니다. 116.30초와 117.90초에 160점을 얻은 이전 결합 실행은 과거 비교 자료로 보관합니다. 전체 과제에는 시뮬레이터 위치를 관측하는 기하 제어기를 선택했습니다. 임무 비교 목적함수는 `10 × 공식 점수 - 0.5 × 선언 시간(초)`입니다. RGB 기반 전체 과제 수행과 실물 성능은 별도로 검증해야 합니다.
+
+[구조와 운반 계획](docs/best_design_mechanics.md), [G4 학습·시간 비교](docs/best_design_training.md), [검사 카메라 검증](docs/best_onboard_sample_camera.md), [Blender 편집 파일](output/best_design/best_design.blend), [최신 기하 제어 시뮬레이션 영상](output/best_design/final_fleet_top.mp4), [최종 300회 평가 그래프](output/best_design/final_fleet_evaluation.png)를 제공합니다.
+
+## 시니어 예선 단일 로봇과 학습 정책
 
 폭 180 × 길이 200 mm, 질량 800 g의 4모터 로봇을 설계했습니다. 높이가 다른 집게 접촉면으로 원기둥, 의료 키트, 얇은 샘플 원판을 잡습니다. A100에서 학습한 신경망이 주행·회전·리프트·집게 속도를 제어합니다.
 
@@ -34,6 +53,16 @@ python3 -m venv .venv
 ```
 
 [과제 검증과 재현 방법](docs/competition_proof.md), [로봇 설계와 부품](docs/robot_design.md), [예선 규칙 검토](docs/competition_tasks.md), [A100 학습 기록](docs/colab_training.md)을 제공합니다. 전체 과제 검증은 시뮬레이터 상태 관측과 강체 테이프 설정을 사용하며, 완료 시간과 공식 120초 제한을 별도로 기록합니다.
+
+## 자석으로 연결되는 소형 로봇 40대
+
+폭 24 × 길이 55 mm, 질량 40 g의 모듈 40대를 설계했습니다. 두 바퀴와 8 mm 리프트를 각각 구동하며, 측면의 전자영구자석 연결부 네 개로 이웃 모듈과 붙거나 분리됩니다. 40대 모두 280 × 480 mm 출발 구역 안에서 출발합니다. 로봇 사이의 충돌, 마찰, 제한된 자력으로 연결을 유지하며 움직입니다.
+
+연결된 군집에서 로봇 네 대가 분리되어 원기둥과 의료 키트를 들어 운반한 뒤 다시 합류하는 과제입니다. 공유 신경망은 주변 로봇과 연결 상태를 관측하고 각 모듈의 두 바퀴, 리프트, 자석을 제어합니다. 학습은 물리 시연, DAgger, MAPPO를 사용합니다. 현재 물리 시연에서 두 물체의 운반과 내려놓기를 확인했으며, 군집의 연결 유지와 재합류를 검증하고 있습니다. 군집 정책의 GPU 학습 결과와 최종 영상은 준비 중입니다.
+
+![자석 연결부가 있는 소형 모듈](output/swarm/body_robot/module_overview.png)
+
+[모듈 설계와 접촉 시험](docs/swarm_robot_design.md), [학습 방법과 실행 명령](docs/swarm_learning.md), [Blender·STL 설계 자료](output/swarm/body_robot/README.md)를 제공합니다. 과제는 경기장의 물체 형상을 사용하며 출발, 운반, 분리, 재연결을 검증합니다. 공식 경기 점수는 계산하지 않습니다. 이전의 독립 운반 쌍 실험은 [별도 기록](docs/swarm_transport_baseline.md)에 보관했습니다.
 
 ## 다운로드
 

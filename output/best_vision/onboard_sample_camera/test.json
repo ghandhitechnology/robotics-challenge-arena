@@ -1,0 +1,112 @@
+{
+  "artifacts": {
+    "examples": "onboard_examples.png",
+    "frames": "frames/",
+    "records": "records.json"
+  },
+  "camera": {
+    "camera_module_mass_kg": 0.006,
+    "initial_optical_center_height_m": 0.1041,
+    "local_optical_axis": "-Z",
+    "local_position_m": [
+      0.0,
+      0.0,
+      0.0841
+    ],
+    "name": "fleet_lab_sample_inspection",
+    "parent_body": "fleet_lab_comp_lift_body",
+    "resolution_px": [
+      224,
+      224
+    ],
+    "start_height_limit_m": 0.11,
+    "vertical_fovy_degrees": 58.0
+  },
+  "camera_to_gripper_plane_mm": {
+    "count": 132,
+    "maximum": 100.00000000000021,
+    "median": 100.00000000000003,
+    "p95": 100.00000000000017
+  },
+  "claim_scope": "Candidate camera visibility and RGB localization; packaging, docking motion, and seating remain separate.",
+  "evaluation_role": "native onboard-camera candidate coupon",
+  "floor": {
+    "accepted": 45,
+    "accepted_position_error_mm": {
+      "count": 45,
+      "maximum": 0.6687662618135226,
+      "median": 0.19522218491965218,
+      "p95": 0.5015647807092608
+    },
+    "cnn_sample_proposal_coverage": 1.0,
+    "coverage_of_valid_setups": 0.9375,
+    "maximum_robot_tilt_degrees": 0.3710377102076733,
+    "physical_setup_valid": 48,
+    "rejections": {
+      "coarse_disagreement": 3
+    },
+    "trials": 48
+  },
+  "held": {
+    "accepted": 45,
+    "accepted_position_error_mm": {
+      "count": 45,
+      "maximum": 0.2077543260759212,
+      "median": 0.06633524863254046,
+      "p95": 0.17714280822362888
+    },
+    "camera_to_sample_distance_mm": {
+      "count": 48,
+      "maximum": 101.82515886328787,
+      "median": 101.5418312295883,
+      "p95": 101.80338772051248
+    },
+    "cnn_sample_proposal_coverage": 1.0,
+    "coverage_of_valid_setups": 0.9375,
+    "maximum_robot_tilt_degrees": 0.1595417641505058,
+    "physical_grasp_rate": 1.0,
+    "physical_setup_valid": 48,
+    "rejections": {
+      "coarse_disagreement": 3
+    },
+    "trials": 48
+  },
+  "inference_contract": {
+    "forbidden_inputs": "segmentation IDs, depth, and target pose",
+    "inputs": "onboard RGB, frozen CNN output, camera calibration, and kinematic floor/gripper plane",
+    "target_pose_use": "evaluation error only after inference"
+  },
+  "model_sha256": "7532f12a04597ea9b8388e399dad7c15a52e746b602bdb4c0c8abf598b942266",
+  "runtime": {
+    "device": "cpu",
+    "mujoco": "3.12.0",
+    "python": "3.12.13",
+    "seconds": 47.89528299996164,
+    "torch": "2.14.0"
+  },
+  "schema_version": 1,
+  "seed": 20265941,
+  "source_sha256": {
+    "candidate": "a2abc8e9238d28cb4a3a4f78b23a6e8eb5c6d11954ed5f4042a710054722e664",
+    "test": "96779c5a8e8cfb35fff019dac00cfb8e786166bdb4b204a92a65bc1d7476c851"
+  },
+  "thresholds_from_separate_refiner_development_split": {
+    "maximum_coarse_offset_px": 10.0,
+    "maximum_radial_residual_px": 0.65,
+    "maximum_radius_relative_error": 0.06,
+    "minimum_arc_coverage": 0.3,
+    "minimum_cnn_confidence": 0.995,
+    "minimum_edge_points": 36
+  },
+  "yellow_negative": {
+    "accepted": 0,
+    "coverage_of_valid_setups": 0.0,
+    "false_accept_rate": 0.0,
+    "maximum_robot_tilt_degrees": 0.16019932809401774,
+    "physical_setup_valid": 36,
+    "rejections": {
+      "cnn_not_sample": 36
+    },
+    "trials": 36
+  }
+}

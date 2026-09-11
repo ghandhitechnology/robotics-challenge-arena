@@ -1,0 +1,27 @@
+{
+  "started_at_utc": "2026-09-11T12:04:47.356701+00:00",
+  "command": [
+    "/usr/bin/python3",
+    "scripts/test_best_vision.py",
+    "--dataset",
+    "/content/robotics_best_design/output/best_vision/dataset",
+    "--model",
+    "/content/robotics_best_design/output/best_vision/model_refined",
+    "--output",
+    "/content/robotics_best_design/output/best_vision/model_refined/test.json",
+    "--device",
+    "cuda",
+    "--batch-size",
+    "512",
+    "--workers",
+    "8",
+    "--latency-iterations",
+    "200"
+  ],
+  "dataset": "/content/robotics_best_design/output/best_vision/dataset",
+  "model": "/content/robotics_best_design/output/best_vision/model_refined",
+  "output": "/content/robotics_best_design/output/best_vision/model_refined/test.json",
+  "evaluation_count": 1,
+  "elapsed_seconds": 4.396243883999887,
+  "return_code": 0
+}

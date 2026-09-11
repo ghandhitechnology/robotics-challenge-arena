@@ -1,0 +1,56 @@
+{
+  "candidates": {
+    "floor_center_2.52mm": {
+      "accepted": 29,
+      "accepted_camera_lateral_error_mm": {
+        "maximum": 0.5920103957046384,
+        "median": 0.23778627705800037,
+        "p95": 0.39440305292599404
+      },
+      "coverage": 0.90625,
+      "trials": 32
+    },
+    "floor_visible_top_5.02mm": {
+      "accepted": 29,
+      "accepted_camera_lateral_error_mm": {
+        "maximum": 0.2608261426344464,
+        "median": 0.06773961902578028,
+        "p95": 0.18640632960379566
+      },
+      "coverage": 0.90625,
+      "trials": 32
+    },
+    "held_gripper_site_100mm": {
+      "accepted": 30,
+      "accepted_camera_lateral_error_mm": {
+        "maximum": 0.20139349089155006,
+        "median": 0.05766260504925272,
+        "p95": 0.18083186381959349
+      },
+      "coverage": 0.9375,
+      "trials": 32
+    },
+    "held_visible_top_99.1mm": {
+      "accepted": 30,
+      "accepted_camera_lateral_error_mm": {
+        "maximum": 0.20342770094655438,
+        "median": 0.05897498440364361,
+        "p95": 0.1773840597270669
+      },
+      "coverage": 0.9375,
+      "trials": 32
+    }
+  },
+  "evaluation_role": "development-only plane selection before new onboard final test",
+  "model_sha256": "7532f12a04597ea9b8388e399dad7c15a52e746b602bdb4c0c8abf598b942266",
+  "next_test_seed_must_differ": true,
+  "schema_version": 1,
+  "seed": 20266941,
+  "selected": {
+    "floor": "floor_visible_top_5.02mm",
+    "held": "held_visible_top_99.1mm"
+  },
+  "selection_rule": "lowest accepted camera-lateral p95 among candidates with at least 80% coverage",
+  "target_pose_use": "evaluator only after RGB inference",
+  "trials_per_mode": 32
+}

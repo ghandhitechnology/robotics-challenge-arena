@@ -1,0 +1,137 @@
+{
+  "artifacts": {
+    "examples": "onboard_examples.png",
+    "frames": "frames/",
+    "records": "records.json"
+  },
+  "camera": {
+    "camera_module_mass_kg": 0.006,
+    "compiled_camera_count": 1,
+    "compiled_module_geom_count": 1,
+    "initial_optical_center_height_m": 0.1041,
+    "integrated_lab_mass_kg": 0.47400000000000003,
+    "local_optical_axis": "-Z",
+    "local_position_m": [
+      0.0,
+      0.0,
+      0.0841
+    ],
+    "name": "fleet_lab_sample_inspection",
+    "parent_body": "fleet_lab_comp_lift_body",
+    "resolution_px": [
+      224,
+      224
+    ],
+    "start_height_limit_m": 0.11,
+    "vertical_fovy_degrees": 58.0
+  },
+  "camera_to_gripper_plane_mm": {
+    "count": 132,
+    "maximum": 100.0000000000002,
+    "median": 100.0,
+    "p95": 100.00000000000017
+  },
+  "claim_scope": "Candidate camera visibility and RGB localization; packaging, docking motion, and seating remain separate.",
+  "evaluation_role": "native onboard-camera candidate coupon",
+  "floor": {
+    "accepted": 44,
+    "accepted_camera_lateral_error_mm": {
+      "count": 44,
+      "maximum": 0.3744097466099659,
+      "median": 0.07333788448358508,
+      "p95": 0.17825716791464555
+    },
+    "accepted_world_horizontal_error_mm": {
+      "count": 44,
+      "maximum": 0.37441051402140446,
+      "median": 0.07333760524914004,
+      "p95": 0.17825797275361183
+    },
+    "cnn_sample_proposal_coverage": 1.0,
+    "coverage_of_valid_setups": 0.9166666666666666,
+    "maximum_robot_tilt_degrees": 0.34076460690768084,
+    "physical_setup_valid": 48,
+    "rejections": {
+      "coarse_disagreement": 4
+    },
+    "trials": 48
+  },
+  "held": {
+    "accepted": 46,
+    "accepted_camera_lateral_error_mm": {
+      "count": 46,
+      "maximum": 0.5812674870871483,
+      "median": 0.08212880739098063,
+      "p95": 0.1814327364498698
+    },
+    "accepted_world_horizontal_error_mm": {
+      "count": 46,
+      "maximum": 0.581268198804005,
+      "median": 0.08212588961668842,
+      "p95": 0.18113798794368546
+    },
+    "camera_to_sample_distance_mm": {
+      "count": 48,
+      "maximum": 101.81707646801367,
+      "median": 101.52766959982134,
+      "p95": 101.80652674636067
+    },
+    "cnn_sample_proposal_coverage": 1.0,
+    "coverage_of_valid_setups": 0.9583333333333334,
+    "maximum_robot_tilt_degrees": 0.15984929701546596,
+    "physical_grasp_rate": 1.0,
+    "physical_setup_valid": 48,
+    "rejections": {
+      "coarse_disagreement": 2
+    },
+    "trials": 48
+  },
+  "inference_contract": {
+    "control_output": "camera_lateral_xy_m; world pose is unnecessary for local alignment",
+    "forbidden_inputs": "segmentation IDs, depth, and target pose",
+    "inputs": "onboard RGB, frozen CNN output, camera calibration, and kinematic visible-rim plane",
+    "target_pose_use": "evaluation error only after inference"
+  },
+  "model_sha256": "7532f12a04597ea9b8388e399dad7c15a52e746b602bdb4c0c8abf598b942266",
+  "runtime": {
+    "device": "cpu",
+    "mujoco": "3.12.0",
+    "python": "3.12.13",
+    "seconds": 47.088048917008564,
+    "torch": "2.14.0"
+  },
+  "schema_version": 1,
+  "seed": 20267941,
+  "source_sha256": {
+    "baseline_fleet": "32a90f360a78b6b8f1258e5d1f6abcae6027accb25692d4fea1adcbc19d639af",
+    "candidate": "ff4f5dac467b026d5da365c9a7747be648cdbe8fe29692d30fc5751b7f59200a",
+    "design": "33facfd3af927b93470b5f28c301493ffe4cf225cb0c4eef3b8f2d6d185e32c5",
+    "plane_selection": "e5868da8eef0ac6f29fa845c03e357583ecb5afa6dd1822424968996e3dc6752",
+    "refiner": "d112cb5170c100ac6f562d22df0fba5629313d000292cecd7331a762f40ae258",
+    "test": "f7401f719613ad61b756082e82b8e27f2c2c6f761c83922e106366ad5c9181c6"
+  },
+  "thresholds_from_separate_refiner_development_split": {
+    "maximum_coarse_offset_px": 10.0,
+    "maximum_radial_residual_px": 0.65,
+    "maximum_radius_relative_error": 0.06,
+    "minimum_arc_coverage": 0.3,
+    "minimum_cnn_confidence": 0.995,
+    "minimum_edge_points": 36
+  },
+  "visible_rim_planes_selected_on_development_seed_20266941": {
+    "floor": "horizontal z=0.00502 m sample top face",
+    "held": "camera-local plane 0.0991 m along optical -Z, 0.9 mm above gripper site",
+    "selection_report": "../onboard_plane_selection.json"
+  },
+  "yellow_negative": {
+    "accepted": 0,
+    "coverage_of_valid_setups": 0.0,
+    "false_accept_rate": 0.0,
+    "maximum_robot_tilt_degrees": 0.1595483826361211,
+    "physical_setup_valid": 36,
+    "rejections": {
+      "cnn_not_sample": 36
+    },
+    "trials": 36
+  }
+}

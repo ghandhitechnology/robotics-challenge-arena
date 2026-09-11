@@ -1,0 +1,9 @@
+{
+  "commit": "6e0a4a5f6646a1b99ffd93b1662d151093fef303",
+  "baseline_original_manifest_sha256": "4b7aeeda715fa0475fb4d0a47791c2c652d7ef7e5abe75ef6d87f0453a65718a",
+  "regenerated_manifest_sha256": "62a3e7d61b827ea9dc82b8c5ea8406e65e0848eb3aec2224d1dfa73ec7315fd8",
+  "regeneration_note": "Same seed/config regenerated labels and centers exactly but produced different image arrays; baseline artifacts are preserved under baseline/.",
+  "manifest_reuse_issue": "The training script compares JSON lists against VisionConfig tuples, so an existing valid manifest is rejected without --force-generate.",
+  "matched_comparison": "model_control and model_refined were trained on the regenerated manifest without further dataset regeneration.",
+  "test_evaluation": "not run"
+}

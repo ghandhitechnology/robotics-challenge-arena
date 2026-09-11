@@ -1,0 +1,335 @@
+{
+  "report_type": "validation_confidence_gates",
+  "observed_at_utc": "2026-09-11T12:01:25.533280+00:00",
+  "split": "validation",
+  "n_validation": 3000,
+  "test_evaluation": {
+    "status": "run_once_ungated",
+    "report": "/content/robotics_best_design/output/best_vision/model_refined/test.json",
+    "tuning_on_test": false
+  },
+  "selected_checkpoint": {
+    "path": "/content/robotics_best_design/output/best_vision/model_refined/model.ts",
+    "model_ts_sha256": "7532f12a04597ea9b8388e399dad7c15a52e746b602bdb4c0c8abf598b942266",
+    "dataset_manifest_sha256": "62a3e7d61b827ea9dc82b8c5ea8406e65e0848eb3aec2224d1dfa73ec7315fd8",
+    "selected_epoch": 66,
+    "validation_accuracy": 0.9976666666666667,
+    "center_p95_px": 2.043285369873047,
+    "center_max_px": 24.922367095947266
+  },
+  "selection_rule": "Select the refined checkpoint on the matched current dataset when validation accuracy and center p95 both improve over the matched control.",
+  "comparison": {
+    "refined_model_ts_sha256": "7532f12a04597ea9b8388e399dad7c15a52e746b602bdb4c0c8abf598b942266",
+    "control_model_ts_sha256": "7dc3a5628cb92898ca588a9989f45a633b350261c052e1702ef6e30595bbd447",
+    "matched_dataset_manifest_sha256": "62a3e7d61b827ea9dc82b8c5ea8406e65e0848eb3aec2224d1dfa73ec7315fd8",
+    "original_baseline_dataset_manifest_sha256": "4b7aeeda715fa0475fb4d0a47791c2c652d7ef7e5abe75ef6d87f0453a65718a",
+    "refined_validation_accuracy": 0.9976666666666667,
+    "control_validation_accuracy": 0.9966666666666667,
+    "refined_center_p95_px": 2.043285369873047,
+    "control_center_p95_px": 2.2201313972473145,
+    "dataset_rationale": "The refined run regenerated image arrays because the script rejected JSON lists versus VisionConfig tuples; labels and centers hashes stayed identical, while image hashes changed. The control was then trained on that exact regenerated dataset without regeneration, so refined versus control is a valid same-array comparison."
+  },
+  "thresholds": {
+    "0.9": {
+      "threshold": 0.9,
+      "aggregate": {
+        "n_total": 3000,
+        "n_accepted": 2991,
+        "coverage": 0.997,
+        "classification_accuracy": 0.9979939819458375,
+        "center_p95_px": null,
+        "center_max_px": null
+      },
+      "foreground": {
+        "n_total": 2500,
+        "n_accepted": 2492,
+        "coverage": 0.9968,
+        "classification_accuracy": 0.9975922953451043,
+        "center_p95_px": 2.0021418869495378,
+        "center_max_px": 13.346137046813965
+      },
+      "per_class": {
+        "background": {
+          "n_total": 500,
+          "n_accepted": 499,
+          "coverage": 0.998,
+          "classification_accuracy": 1.0,
+          "center_p95_px": 3.348565053939819,
+          "center_max_px": 18.832021713256836,
+          "center_metrics_valid": false
+        },
+        "red": {
+          "n_total": 500,
+          "n_accepted": 499,
+          "coverage": 0.998,
+          "classification_accuracy": 0.9939879759519038,
+          "center_p95_px": 1.8914109230041496,
+          "center_max_px": 3.8283917903900146,
+          "center_metrics_valid": true
+        },
+        "yellow": {
+          "n_total": 500,
+          "n_accepted": 496,
+          "coverage": 0.992,
+          "classification_accuracy": 1.0,
+          "center_p95_px": 2.0730143189430237,
+          "center_max_px": 5.519533157348633,
+          "center_metrics_valid": true
+        },
+        "green": {
+          "n_total": 500,
+          "n_accepted": 499,
+          "coverage": 0.998,
+          "classification_accuracy": 1.0,
+          "center_p95_px": 2.411106395721435,
+          "center_max_px": 7.132976055145264,
+          "center_metrics_valid": true
+        },
+        "kit": {
+          "n_total": 500,
+          "n_accepted": 499,
+          "coverage": 0.998,
+          "classification_accuracy": 0.9939879759519038,
+          "center_p95_px": 1.9281605362892147,
+          "center_max_px": 13.346137046813965,
+          "center_metrics_valid": true
+        },
+        "sample": {
+          "n_total": 500,
+          "n_accepted": 499,
+          "coverage": 0.998,
+          "classification_accuracy": 1.0,
+          "center_p95_px": 1.7552763819694515,
+          "center_max_px": 4.036255359649658,
+          "center_metrics_valid": true
+        }
+      }
+    },
+    "0.95": {
+      "threshold": 0.95,
+      "aggregate": {
+        "n_total": 3000,
+        "n_accepted": 2987,
+        "coverage": 0.9956666666666667,
+        "classification_accuracy": 0.9979912956143288,
+        "center_p95_px": null,
+        "center_max_px": null
+      },
+      "foreground": {
+        "n_total": 2500,
+        "n_accepted": 2489,
+        "coverage": 0.9956,
+        "classification_accuracy": 0.9975893933306549,
+        "center_p95_px": 1.995631003379821,
+        "center_max_px": 13.346137046813965
+      },
+      "per_class": {
+        "background": {
+          "n_total": 500,
+          "n_accepted": 498,
+          "coverage": 0.996,
+          "classification_accuracy": 1.0,
+          "center_p95_px": 3.322398877143859,
+          "center_max_px": 16.895645141601562,
+          "center_metrics_valid": false
+        },
+        "red": {
+          "n_total": 500,
+          "n_accepted": 499,
+          "coverage": 0.998,
+          "classification_accuracy": 0.9939879759519038,
+          "center_p95_px": 1.8914109230041496,
+          "center_max_px": 3.8283917903900146,
+          "center_metrics_valid": true
+        },
+        "yellow": {
+          "n_total": 500,
+          "n_accepted": 493,
+          "coverage": 0.986,
+          "classification_accuracy": 1.0,
+          "center_p95_px": 2.0662545680999753,
+          "center_max_px": 5.519533157348633,
+          "center_metrics_valid": true
+        },
+        "green": {
+          "n_total": 500,
+          "n_accepted": 499,
+          "coverage": 0.998,
+          "classification_accuracy": 1.0,
+          "center_p95_px": 2.411106395721435,
+          "center_max_px": 7.132976055145264,
+          "center_metrics_valid": true
+        },
+        "kit": {
+          "n_total": 500,
+          "n_accepted": 499,
+          "coverage": 0.998,
+          "classification_accuracy": 0.9939879759519038,
+          "center_p95_px": 1.9281605362892147,
+          "center_max_px": 13.346137046813965,
+          "center_metrics_valid": true
+        },
+        "sample": {
+          "n_total": 500,
+          "n_accepted": 499,
+          "coverage": 0.998,
+          "classification_accuracy": 1.0,
+          "center_p95_px": 1.7552763819694515,
+          "center_max_px": 4.036255359649658,
+          "center_metrics_valid": true
+        }
+      }
+    },
+    "0.99": {
+      "threshold": 0.99,
+      "aggregate": {
+        "n_total": 3000,
+        "n_accepted": 2962,
+        "coverage": 0.9873333333333333,
+        "classification_accuracy": 0.9989871708305199,
+        "center_p95_px": null,
+        "center_max_px": null
+      },
+      "foreground": {
+        "n_total": 2500,
+        "n_accepted": 2468,
+        "coverage": 0.9872,
+        "classification_accuracy": 0.9987844408427877,
+        "center_p95_px": 1.9526070654392245,
+        "center_max_px": 13.346137046813965
+      },
+      "per_class": {
+        "background": {
+          "n_total": 500,
+          "n_accepted": 494,
+          "coverage": 0.988,
+          "classification_accuracy": 1.0,
+          "center_p95_px": 2.962546169757842,
+          "center_max_px": 9.473149299621582,
+          "center_metrics_valid": false
+        },
+        "red": {
+          "n_total": 500,
+          "n_accepted": 493,
+          "coverage": 0.986,
+          "classification_accuracy": 0.9959432048681541,
+          "center_p95_px": 1.847417593002319,
+          "center_max_px": 3.8283917903900146,
+          "center_metrics_valid": true
+        },
+        "yellow": {
+          "n_total": 500,
+          "n_accepted": 491,
+          "coverage": 0.982,
+          "classification_accuracy": 1.0,
+          "center_p95_px": 2.067242980003357,
+          "center_max_px": 5.519533157348633,
+          "center_metrics_valid": true
+        },
+        "green": {
+          "n_total": 500,
+          "n_accepted": 496,
+          "coverage": 0.992,
+          "classification_accuracy": 1.0,
+          "center_p95_px": 2.310986340045929,
+          "center_max_px": 5.039525032043457,
+          "center_metrics_valid": true
+        },
+        "kit": {
+          "n_total": 500,
+          "n_accepted": 491,
+          "coverage": 0.982,
+          "classification_accuracy": 0.9979633401221996,
+          "center_p95_px": 1.9061972498893738,
+          "center_max_px": 13.346137046813965,
+          "center_metrics_valid": true
+        },
+        "sample": {
+          "n_total": 500,
+          "n_accepted": 497,
+          "coverage": 0.994,
+          "classification_accuracy": 1.0,
+          "center_p95_px": 1.7463506937026976,
+          "center_max_px": 4.036255359649658,
+          "center_metrics_valid": true
+        }
+      }
+    },
+    "0.995": {
+      "threshold": 0.995,
+      "aggregate": {
+        "n_total": 3000,
+        "n_accepted": 2949,
+        "coverage": 0.983,
+        "classification_accuracy": 0.9993218040013564,
+        "center_p95_px": null,
+        "center_max_px": null
+      },
+      "foreground": {
+        "n_total": 2500,
+        "n_accepted": 2459,
+        "coverage": 0.9836,
+        "classification_accuracy": 0.9991866612444082,
+        "center_p95_px": 1.9368106126785272,
+        "center_max_px": 13.346137046813965
+      },
+      "per_class": {
+        "background": {
+          "n_total": 500,
+          "n_accepted": 490,
+          "coverage": 0.98,
+          "classification_accuracy": 1.0,
+          "center_p95_px": 2.8266959547996513,
+          "center_max_px": 9.473149299621582,
+          "center_metrics_valid": false
+        },
+        "red": {
+          "n_total": 500,
+          "n_accepted": 491,
+          "coverage": 0.982,
+          "classification_accuracy": 0.9979633401221996,
+          "center_p95_px": 1.826710045337677,
+          "center_max_px": 3.8283917903900146,
+          "center_metrics_valid": true
+        },
+        "yellow": {
+          "n_total": 500,
+          "n_accepted": 490,
+          "coverage": 0.98,
+          "classification_accuracy": 1.0,
+          "center_p95_px": 2.067737185955047,
+          "center_max_px": 5.519533157348633,
+          "center_metrics_valid": true
+        },
+        "green": {
+          "n_total": 500,
+          "n_accepted": 494,
+          "coverage": 0.988,
+          "classification_accuracy": 1.0,
+          "center_p95_px": 2.2557313203811624,
+          "center_max_px": 5.039525032043457,
+          "center_metrics_valid": true
+        },
+        "kit": {
+          "n_total": 500,
+          "n_accepted": 488,
+          "coverage": 0.976,
+          "classification_accuracy": 0.9979508196721312,
+          "center_p95_px": 1.8935066163539886,
+          "center_max_px": 13.346137046813965,
+          "center_metrics_valid": true
+        },
+        "sample": {
+          "n_total": 500,
+          "n_accepted": 496,
+          "coverage": 0.992,
+          "classification_accuracy": 1.0,
+          "center_p95_px": 1.7468070685863495,
+          "center_max_px": 4.036255359649658,
+          "center_metrics_valid": true
+        }
+      }
+    }
+  },
+  "selected_threshold": 0.995
+}

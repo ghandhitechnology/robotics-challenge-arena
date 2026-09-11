@@ -1,0 +1,168 @@
+{
+  "name": "swarm_00",
+  "schema_version": 1,
+  "footprint_m": [
+    0.024,
+    0.055
+  ],
+  "footprint_bounds_local_m": [
+    [
+      -0.012,
+      -0.027
+    ],
+    [
+      0.012,
+      0.028
+    ]
+  ],
+  "height_m": 0.023,
+  "mass_kg": 0.04,
+  "wheel_radius_m": 0.007,
+  "wheel_track_m": 0.021,
+  "wheel_direction_sign": -1.0,
+  "forward_axis": [
+    0,
+    1,
+    0
+  ],
+  "max_motor_torque_nm": 0.002,
+  "motor_no_load_speed_rad_s": 26.17993877991494,
+  "max_wheel_speed_rad_s": 20.0,
+  "velocity_gain": 0.00015,
+  "lift_range_m": [
+    0.0,
+    0.008
+  ],
+  "max_lift_force_n": 0.5,
+  "max_lift_speed_m_s": 0.01,
+  "pad_center_body_m": [
+    0.0,
+    0.027,
+    -0.0029
+  ],
+  "pad_front_body_m": [
+    0.0,
+    0.028,
+    -0.0029
+  ],
+  "pad_floor_heights_m": [
+    0.0034,
+    0.0048
+  ],
+  "upper_pad_floor_heights_m": [
+    0.005,
+    0.013
+  ],
+  "physical_motor_count": 3,
+  "hardware": {
+    "drive": "2 x Pololu 2358, 136:1, regulated 3 V, custom bevel transfer",
+    "lift": "1 x Pololu 2359, 700:1, regulated 3 V, 3 mm radius pinion and rack",
+    "wheels": "Custom 14 x 3 mm silicone tires on independent half axles",
+    "electronics": "Custom motor-driver/radio PCB, 1S LiPo, wheel encoders and lift position sensor"
+  },
+  "sources": [
+    "https://www.pololu.com/product/2358",
+    "https://www.pololu.com/product/2359",
+    "https://www.pololu.com/file/0J1831/sub-micro-plastic-planetary-gearmotor-dimension-diagram.pdf"
+  ],
+  "assumptions": [
+    "40 g complete mass budget; no prototype measured",
+    "Custom longitudinal motor packaging and bevel shafts require detailed CAD",
+    "Tire friction 0.85 and pad friction 0.7 require measurement",
+    "The photograph establishes shell appearance, not internal actuation"
+  ],
+  "index": 0,
+  "freejoint": "swarm_00_free",
+  "initial_position_m": [
+    0.0,
+    0.0,
+    0.007
+  ],
+  "initial_yaw_rad": 0.0,
+  "wheel_joints": [
+    "swarm_00_wheel_left",
+    "swarm_00_wheel_right"
+  ],
+  "motor_names": [
+    "swarm_00_motor_left",
+    "swarm_00_motor_right"
+  ],
+  "lift_joint": "swarm_00_lift",
+  "lift_motor": "swarm_00_lift_motor",
+  "gripper_site": "swarm_00_pad_site",
+  "pad_geom": "swarm_00_pad",
+  "pad_geoms": [
+    "swarm_00_pad",
+    "swarm_00_pad_upper"
+  ],
+  "colliders": [
+    {
+      "name": "swarm_00_shell_front",
+      "body": "swarm_00",
+      "material": "plastic",
+      "grip_pad": false,
+      "robot_part": true
+    },
+    {
+      "name": "swarm_00_shell_rear",
+      "body": "swarm_00",
+      "material": "plastic",
+      "grip_pad": false,
+      "robot_part": true
+    },
+    {
+      "name": "swarm_00_ball_housing",
+      "body": "swarm_00",
+      "material": "plastic",
+      "grip_pad": false,
+      "robot_part": true
+    },
+    {
+      "name": "swarm_00_skid_front",
+      "body": "swarm_00",
+      "material": "plastic",
+      "grip_pad": false,
+      "robot_part": true
+    },
+    {
+      "name": "swarm_00_skid_rear",
+      "body": "swarm_00",
+      "material": "plastic",
+      "grip_pad": false,
+      "robot_part": true
+    },
+    {
+      "name": "swarm_00_tire_left",
+      "body": "swarm_00_wheel_left_body",
+      "material": "rubber",
+      "grip_pad": false,
+      "robot_part": true
+    },
+    {
+      "name": "swarm_00_tire_right",
+      "body": "swarm_00_wheel_right_body",
+      "material": "rubber",
+      "grip_pad": false,
+      "robot_part": true
+    },
+    {
+      "name": "swarm_00_pad",
+      "body": "swarm_00_carriage",
+      "material": "rubber",
+      "grip_pad": true,
+      "robot_part": true
+    },
+    {
+      "name": "swarm_00_pad_upper",
+      "body": "swarm_00_carriage",
+      "material": "rubber",
+      "grip_pad": true,
+      "robot_part": true
+    }
+  ],
+  "center_of_mass_body_m": [
+    0.0,
+    0.00027499999999999985,
+    0.0017500000000000007
+  ]
+}

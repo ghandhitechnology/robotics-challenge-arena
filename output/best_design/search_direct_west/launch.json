@@ -1,0 +1,22 @@
+{
+  "pid": 212513,
+  "started_at_utc": "2026-09-11T14:03:41Z",
+  "requested_ref": "f506bc2df95ef7b2ebcefee8f07c1d234d0235ef",
+  "resolved_commit": "f506bc2df95ef7b2ebcefee8f07c1d234d0235ef",
+  "command": [
+    "/usr/bin/python3",
+    "scripts/optimize_best_fleet.py",
+    "tune",
+    "--profile",
+    "fast_couriers_0.48_4",
+    "--episodes",
+    "24",
+    "--seed",
+    "202609120",
+    "--workers",
+    "24",
+    "--output",
+    "output/best_design/search_direct_west"
+  ],
+  "output": "/content/robotics_fleet_search_f506bc2/output/best_design/search_direct_west"
+}

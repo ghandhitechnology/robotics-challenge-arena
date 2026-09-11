@@ -1,0 +1,20 @@
+{
+  "pid": 239756,
+  "started_utc": "2026-09-11T14:59:48.554016+00:00",
+  "commit": "e2be32d42e5dd0b8486881919f37c2d4a13cc419",
+  "command": [
+    "/usr/bin/python3",
+    "/content/robotics_fleet_deployment_final/scripts/optimize_best_fleet.py",
+    "tune",
+    "--workers",
+    "24",
+    "--episodes",
+    "24",
+    "--seed",
+    "202609124",
+    "--profile",
+    "fast_couriers_0.48_4",
+    "--output",
+    "/content/robotics_fleet_deployment_final/output/best_design/search_deployment_final"
+  ]
+}

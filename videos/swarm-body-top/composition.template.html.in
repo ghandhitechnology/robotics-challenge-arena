@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, height=1080" />
+  <title>Magnetic swarm-body proof</title>
+  <link rel="preload" href="assets/fonts/Barlow-SemiBold.ttf" as="font" type="font/ttf" crossorigin />
+  <link rel="preload" href="assets/fonts/IBMPlexMono-Regular.ttf" as="font" type="font/ttf" crossorigin />
+  <script src="assets/gsap.min.js"></script>
+  <style>
+    @font-face { font-family: Barlow; src: url("assets/fonts/Barlow-SemiBold.ttf"); font-weight: 600; }
+    @font-face { font-family: "IBM Plex Mono"; src: url("assets/fonts/IBMPlexMono-Regular.ttf"); font-weight: 400; }
+    * { box-sizing: border-box; margin: 0; }
+    html, body { width: 1920px; height: 1080px; overflow: hidden; background: #12181b; color: #eef1e9; }
+    #root { width: 1920px; height: 1080px; padding: 20px; display: grid; grid-template-columns: 1440px 420px; gap: 20px; font-family: Barlow, sans-serif; }
+    #recording-slot { position: relative; grid-column: 1; width: 1440px; height: 1040px; }
+    #recording { width: 1440px; height: 1040px; object-fit: contain; background: #12181b; }
+    #report { grid-column: 2; height: 1040px; padding: 24px 28px; background: #1b2428; display: flex; flex-direction: column; gap: 16px; }
+    .eyebrow { color: #dfc779; font-size: 24px; line-height: 1.2; }
+    h1 { margin-top: 6px; font-size: 50px; font-weight: 600; line-height: 1.02; letter-spacing: -0.025em; }
+    .subline { margin-top: 10px; color: #c4cec9; font-size: 23px; line-height: 1.22; }
+    .view { margin-top: 6px; color: #eef1e9; font-size: 23px; line-height: 1.22; }
+    .status { color: #dfc779; font-size: 26px; line-height: 1.2; border-top: 2px solid #43534f; padding-top: 16px; }
+    .facts { display: grid; gap: 8px; }
+    .fact { display: grid; gap: 2px; }
+    .label { color: #c4cec9; font-size: 21px; line-height: 1.18; }
+    .number { font-family: "IBM Plex Mono", monospace; font-size: 30px; line-height: 1.15; font-variant-numeric: tabular-nums; letter-spacing: -0.035em; white-space: nowrap; }
+    .provenance { display: grid; gap: 10px; margin-top: auto; border-top: 2px solid #43534f; padding-top: 16px; }
+    .provenance .number { font-size: 26px; }
+    .footnote { color: #c4cec9; font-size: 19px; line-height: 1.25; }
+  </style>
+</head>
+<body>
+  <div id="root" data-composition-id="__COMPOSITION_ID__" data-width="1920" data-height="1080" data-duration="__DURATION__">
+    <div id="recording-slot"><video id="recording" class="clip" src="assets/trajectory.mp4" data-start="0" data-duration="__DURATION__" data-track-index="0" muted playsinline></video></div>
+    <aside id="report">
+      <div>
+        <p class="eyebrow">__MODE__</p>
+        <h1>__TITLE__</h1>
+        <p class="subline">__CONTROLLER__</p>
+        <p class="view">__VIEW__</p>
+      </div>
+      <p class="status">__STATUS__</p>
+      <div class="facts">
+        <div class="fact"><p class="label">Robot modules</p><p class="number">__ROBOTS__</p></div>
+        <div class="fact"><p class="label">Payload carriers</p><p class="number">__CARRIERS__</p></div>
+        <div class="fact"><p class="label">Magnetic body modules</p><p class="number">__BODY__</p></div>
+        <div class="fact"><p class="label">Payloads delivered</p><p class="number">__DELIVERED__</p></div>
+        <div class="fact"><p class="label">Final load-bearing core</p><p class="number">__MAGNETIC_CORE__</p></div>
+        <div class="fact"><p class="label">Completion time · simulation</p><p class="number">__COMPLETION__</p></div>
+      </div>
+      <div class="provenance">
+        <div class="fact"><p class="label">Recorded final hold</p><p class="number">__FINAL_HOLD__</p></div>
+        <div class="fact"><p class="label">Physics timestep</p><p class="number">__PHYSICS_STEP__</p></div>
+      </div>
+      <p class="footnote">__FOOTNOTE__</p>
+    </aside>
+  </div>
+  <script>
+    Promise.all([
+      document.fonts.load("600 50px Barlow"),
+      document.fonts.load('400 30px "IBM Plex Mono"'),
+    ]).then(() => {
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["__COMPOSITION_ID__"] = tl;
+      window.__hfForceTimelineRebind?.();
+    });
+  </script>
+</body>
+</html>

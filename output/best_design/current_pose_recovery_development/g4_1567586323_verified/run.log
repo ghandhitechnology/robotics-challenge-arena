@@ -1,0 +1,12 @@
+{
+  "success": false,
+  "declaration_seconds": 120.00000000020893,
+  "deployment_seconds": 12.779999999998356,
+  "failures": {
+    "yellow": "yellow line timeout at deploy: goal [0.225  0.5905], pose [0.225      0.61015458]",
+    "kit": "Departure stopped after yellow: yellow line timeout at deploy: goal [0.225  0.5905], pose [0.225      0.61015458]",
+    "lab": "lab line timeout at deliver Biological_Sample_02: goal [0.83   0.4905], pose [0.82710733 0.48113276]"
+  },
+  "wall_seconds": 163.23808093200023
+}
+score 30

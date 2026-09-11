@@ -1,0 +1,94 @@
+{
+  "claim_scope": "This test covers one unloaded lab robot in the empty center corridor. It does not score grasping or the full mission.",
+  "dataset_manifest_sha256": "412610c17219f392518b2b514f7965d58fb53bd32c210a3ecd87c2f1e465c70a",
+  "evaluation_role": "independent final test after validation selection",
+  "frozen_action_examples": 12421,
+  "frozen_action_metrics": {
+    "forward_mae_m_s": 0.015813086320553837,
+    "forward_p95_m_s": 0.0479745052754879,
+    "normalized_mae": 0.04365680366754532,
+    "normalized_p95": 0.12524132430553436,
+    "yaw_mae_rad_s": 0.10533340246710998,
+    "yaw_p95_rad_s": 0.2983890473842621
+  },
+  "inference": {
+    "iterations": 10000,
+    "mean_microseconds": 11.4389914,
+    "numpy_version": "2.1.3",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.39"
+  },
+  "model_sha256": "851484bad87154380fae57ee4a85717004ed4dc9b8cba1c153446314ecb8e047",
+  "native_baselines_same_seeds": {
+    "teacher": {
+      "complete": true,
+      "episodes": 120,
+      "maximum_actual_torque_nm": 0.024977133716909725,
+      "maximum_tilt_rad": 0.03626848827093498,
+      "mean_episode_seconds": 2.7721666666666662,
+      "mean_final_distance_m": 0.0015039407949926354,
+      "mean_final_heading_error_rad": 0.009882221690801173,
+      "mean_success_seconds": 1.6510280373831774,
+      "p95_final_distance_m": 0.0023939321599878854,
+      "p95_final_heading_error_rad": 0.014914832456475536,
+      "primitive_reach_rate": {
+        "forward": 0.8888888888888888,
+        "reverse": 0.8,
+        "turn": 0.9555555555555556
+      },
+      "reach_rate": 0.8916666666666667,
+      "reach_wilson_lower_95": 0.8234449199472612,
+      "terminal_failures": 0
+    },
+    "zero": {
+      "complete": true,
+      "episodes": 120,
+      "maximum_actual_torque_nm": 0.002752923051931789,
+      "maximum_tilt_rad": 0.0028276166571296326,
+      "mean_episode_seconds": 11.900166666666667,
+      "mean_final_distance_m": 0.04349792029607468,
+      "mean_final_heading_error_rad": 1.6099034833899803,
+      "mean_success_seconds": 0.02,
+      "p95_final_distance_m": 0.16035099120268517,
+      "p95_final_heading_error_rad": 2.9512133778791383,
+      "primitive_reach_rate": {
+        "forward": 0.0,
+        "reverse": 0.0,
+        "turn": 0.022222222222222223
+      },
+      "reach_rate": 0.008333333333333333,
+      "reach_wilson_lower_95": 0.001472517830674953,
+      "terminal_failures": 0
+    }
+  },
+  "native_closed_loop": {
+    "complete": true,
+    "episode_seeds_sha256": "e05331a9974fb1f2fe6a394f6200aa947d334d2a4d79e598b726641d8280c618",
+    "episodes": 120,
+    "maximum_actual_torque_nm": 0.024977133716909725,
+    "maximum_tilt_rad": 0.023166612299820328,
+    "mean_episode_seconds": 2.9275,
+    "mean_final_distance_m": 0.0017301680920854712,
+    "mean_final_heading_error_rad": 0.010822358986729874,
+    "mean_success_seconds": 2.8512605042016803,
+    "p95_final_distance_m": 0.0019863721248123646,
+    "p95_final_heading_error_rad": 0.014771251557833143,
+    "physics_seconds_including_baselines": 41.338282149000406,
+    "primitive_reach_rate": {
+      "forward": 0.9777777777777777,
+      "reverse": 1.0,
+      "turn": 1.0
+    },
+    "reach_rate": 0.9916666666666667,
+    "reach_wilson_lower_95": 0.9543025846256779,
+    "terminal_failures": 0
+  },
+  "requested_gates": {
+    "failures": [],
+    "maximum_p95_final_distance_m": 0.002,
+    "minimum_reach_rate": 0.95,
+    "passed": true
+  },
+  "schema_version": 1,
+  "test_seed": 20461212,
+  "test_split_sha256": "5c5cb0e0390267ca4a8a7deb4abc8a23776eee1a870e8723e29a8447ac24a858"
+}

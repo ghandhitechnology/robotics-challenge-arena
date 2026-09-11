@@ -2,6 +2,13 @@ output/mujoco/*.xml linguist-generated=true
 output/mujoco/*.json linguist-generated=true
 arena_mujoco/assets/*.json linguist-generated=true
 output/competition/** linguist-generated=true
+output/best_design/** linguist-generated=true
+# Preserve blank context lines in archived experimental diffs.
+output/best_design/**/*.patch -whitespace
+output/best_design/README.md linguist-generated=false
+output/best_drive/** linguist-generated=true
+output/best_drive_final/** linguist-generated=true
+output/best_vision/** linguist-generated=true
 videos/competition-proof/assets/** linguist-vendored=true
 videos/competition-proof/index.html linguist-generated=true
 videos/competition-pov/assets/** linguist-vendored=true

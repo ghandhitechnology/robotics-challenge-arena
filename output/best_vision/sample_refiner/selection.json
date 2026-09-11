@@ -1,0 +1,141 @@
+{
+  "candidate_count": 180,
+  "development_target": {
+    "maximum_mm": 1.5,
+    "minimum_coverage": 0.85,
+    "p95_mm": 0.75
+  },
+  "examples": 160,
+  "role": "development threshold selection; final test was not rendered yet",
+  "seed": 20260941,
+  "selected_metrics": {
+    "accepted": 155,
+    "accepted_position_error": {
+      "count": 155,
+      "maximum_mm": 0.6269374174314001,
+      "median_mm": 0.22423996907592134,
+      "p95_mm": 0.4680179275968296
+    },
+    "by_camera_height": {
+      "100_to_127_mm": {
+        "accepted": 56,
+        "accepted_errors": {
+          "count": 56,
+          "maximum_mm": 0.4769988479249575,
+          "median_mm": 0.23991886013029018,
+          "p95_mm": 0.43805656734907195
+        },
+        "count": 58,
+        "coverage": 0.9655172413793104
+      },
+      "127_to_154_mm": {
+        "accepted": 58,
+        "accepted_errors": {
+          "count": 58,
+          "maximum_mm": 0.6269374174314001,
+          "median_mm": 0.21924630195853373,
+          "p95_mm": 0.5035841145206348
+        },
+        "count": 59,
+        "coverage": 0.9830508474576272
+      },
+      "154_to_180_mm": {
+        "accepted": 41,
+        "accepted_errors": {
+          "count": 41,
+          "maximum_mm": 0.5353603602319346,
+          "median_mm": 0.22422976575123624,
+          "p95_mm": 0.48947863779398537
+        },
+        "count": 43,
+        "coverage": 0.9534883720930233
+      }
+    },
+    "by_occluder_count": {
+      "one": {
+        "accepted": 59,
+        "accepted_errors": {
+          "count": 59,
+          "maximum_mm": 0.5826100134976603,
+          "median_mm": 0.224915656151522,
+          "p95_mm": 0.40570635998605903
+        },
+        "count": 60,
+        "coverage": 0.9833333333333333
+      },
+      "two": {
+        "accepted": 48,
+        "accepted_errors": {
+          "count": 48,
+          "maximum_mm": 0.6269374174314001,
+          "median_mm": 0.2323120024119648,
+          "p95_mm": 0.46315200477119406
+        },
+        "count": 51,
+        "coverage": 0.9411764705882353
+      },
+      "zero": {
+        "accepted": 48,
+        "accepted_errors": {
+          "count": 48,
+          "maximum_mm": 0.5870452252190386,
+          "median_mm": 0.21941699924932243,
+          "p95_mm": 0.48958246219541346
+        },
+        "count": 49,
+        "coverage": 0.9795918367346939
+      }
+    },
+    "by_tilt": {
+      "0_to_2.67_deg": {
+        "accepted": 44,
+        "accepted_errors": {
+          "count": 44,
+          "maximum_mm": 0.3835391185260118,
+          "median_mm": 0.18072099058079147,
+          "p95_mm": 0.3595883826067322
+        },
+        "count": 47,
+        "coverage": 0.9361702127659575
+      },
+      "2.67_to_5.34_deg": {
+        "accepted": 62,
+        "accepted_errors": {
+          "count": 62,
+          "maximum_mm": 0.5826100134976603,
+          "median_mm": 0.23652791010369645,
+          "p95_mm": 0.4374349472727338
+        },
+        "count": 64,
+        "coverage": 0.96875
+      },
+      "5.34_to_8_deg": {
+        "accepted": 49,
+        "accepted_errors": {
+          "count": 49,
+          "maximum_mm": 0.6269374174314001,
+          "median_mm": 0.2908483500533459,
+          "p95_mm": 0.517071563196095
+        },
+        "count": 49,
+        "coverage": 1.0
+      }
+    },
+    "cnn_sample_proposal_coverage": 0.99375,
+    "coverage": 0.96875,
+    "examples": 160,
+    "geometry_coverage_given_cnn_proposal": 0.9748427672955975,
+    "rejections": {
+      "cnn_confidence": 1,
+      "radius_consistency": 4
+    }
+  },
+  "selected_thresholds": {
+    "maximum_coarse_offset_px": 10.0,
+    "maximum_radial_residual_px": 0.65,
+    "maximum_radius_relative_error": 0.06,
+    "minimum_arc_coverage": 0.3,
+    "minimum_cnn_confidence": 0.995,
+    "minimum_edge_points": 36
+  }
+}

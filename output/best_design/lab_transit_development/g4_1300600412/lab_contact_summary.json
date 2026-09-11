@@ -1,0 +1,1004 @@
+{
+  "method": "Contact geometry replay from recorded qpos and qvel; no contact forces inferred.",
+  "grasp_s": 15.419999999996893,
+  "release_s": null,
+  "carry_window_end_s": 35.0,
+  "first_height_below_20mm_while_carrying_s": 18.799999999999994,
+  "first_sample_tool_separation_above_15mm_while_carrying_s": 18.799999999999994,
+  "seed": 1300600412,
+  "success": false,
+  "failures": {
+    "lab": "lab dropped Biological_Sample_01 in transit"
+  },
+  "source_sha256": {
+    "arena_spec.json": "26b10a4a5fc607ab58d1692d9fd9b4a2a466fd6bc789a7c9e7032066c5d4fbf1",
+    "best_design.json": "e1f7e2a01e4b3b548033d1fa822b3fd70e43338e45cf559cdd65767cc2740d19",
+    "competition_rules.json": "df44c749e89cdddb1e3d19535a4a13be4f7fb2623d7473dadfdd3d13be1fd1f0",
+    "arena_mujoco/best_fleet.py": "10e77a1665fb17a48d0291e3a837a989ccc325340fc003fd4f42052a88f70c8f",
+    "arena_mujoco/best_mission.py": "7844c0f78a19abf29d14cafa138c9bf48e12b112f85f86a358a5025bac1b7f26",
+    "arena_mujoco/best_routes.py": "0e429022f6806a9cfdf5e0e26d225e5d5a11d14f6b1a2b3dc28de9ac4b3ceda4",
+    "arena_mujoco/best_drive.py": "2bace81fe619a1ce9ea3fbfac9e20cd2fda4b1683afbe71bbcec1ab4b28a6fb0",
+    "arena_mujoco/builder.py": "172b4405c59b2ac6ef7142bde3e16bcf2697fe6dd2908fcff4c421007313e51b",
+    "arena_mujoco/geometry.py": "ecf1faf8282dacfb4da7c8fbc9624fb6b5e4dd66c5e2e08f362b433567bd2ff8",
+    "arena_mujoco/materials.py": "266e9b21c4179cda5b05058f88d328ffb69c6b18032f9dee7164e80a866bd2af",
+    "arena_mujoco/competition_robot.py": "ad1045d570526b41582f19bf091111e039b5a516de65d1c706ee11e5b50c9773",
+    "arena_mujoco/competition_scoring.py": "f882c3a1a0510a2d02d66342ddaad68cf06556ae4ca9873feed2cc3cbfc740f4",
+    "arena_mujoco/competition_events.py": "f6841726d246047b8211bdb51a86964ee53630a21d59e9f9ef9f4e3ba4abb5e2"
+  },
+  "cross_robot_contact_pairs": {
+    "fleet_kit_kit_chute_0_front / fleet_lab_robot_comp_pad_left_upper": {
+      "first_s": 18.73999999999992,
+      "last_s": 18.73999999999992,
+      "samples": 3,
+      "minimum_distance_m": -0.00010873322621759123
+    }
+  },
+  "first_collision_state": {
+    "time_s": 18.73999999999992,
+    "sample_xyz": [
+      0.8268868387190265,
+      0.4922414385342388,
+      0.03378566750033867
+    ],
+    "lab_xyz": [
+      0.8303048075877807,
+      0.3866250456032247,
+      0.024999117914103804
+    ],
+    "kit_xyz": [
+      0.8241384447811028,
+      0.5934872938098773,
+      0.024989460223942536
+    ],
+    "tool_xyz": [
+      0.8263603068345635,
+      0.49187039605674004,
+      0.03569921605445357
+    ],
+    "sample_tool_distance_m": 0.0020190533461054805,
+    "contacts": [
+      {
+        "geoms": [
+          "Biological_Sample_01_geom",
+          "fleet_lab_robot_comp_pad_right_sample"
+        ],
+        "distance_m": -0.00013193131714822167
+      },
+      {
+        "geoms": [
+          "Biological_Sample_01_geom",
+          "fleet_lab_robot_comp_pad_right_sample"
+        ],
+        "distance_m": -0.00013193131714822167
+      },
+      {
+        "geoms": [
+          "Biological_Sample_01_geom",
+          "fleet_lab_robot_comp_pad_right_sample"
+        ],
+        "distance_m": -0.00013193131714822167
+      },
+      {
+        "geoms": [
+          "Biological_Sample_01_geom",
+          "fleet_lab_robot_comp_pad_right_sample"
+        ],
+        "distance_m": -0.00013193131714822167
+      },
+      {
+        "geoms": [
+          "Biological_Sample_01_geom",
+          "fleet_lab_robot_comp_pad_right_sample"
+        ],
+        "distance_m": -0.00013193131714822167
+      },
+      {
+        "geoms": [
+          "fleet_lab_robot_comp_pad_left_upper",
+          "fleet_kit_kit_chute_0_front"
+        ],
+        "distance_m": -0.00010873322621759123
+      },
+      {
+        "geoms": [
+          "fleet_lab_robot_comp_pad_left_upper",
+          "fleet_kit_kit_chute_0_front"
+        ],
+        "distance_m": -5.622929926142522e-05
+      },
+      {
+        "geoms": [
+          "fleet_lab_robot_comp_pad_left_upper",
+          "fleet_kit_kit_chute_0_front"
+        ],
+        "distance_m": -5.5729696264025596e-05
+      }
+    ]
+  },
+  "loss_window": [
+    {
+      "time_s": 18.619999999999774,
+      "sample_xyz": [
+        0.8270544577355252,
+        0.487082210580977,
+        0.03393433351724166
+      ],
+      "lab_xyz": [
+        0.830508538246199,
+        0.381425058566709,
+        0.024996398674790837
+      ],
+      "kit_xyz": [
+        0.8230587825321783,
+        0.592651345130546,
+        0.02499320854542039
+      ],
+      "tool_xyz": [
+        0.8270624514769827,
+        0.4866977623313937,
+        0.035601913561103066
+      ],
+      "sample_tool_distance_m": 0.0017113408658694894,
+      "contacts": [
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.873023144387259e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.873023144387259e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.873023144387259e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.873023144387259e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.873023144387259e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.310435552096027e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.310435552096027e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.310435552096027e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.310435552096027e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.310435552096027e-05
+        }
+      ]
+    },
+    {
+      "time_s": 18.639999999999798,
+      "sample_xyz": [
+        0.8270122070948238,
+        0.48831861278857774,
+        0.0339344619303269
+      ],
+      "lab_xyz": [
+        0.8304679871323681,
+        0.3826640388915994,
+        0.024996244604176834
+      ],
+      "kit_xyz": [
+        0.823112584188828,
+        0.5927238242895817,
+        0.025001489441017526
+      ],
+      "tool_xyz": [
+        0.8270183514594189,
+        0.4879338327731343,
+        0.03560247377531728
+      ],
+      "sample_tool_distance_m": 0.0017118285336239591,
+      "contacts": [
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.8588333796836285e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.8588333796836285e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.8588333796836285e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.8588333796836285e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.8588333796836285e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.682413494872007e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.682413494872007e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.682413494872007e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.682413494872007e-05
+        }
+      ]
+    },
+    {
+      "time_s": 18.659999999999823,
+      "sample_xyz": [
+        0.8269759591435243,
+        0.4893734365614961,
+        0.033935044846218024
+      ],
+      "lab_xyz": [
+        0.830433366901344,
+        0.383721285073907,
+        0.024996122392358263
+      ],
+      "kit_xyz": [
+        0.8232191891200834,
+        0.5928543008134365,
+        0.025003111321804883
+      ],
+      "tool_xyz": [
+        0.8269818879762498,
+        0.4889883959057641,
+        0.03560349124835113
+      ],
+      "sample_tool_distance_m": 0.0017123098009457728,
+      "contacts": [
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.8516109735341685e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.8516109735341685e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.8516109735341685e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.8516109735341685e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.8516109735341685e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.72346798452154e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.72346798452154e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.72346798452154e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.72346798452154e-05
+        }
+      ]
+    },
+    {
+      "time_s": 18.679999999999847,
+      "sample_xyz": [
+        0.8269459217328501,
+        0.4902723200064365,
+        0.033935693586664005
+      ],
+      "lab_xyz": [
+        0.8304038505143456,
+        0.38462234211547414,
+        0.02499602218676119
+      ],
+      "kit_xyz": [
+        0.8233363061789545,
+        0.5929944238366284,
+        0.02499439593819452
+      ],
+      "tool_xyz": [
+        0.8269518575931052,
+        0.48988704631261487,
+        0.035604574194911524
+      ],
+      "sample_tool_distance_m": 0.0017127853158444995,
+      "contacts": [
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.851197823996765e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.851197823996765e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.851197823996765e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.851197823996765e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.851197823996765e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.724030471651981e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.724030471651981e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.724030471651981e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.724030471651981e-05
+        }
+      ]
+    },
+    {
+      "time_s": 18.69999999999987,
+      "sample_xyz": [
+        0.8269180067138858,
+        0.4910378057565247,
+        0.033938543719069
+      ],
+      "lab_xyz": [
+        0.8303787479934133,
+        0.3853899927118805,
+        0.0249964135135716
+      ],
+      "kit_xyz": [
+        0.8235252665887605,
+        0.593163443323178,
+        0.024994921467234844
+      ],
+      "tool_xyz": [
+        0.8269274130554947,
+        0.49065241404463694,
+        0.03560783128169407
+      ],
+      "sample_tool_distance_m": 0.0017132239251157466,
+      "contacts": [
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.874981444546331e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.874981444546331e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.874981444546331e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.874981444546331e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.874981444546331e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.022494900023731e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.022494900023731e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.022494900023731e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.022494900023731e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -4.022494900023731e-05
+        }
+      ]
+    },
+    {
+      "time_s": 18.719999999999896,
+      "sample_xyz": [
+        0.826897596367805,
+        0.49168804526652726,
+        0.033953871054991806
+      ],
+      "lab_xyz": [
+        0.8303573414499226,
+        0.3860429854178583,
+        0.024996606083687842
+      ],
+      "kit_xyz": [
+        0.8237700490444725,
+        0.5933568334548758,
+        0.025005379128547747
+      ],
+      "tool_xyz": [
+        0.8269077480379811,
+        0.49130227251388203,
+        0.03562350014946649
+      ],
+      "sample_tool_distance_m": 0.0017136466923514876,
+      "contacts": [
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.8514958226921046e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.8514958226921046e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.8514958226921046e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.8514958226921046e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_left_sample"
+          ],
+          "distance_m": -3.8514958226921046e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -3.85395984131928e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -3.85395984131928e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -3.85395984131928e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -3.85395984131928e-05
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -3.85395984131928e-05
+        }
+      ]
+    },
+    {
+      "time_s": 18.73999999999992,
+      "sample_xyz": [
+        0.8268868387190265,
+        0.4922414385342388,
+        0.03378566750033867
+      ],
+      "lab_xyz": [
+        0.8303048075877807,
+        0.3866250456032247,
+        0.024999117914103804
+      ],
+      "kit_xyz": [
+        0.8241384447811028,
+        0.5934872938098773,
+        0.024989460223942536
+      ],
+      "tool_xyz": [
+        0.8263603068345635,
+        0.49187039605674004,
+        0.03569921605445357
+      ],
+      "sample_tool_distance_m": 0.0020190533461054805,
+      "contacts": [
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -0.00013193131714822167
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -0.00013193131714822167
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -0.00013193131714822167
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -0.00013193131714822167
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "fleet_lab_robot_comp_pad_right_sample"
+          ],
+          "distance_m": -0.00013193131714822167
+        },
+        {
+          "geoms": [
+            "fleet_lab_robot_comp_pad_left_upper",
+            "fleet_kit_kit_chute_0_front"
+          ],
+          "distance_m": -0.00010873322621759123
+        },
+        {
+          "geoms": [
+            "fleet_lab_robot_comp_pad_left_upper",
+            "fleet_kit_kit_chute_0_front"
+          ],
+          "distance_m": -5.622929926142522e-05
+        },
+        {
+          "geoms": [
+            "fleet_lab_robot_comp_pad_left_upper",
+            "fleet_kit_kit_chute_0_front"
+          ],
+          "distance_m": -5.5729696264025596e-05
+        }
+      ]
+    },
+    {
+      "time_s": 18.759999999999945,
+      "sample_xyz": [
+        0.8228911556383844,
+        0.4926948724882502,
+        0.03184460380789072
+      ],
+      "lab_xyz": [
+        0.8302553288271306,
+        0.3872256087507152,
+        0.024992395319801373
+      ],
+      "kit_xyz": [
+        0.8248014247900465,
+        0.5937355295590387,
+        0.02500052368753198
+      ],
+      "tool_xyz": [
+        0.8244607289804765,
+        0.4923812666028254,
+        0.035935552781669905
+      ],
+      "sample_tool_distance_m": 0.004392923017040492,
+      "contacts": []
+    },
+    {
+      "time_s": 18.77999999999997,
+      "sample_xyz": [
+        0.8186961797509629,
+        0.4930823717570227,
+        0.02639624532881645
+      ],
+      "lab_xyz": [
+        0.8302048277458454,
+        0.3877506155013399,
+        0.024990721580081955
+      ],
+      "kit_xyz": [
+        0.8256265448681022,
+        0.5941532268618125,
+        0.024992615626620907
+      ],
+      "tool_xyz": [
+        0.8223931176270785,
+        0.49276333096408204,
+        0.03599425935876846
+      ],
+      "sample_tool_distance_m": 0.010290335757718202,
+      "contacts": []
+    },
+    {
+      "time_s": 18.799999999999994,
+      "sample_xyz": [
+        0.8145012038635413,
+        0.49346987102579515,
+        0.017023886849742178
+      ],
+      "lab_xyz": [
+        0.830186344276064,
+        0.3879878292885388,
+        0.024995012304613158
+      ],
+      "kit_xyz": [
+        0.8262569525220694,
+        0.5944901882030844,
+        0.02499894974921964
+      ],
+      "tool_xyz": [
+        0.8218547067868012,
+        0.4929340725121783,
+        0.03598064835693781
+      ],
+      "sample_tool_distance_m": 0.020340105509320236,
+      "contacts": []
+    },
+    {
+      "time_s": 18.820000000000018,
+      "sample_xyz": [
+        0.8115228267658887,
+        0.4938682100818461,
+        0.005585859772860382
+      ],
+      "lab_xyz": [
+        0.8301884757518433,
+        0.38795466652793137,
+        0.024986570597388364
+      ],
+      "kit_xyz": [
+        0.8266972272342838,
+        0.594702066899292,
+        0.025001769925986114
+      ],
+      "tool_xyz": [
+        0.8222342326789923,
+        0.49293495242228524,
+        0.03597536749628078
+      ],
+      "sample_tool_distance_m": 0.0322354985406807,
+      "contacts": []
+    },
+    {
+      "time_s": 18.840000000000042,
+      "sample_xyz": [
+        0.8111072821670077,
+        0.4939635211642851,
+        0.0034292080766193406
+      ],
+      "lab_xyz": [
+        0.8301988927935543,
+        0.38782141403188464,
+        0.024986313756754825
+      ],
+      "kit_xyz": [
+        0.8270063159513507,
+        0.5948297287739102,
+        0.02499370007922767
+      ],
+      "tool_xyz": [
+        0.8228057434768808,
+        0.4928106268685918,
+        0.03618128254916271
+      ],
+      "sample_tool_distance_m": 0.03479772326648209,
+      "contacts": []
+    },
+    {
+      "time_s": 18.860000000000067,
+      "sample_xyz": [
+        0.8111396747572722,
+        0.4939992837649812,
+        0.0026739927073401544
+      ],
+      "lab_xyz": [
+        0.8302121593478909,
+        0.3876139847545653,
+        0.02499646447197598
+      ],
+      "kit_xyz": [
+        0.8272565052617449,
+        0.5949147537157987,
+        0.02499359485000624
+      ],
+      "tool_xyz": [
+        0.8234177725796773,
+        0.4925805731812624,
+        0.036702146870446345
+      ],
+      "sample_tool_distance_m": 0.036203310644263256,
+      "contacts": [
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "floor"
+          ],
+          "distance_m": -4.290314209733389e-06
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "floor"
+          ],
+          "distance_m": -4.290314209733389e-06
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "floor"
+          ],
+          "distance_m": -4.290314209733389e-06
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "floor"
+          ],
+          "distance_m": -4.290314209733389e-06
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "floor"
+          ],
+          "distance_m": -4.290314209733389e-06
+        }
+      ]
+    },
+    {
+      "time_s": 18.88000000000009,
+      "sample_xyz": [
+        0.8111496476100071,
+        0.49400947398496114,
+        0.0025337736933410374
+      ],
+      "lab_xyz": [
+        0.8302297894526101,
+        0.3873484271541987,
+        0.02499401762357577
+      ],
+      "kit_xyz": [
+        0.8274926078943543,
+        0.5949776068927706,
+        0.02500036024193763
+      ],
+      "tool_xyz": [
+        0.8240254264331507,
+        0.4922557125208126,
+        0.0375249637188269
+      ],
+      "sample_tool_distance_m": 0.03732619373811516,
+      "contacts": [
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "floor"
+          ],
+          "distance_m": -9.360053055525332e-07
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "floor"
+          ],
+          "distance_m": -9.360053055525332e-07
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "floor"
+          ],
+          "distance_m": -9.360053055525332e-07
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "floor"
+          ],
+          "distance_m": -9.360053055525332e-07
+        },
+        {
+          "geoms": [
+            "Biological_Sample_01_geom",
+            "floor"
+          ],
+          "distance_m": -9.360053055525332e-07
+        }
+      ]
+    }
+  ]
+}

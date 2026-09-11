@@ -1,0 +1,1766 @@
+{
+  "seed": 0,
+  "randomized_physics": false,
+  "initial_setup": {
+    "valid": true,
+    "errors": [],
+    "robot_bounds_xyz": {
+      "fleet_lab_competition_robot": [
+        [
+          0.8705,
+          0.7084999999999999,
+          0.0
+        ],
+        [
+          0.9955,
+          0.8565,
+          0.094
+        ]
+      ]
+    },
+    "start_bounds_xy": [
+      0.863,
+      0.701,
+      1.143,
+      1.181
+    ],
+    "objects": {
+      "Cylinder_Yellow_01": {
+        "kind": "yellow_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.44,
+            0.13999999999999999,
+            1.9999999999999185e-05
+          ],
+          [
+            0.46,
+            0.16,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Yellow_02": {
+        "kind": "yellow_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.64,
+            0.13999999999999999,
+            1.9999999999999185e-05
+          ],
+          [
+            0.66,
+            0.16,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Green_03": {
+        "kind": "green_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.44,
+            0.24,
+            1.9999999999999185e-05
+          ],
+          [
+            0.46,
+            0.26,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Green_04": {
+        "kind": "green_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.64,
+            0.24,
+            1.9999999999999185e-05
+          ],
+          [
+            0.66,
+            0.26,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Red_05": {
+        "kind": "red_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.44,
+            0.33999999999999997,
+            1.9999999999999185e-05
+          ],
+          [
+            0.46,
+            0.36,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Red_06": {
+        "kind": "red_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.64,
+            0.33999999999999997,
+            1.9999999999999185e-05
+          ],
+          [
+            0.66,
+            0.36,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Red_07": {
+        "kind": "red_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.44,
+            0.821,
+            1.9999999999999185e-05
+          ],
+          [
+            0.46,
+            0.841,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Red_08": {
+        "kind": "red_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.64,
+            0.821,
+            1.9999999999999185e-05
+          ],
+          [
+            0.66,
+            0.841,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Green_09": {
+        "kind": "green_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.44,
+            0.921,
+            1.9999999999999185e-05
+          ],
+          [
+            0.46,
+            0.9410000000000001,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Green_10": {
+        "kind": "green_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.64,
+            0.921,
+            1.9999999999999185e-05
+          ],
+          [
+            0.66,
+            0.9410000000000001,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Yellow_11": {
+        "kind": "yellow_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.44,
+            1.021,
+            1.9999999999999185e-05
+          ],
+          [
+            0.46,
+            1.041,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Yellow_12": {
+        "kind": "yellow_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.64,
+            1.021,
+            1.9999999999999185e-05
+          ],
+          [
+            0.66,
+            1.041,
+            0.02002
+          ]
+        ]
+      },
+      "Medical_Kit_01": {
+        "kind": "medical_kit",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.8945000000000001,
+            1.0405,
+            1.9999999999999185e-05
+          ],
+          [
+            0.9195,
+            1.0655,
+            0.02002
+          ]
+        ]
+      },
+      "Medical_Kit_02": {
+        "kind": "medical_kit",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.9345,
+            1.0405,
+            1.9999999999999185e-05
+          ],
+          [
+            0.9594999999999999,
+            1.0655,
+            0.02002
+          ]
+        ]
+      },
+      "Medical_Kit_03": {
+        "kind": "medical_kit",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.8945000000000001,
+            1.0855000000000001,
+            1.9999999999999185e-05
+          ],
+          [
+            0.9195,
+            1.1105,
+            0.02002
+          ]
+        ]
+      },
+      "Medical_Kit_04": {
+        "kind": "medical_kit",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.9345,
+            1.0855000000000001,
+            1.9999999999999185e-05
+          ],
+          [
+            0.9594999999999999,
+            1.1105,
+            0.02002
+          ]
+        ]
+      },
+      "Biological_Sample_01": {
+        "kind": "sample",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.944,
+            0.11699999999999999,
+            2.0000000000000052e-05
+          ],
+          [
+            1.0,
+            0.173,
+            0.00502
+          ]
+        ]
+      },
+      "Biological_Sample_02": {
+        "kind": "sample",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            1.044,
+            0.167,
+            2.0000000000000052e-05
+          ],
+          [
+            1.1,
+            0.223,
+            0.00502
+          ]
+        ]
+      },
+      "Biological_Sample_03": {
+        "kind": "sample",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            1.044,
+            0.067,
+            2.0000000000000052e-05
+          ],
+          [
+            1.1,
+            0.123,
+            0.00502
+          ]
+        ]
+      }
+    },
+    "preloaded_kits": [],
+    "overlaps": [],
+    "simulation_tolerances": {
+      "position_m": 1e-06,
+      "floor_height_m": 0.0001,
+      "penetration_m": 1e-05,
+      "support_gap_m": 0.0001,
+      "initial_speed": 1e-08,
+      "upright_cosine": 0.999999
+    },
+    "layout_source": "arena_spec.json senior_preliminary reconstructed diagram positions"
+  },
+  "policy": "geometric teacher",
+  "observations": "simulator poses",
+  "deployment_seconds": 5.880000000000298,
+  "declaration_seconds": 59.79999999995133,
+  "completed_robots": [
+    "lab"
+  ],
+  "failures": {},
+  "events": {
+    "lab": [
+      {
+        "event": "grasp",
+        "object": "Biological_Sample_01",
+        "time_s": 13.679999999997857
+      },
+      {
+        "event": "release",
+        "object": "Biological_Sample_01",
+        "time_s": 21.900000000003782,
+        "position_m": [
+          1.0674072828347674,
+          0.5904766486112671,
+          0.0024998408609578013
+        ]
+      },
+      {
+        "event": "grasp",
+        "object": "Biological_Sample_02",
+        "time_s": 32.10000000001589
+      },
+      {
+        "event": "release",
+        "object": "Biological_Sample_02",
+        "time_s": 40.279999999996825,
+        "position_m": [
+          1.0670755279498538,
+          0.4909892398121992,
+          0.0025113414172716762
+        ]
+      },
+      {
+        "event": "grasp",
+        "object": "Biological_Sample_03",
+        "time_s": 50.659999999972634
+      },
+      {
+        "event": "release",
+        "object": "Biological_Sample_03",
+        "time_s": 58.71999999995385,
+        "position_m": [
+          1.0671822201011338,
+          0.3896926497297787,
+          0.002503114339946684
+        ]
+      }
+    ]
+  },
+  "score_at_declaration": {
+    "profile": "national_senior_preliminary",
+    "mode": "official_120s",
+    "elapsed_seconds": 59.79999999995133,
+    "requested_time_limit_s": 120,
+    "official_time_limit_s": 120.0,
+    "within_requested_time_limit": true,
+    "within_official_time": true,
+    "task_score": 30,
+    "penalty_points": 0,
+    "score": 30,
+    "maximum_score": 160,
+    "per_task": {
+      "samples": {
+        "scored_count": 3,
+        "required_count": 3,
+        "points": 30,
+        "maximum_points": 30
+      },
+      "kits": {
+        "scored_count": 0,
+        "required_count": 4,
+        "points": 0,
+        "maximum_points": 40
+      },
+      "red_patients": {
+        "scored_count": 0,
+        "required_count": 3,
+        "points": 0,
+        "maximum_points": 30
+      },
+      "yellow_patients": {
+        "scored_count": 0,
+        "required_count": 3,
+        "points": 0,
+        "maximum_points": 30
+      },
+      "green_patients": {
+        "scored_count": 0,
+        "required_count": 3,
+        "points": 0,
+        "maximum_points": 30
+      }
+    },
+    "all_tasks_complete": false,
+    "feasibility_success": false,
+    "official_success": false,
+    "success": false,
+    "official_score": 30,
+    "sample_slot_assignments": {
+      "lab_3": "Biological_Sample_01",
+      "lab_2": "Biological_Sample_02",
+      "lab_1": "Biological_Sample_03"
+    },
+    "kit_counts_by_zone": {
+      "hospital": 0,
+      "pcc_lower": 0,
+      "pcc_upper": 0
+    },
+    "yellow_counts_by_pcc": {
+      "pcc_lower": 0,
+      "pcc_upper": 0
+    },
+    "yellow_distribution_satisfied": false,
+    "contaminated_zones": {},
+    "objects": {
+      "Cylinder_Yellow_01": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.0993423227859832e-05,
+        "angular_speed_rad_s": 0.0009395920040741981,
+        "bounds_xyz": [
+          [
+            0.4400000003193066,
+            0.13999902350296778,
+            -9.380841750616931e-07
+          ],
+          [
+            0.46000010034472644,
+            0.16000000380873258,
+            0.020000047311320913
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.28000010034472644,
+          "pcc_lower": -0.28000010034472644,
+          "pcc_upper": -0.7410009764970322,
+          "recovery": -0.5610009764970322
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Yellow_02": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 8.082451338170083e-06,
+        "angular_speed_rad_s": 0.0008035705525847716,
+        "bounds_xyz": [
+          [
+            0.6399999918990253,
+            0.13999925450842066,
+            -4.3220754393155647e-07
+          ],
+          [
+            0.6600000009967188,
+            0.15999999996547304,
+            0.02000031330472757
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.48000000099671886,
+          "pcc_lower": -0.48000000099671886,
+          "pcc_upper": -0.7410007454915793,
+          "recovery": -0.5610007454915793
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Green_03": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 8.810662103422263e-06,
+        "angular_speed_rad_s": 0.0007862219816213859,
+        "bounds_xyz": [
+          [
+            0.43999999910884957,
+            0.2399993301435411,
+            -6.581979574322994e-07
+          ],
+          [
+            0.4600001925299819,
+            0.2600000030920501,
+            0.020000041995207173
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.28000019252998193,
+          "pcc_lower": -0.28000019252998193,
+          "pcc_upper": -0.6410006698564589,
+          "recovery": -0.4610006698564588
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Green_04": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 5.7866230962526995e-05,
+        "angular_speed_rad_s": 0.00113115476909997,
+        "bounds_xyz": [
+          [
+            0.639999582796245,
+            0.23999917471474563,
+            -6.31057242742733e-07
+          ],
+          [
+            0.6599999982390425,
+            0.2600000037546538,
+            0.020000296246608082
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.47999999823904255,
+          "pcc_lower": -0.47999999823904255,
+          "pcc_upper": -0.6410008252852544,
+          "recovery": -0.4610008252852543
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_05": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.4375828695664526e-05,
+        "angular_speed_rad_s": 0.0005272934508791598,
+        "bounds_xyz": [
+          [
+            0.4399999987897771,
+            0.33999954021687745,
+            -4.240805693295907e-07
+          ],
+          [
+            0.4600001061752212,
+            0.3600000020904071,
+            0.020000050111090302
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.2800001061752212,
+          "pcc_lower": -0.2800001061752212,
+          "pcc_upper": -0.5410004597831226,
+          "recovery": -0.4230000012102229
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_06": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.3976367754410322e-05,
+        "angular_speed_rad_s": 0.0002701794347782718,
+        "bounds_xyz": [
+          [
+            0.6399990051549763,
+            0.3399998638028176,
+            -7.915261510671456e-07
+          ],
+          [
+            0.6600000025764822,
+            0.36000000475511734,
+            0.020000215804669538
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.4800000025764822,
+          "pcc_lower": -0.4800000025764822,
+          "pcc_upper": -0.5410001361971823,
+          "recovery": -0.36100013619718235
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_07": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 7.964366574161614e-05,
+        "angular_speed_rad_s": 0.001037695750320145,
+        "bounds_xyz": [
+          [
+            0.4399999997723119,
+            0.821000000168084,
+            -6.383670691622462e-07
+          ],
+          [
+            0.460000979043307,
+            0.8410002351981228,
+            0.020000368711744883
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.280000979043307,
+          "pcc_lower": -0.5030002351981229,
+          "pcc_upper": -0.280000979043307,
+          "recovery": -0.4230000002276881
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_08": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 5.02401260635577e-06,
+        "angular_speed_rad_s": 0.0004272327990230482,
+        "bounds_xyz": [
+          [
+            0.6399998472260139,
+            0.8209999975089481,
+            -5.688411484974787e-07
+          ],
+          [
+            0.6599999987075947,
+            0.8410006148986442,
+            0.02000006685987896
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.47999999870759474,
+          "pcc_lower": -0.5030006148986441,
+          "pcc_upper": -0.47999999870759474,
+          "recovery": -0.2230001527739861
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Green_09": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 8.68424583960326e-06,
+        "angular_speed_rad_s": 0.0008673111433946748,
+        "bounds_xyz": [
+          [
+            0.43999999095100534,
+            0.9209999968652599,
+            -5.02573674256851e-07
+          ],
+          [
+            0.4599999998894279,
+            0.941001014545141,
+            0.020000515146031194
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.2799999998894279,
+          "pcc_lower": -0.603001014545141,
+          "pcc_upper": -0.2799999998894279,
+          "recovery": -0.42300000904899465
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Green_10": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.01215993414162e-05,
+        "angular_speed_rad_s": 0.0009325349303267393,
+        "bounds_xyz": [
+          [
+            0.6399998714552859,
+            0.920999995095303,
+            -3.4039258965841424e-07
+          ],
+          [
+            0.6600000003177557,
+            0.9410004626055946,
+            0.0200001445527193
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.48000000031775575,
+          "pcc_lower": -0.6030004626055945,
+          "pcc_upper": -0.48000000031775575,
+          "recovery": -0.22300012854471407
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Yellow_11": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 9.113794093884625e-06,
+        "angular_speed_rad_s": 0.0008171340019904744,
+        "bounds_xyz": [
+          [
+            0.43999994287790967,
+            1.021000000015004,
+            -7.188517013693996e-07
+          ],
+          [
+            0.4600000015707265,
+            1.0410007694913794,
+            0.02000005286004494
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.2800000015707265,
+          "pcc_lower": -0.7030007694913794,
+          "pcc_upper": -0.2800000015707265,
+          "recovery": -0.4230000571220903
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Yellow_12": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 2.277478730417665e-05,
+        "angular_speed_rad_s": 0.00047298334099860095,
+        "bounds_xyz": [
+          [
+            0.6399998256647108,
+            1.0209999973323582,
+            -4.4468639274694577e-07
+          ],
+          [
+            0.660000000066888,
+            1.0410005552420714,
+            0.02000013984652786
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.480000000066888,
+          "pcc_lower": -0.7030005552420713,
+          "pcc_upper": -0.480000000066888,
+          "recovery": -0.22300017433528918
+        },
+        "eligible_zones": []
+      },
+      "Medical_Kit_01": {
+        "kind": "medical_kit",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 7.662477509826778e-12,
+        "angular_speed_rad_s": 2.8858373102970317e-08,
+        "bounds_xyz": [
+          [
+            0.8945000000008313,
+            1.0404999999980904,
+            -2.0388027293163913e-07
+          ],
+          [
+            0.919500000001105,
+            1.065499999998529,
+            0.019999796120617277
+          ]
+        ],
+        "contained_zones": [
+          "recovery"
+        ],
+        "zone_clearance_m": {
+          "hospital": -0.7395000000011049,
+          "pcc_lower": -0.7395000000011049,
+          "pcc_upper": -0.7395000000011049,
+          "recovery": 0.03150000000083131
+        },
+        "eligible_zones": [
+          "recovery"
+        ]
+      },
+      "Medical_Kit_02": {
+        "kind": "medical_kit",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.3223364475143346e-11,
+        "angular_speed_rad_s": 1.3221305902912863e-09,
+        "bounds_xyz": [
+          [
+            0.9344999999998134,
+            1.0405000000000184,
+            -2.038798970396133e-07
+          ],
+          [
+            0.9594999999998839,
+            1.0655000000000587,
+            0.019999796120241387
+          ]
+        ],
+        "contained_zones": [
+          "recovery"
+        ],
+        "zone_clearance_m": {
+          "hospital": -0.779499999999884,
+          "pcc_lower": -0.779499999999884,
+          "pcc_upper": -0.779499999999884,
+          "recovery": 0.07149999999981338
+        },
+        "eligible_zones": [
+          "recovery"
+        ]
+      },
+      "Medical_Kit_03": {
+        "kind": "medical_kit",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.0753824606498046e-11,
+        "angular_speed_rad_s": 1.0752147592073792e-09,
+        "bounds_xyz": [
+          [
+            0.8945000000000436,
+            1.0855000000000259,
+            -2.038798766687555e-07
+          ],
+          [
+            0.9195000000001083,
+            1.1105000000000396,
+            0.019999796120221017
+          ]
+        ],
+        "contained_zones": [
+          "recovery"
+        ],
+        "zone_clearance_m": {
+          "hospital": -0.7395000000001084,
+          "pcc_lower": -0.7725000000000395,
+          "pcc_upper": -0.7395000000001084,
+          "recovery": 0.031500000000043604
+        },
+        "eligible_zones": [
+          "recovery"
+        ]
+      },
+      "Medical_Kit_04": {
+        "kind": "medical_kit",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.765615878460247e-11,
+        "angular_speed_rad_s": 1.765340976033933e-09,
+        "bounds_xyz": [
+          [
+            0.9345000000000953,
+            1.0855000000001938,
+            -2.0387991378836845e-07
+          ],
+          [
+            0.95950000000013,
+            1.1105000000002963,
+            0.019999796120258137
+          ]
+        ],
+        "contained_zones": [
+          "recovery"
+        ],
+        "zone_clearance_m": {
+          "hospital": -0.77950000000013,
+          "pcc_lower": -0.77950000000013,
+          "pcc_upper": -0.77950000000013,
+          "recovery": 0.0704999999997038
+        },
+        "eligible_zones": [
+          "recovery"
+        ]
+      },
+      "Biological_Sample_01": {
+        "kind": "sample",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 5.269907235710903e-06,
+        "angular_speed_rad_s": 9.01266019740413e-05,
+        "bounds_xyz": [
+          [
+            1.0394072579414368,
+            0.5624766382911951,
+            -4.5946083742937766e-07
+          ],
+          [
+            1.0954073076363793,
+            0.6184766584591558,
+            0.005000141241262742
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.9154073076363793,
+          "pcc_lower": -0.9154073076363793,
+          "pcc_upper": -0.9154073076363793,
+          "recovery": -0.13852336170880486
+        },
+        "eligible_zones": [],
+        "slot_clearance_m": {
+          "lab_1": -0.19797753677032687,
+          "lab_2": -0.09797841527497958,
+          "lab_3": 0.0014067977432720494
+        },
+        "seated": true,
+        "eligible_slots": [
+          "lab_3"
+        ]
+      },
+      "Biological_Sample_02": {
+        "kind": "sample",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.649810858480288e-05,
+        "angular_speed_rad_s": 0.0002444601283395944,
+        "bounds_xyz": [
+          [
+            1.0390763168896646,
+            0.4629885823647545,
+            -3.738358424335876e-07
+          ],
+          [
+            1.0950763544603588,
+            0.5189885933897431,
+            0.0050000647164620046
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.9150763544603588,
+          "pcc_lower": -0.9150763544603588,
+          "pcc_upper": -0.9150763544603588,
+          "recovery": -0.23801141763524547
+        },
+        "eligible_zones": [],
+        "slot_clearance_m": {
+          "lab_1": -0.0984928381653708,
+          "lab_2": 0.0009550582715094763,
+          "lab_3": -0.09751570444038049
+        },
+        "seated": true,
+        "eligible_slots": [
+          "lab_2"
+        ]
+      },
+      "Biological_Sample_03": {
+        "kind": "sample",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.947807044577221e-05,
+        "angular_speed_rad_s": 0.00022458705637061827,
+        "bounds_xyz": [
+          [
+            1.039182526693126,
+            0.3616927077802223,
+            -3.357998277116192e-07
+          ],
+          [
+            1.0951825640810566,
+            0.41769271422203463,
+            0.005000089128760498
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.9151825640810567,
+          "pcc_lower": -0.9151825640810567,
+          "pcc_upper": -0.9151825640810567,
+          "recovery": -0.3393072922197777
+        },
+        "eligible_zones": [],
+        "slot_clearance_m": {
+          "lab_1": 0.0008510947229490445,
+          "lab_2": -0.09881060672018563,
+          "lab_3": -0.19880895615297514
+        },
+        "seated": true,
+        "eligible_slots": [
+          "lab_1"
+        ]
+      }
+    },
+    "inventory": {
+      "yellow_cylinder": 4,
+      "green_cylinder": 4,
+      "red_cylinder": 4,
+      "medical_kit": 4,
+      "sample": 3
+    },
+    "inventory_valid": true,
+    "event_history_complete": true,
+    "initial_setup_valid": true,
+    "human_intervention": false,
+    "robot_currently_outside": false,
+    "physics_warning_count": 0,
+    "robot_outside_count": 0,
+    "simulation_tolerances": {
+      "boundary_epsilon_m": 1e-09,
+      "release_contact_distance_m": 1e-06,
+      "linear_speed_m_s": 0.005,
+      "angular_speed_rad_s": 0.1,
+      "sample_seating_height_m": 0.0005
+    },
+    "scoring_interpretations": [
+      "Samples use distinct slots and must be seated near the hole floor.",
+      "Wrong-color contamination is evaluated from full containment, even if the wrong item is moving or held.",
+      "Yellow distribution uses eligible placements before zone contamination; only uncontaminated PCC patient points remain.",
+      "Stability is instantaneous; a held final view requires a separate time-history check."
+    ]
+  },
+  "score_after_five_seconds": {
+    "profile": "national_senior_preliminary",
+    "mode": "official_120s",
+    "elapsed_seconds": 64.79999999994536,
+    "requested_time_limit_s": 120,
+    "official_time_limit_s": 120.0,
+    "within_requested_time_limit": true,
+    "within_official_time": true,
+    "task_score": 30,
+    "penalty_points": 0,
+    "score": 30,
+    "maximum_score": 160,
+    "per_task": {
+      "samples": {
+        "scored_count": 3,
+        "required_count": 3,
+        "points": 30,
+        "maximum_points": 30
+      },
+      "kits": {
+        "scored_count": 0,
+        "required_count": 4,
+        "points": 0,
+        "maximum_points": 40
+      },
+      "red_patients": {
+        "scored_count": 0,
+        "required_count": 3,
+        "points": 0,
+        "maximum_points": 30
+      },
+      "yellow_patients": {
+        "scored_count": 0,
+        "required_count": 3,
+        "points": 0,
+        "maximum_points": 30
+      },
+      "green_patients": {
+        "scored_count": 0,
+        "required_count": 3,
+        "points": 0,
+        "maximum_points": 30
+      }
+    },
+    "all_tasks_complete": false,
+    "feasibility_success": false,
+    "official_success": false,
+    "success": false,
+    "official_score": 30,
+    "sample_slot_assignments": {
+      "lab_3": "Biological_Sample_01",
+      "lab_2": "Biological_Sample_02",
+      "lab_1": "Biological_Sample_03"
+    },
+    "kit_counts_by_zone": {
+      "hospital": 0,
+      "pcc_lower": 0,
+      "pcc_upper": 0
+    },
+    "yellow_counts_by_pcc": {
+      "pcc_lower": 0,
+      "pcc_upper": 0
+    },
+    "yellow_distribution_satisfied": false,
+    "contaminated_zones": {},
+    "objects": {
+      "Cylinder_Yellow_01": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 7.465609004006967e-06,
+        "angular_speed_rad_s": 0.0007124090908231321,
+        "bounds_xyz": [
+          [
+            0.4400000003477051,
+            0.13999959632904707,
+            -3.097761535862664e-07
+          ],
+          [
+            0.4600001042560024,
+            0.16000000422936683,
+            0.020000111149131628
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.2800001042560024,
+          "pcc_lower": -0.2800001042560024,
+          "pcc_upper": -0.741000403670953,
+          "recovery": -0.5610004036709528
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Yellow_02": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.782015926868315e-05,
+        "angular_speed_rad_s": 0.0008348504750850949,
+        "bounds_xyz": [
+          [
+            0.6400000009825717,
+            0.13999949024538305,
+            -4.892260036543777e-07
+          ],
+          [
+            0.6600000031897644,
+            0.16000000033577838,
+            0.020000020868780763
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.4800000031897644,
+          "pcc_lower": -0.4800000031897644,
+          "pcc_upper": -0.741000509754617,
+          "recovery": -0.5610005097546169
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Green_03": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 7.5097556641600365e-06,
+        "angular_speed_rad_s": 0.0007395478489537376,
+        "bounds_xyz": [
+          [
+            0.4399999990170285,
+            0.23999952557036078,
+            -3.3781530055405906e-07
+          ],
+          [
+            0.460000114692282,
+            0.2600000033622291,
+            0.020000153778602585
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.28000011469228203,
+          "pcc_lower": -0.28000011469228203,
+          "pcc_upper": -0.6410004744296393,
+          "recovery": -0.4610004744296392
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Green_04": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 3.105997556565841e-05,
+        "angular_speed_rad_s": 0.00040856311903535256,
+        "bounds_xyz": [
+          [
+            0.6399995703324904,
+            0.23999916148406755,
+            -6.707030156868216e-07
+          ],
+          [
+            0.6599999980988377,
+            0.26000000408235263,
+            0.020000274256066708
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.4799999980988377,
+          "pcc_lower": -0.4799999980988377,
+          "pcc_upper": -0.6410008385159325,
+          "recovery": -0.46100083851593243
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_05": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 9.619003237178421e-06,
+        "angular_speed_rad_s": 0.00087179033943342,
+        "bounds_xyz": [
+          [
+            0.43999999868297696,
+            0.33999959105367294,
+            -2.6815319274960114e-07
+          ],
+          [
+            0.46000006507962327,
+            0.36000000227576323,
+            0.020000148395788495
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.2800000650796233,
+          "pcc_lower": -0.2800000650796233,
+          "pcc_upper": -0.5410004089463271,
+          "recovery": -0.42300000131702303
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_06": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 8.429378218271414e-06,
+        "angular_speed_rad_s": 0.00027009348339858907,
+        "bounds_xyz": [
+          [
+            0.6399989949594782,
+            0.33999985052555454,
+            -8.168211624876714e-07
+          ],
+          [
+            0.6600000028051942,
+            0.360000005153529,
+            0.020000202816298808
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.4800000028051942,
+          "pcc_lower": -0.4800000028051942,
+          "pcc_upper": -0.5410001494744454,
+          "recovery": -0.3610001494744454
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_07": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 2.7948204728623476e-05,
+        "angular_speed_rad_s": 0.00040534396760402936,
+        "bounds_xyz": [
+          [
+            0.4399999997362246,
+            0.8210000001758307,
+            -7.100756539424324e-07
+          ],
+          [
+            0.46000099509923276,
+            0.8410002274435523,
+            0.020000310902362612
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.28000099509923276,
+          "pcc_lower": -0.5030002274435523,
+          "pcc_upper": -0.28000099509923276,
+          "recovery": -0.4230000002637754
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_08": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 4.087317850246825e-06,
+        "angular_speed_rad_s": 0.00038998129782812253,
+        "bounds_xyz": [
+          [
+            0.6399997364339608,
+            0.8209999973608796,
+            -8.186223899152995e-07
+          ],
+          [
+            0.6599999985793893,
+            0.8410009722577451,
+            0.020000190902578992
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.4799999985793893,
+          "pcc_lower": -0.5030009722577451,
+          "pcc_upper": -0.4799999985793893,
+          "recovery": -0.2230002635660392
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Green_09": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 6.679535945526303e-06,
+        "angular_speed_rad_s": 0.0005990007113734952,
+        "bounds_xyz": [
+          [
+            0.43999998577480065,
+            0.920999996506754,
+            -5.734484706775012e-07
+          ],
+          [
+            0.45999999987735446,
+            0.9410006276929882,
+            0.020000057896501413
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.27999999987735447,
+          "pcc_lower": -0.6030006276929882,
+          "pcc_upper": -0.27999999987735447,
+          "recovery": -0.42300001422519934
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Green_10": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 7.98467541662952e-06,
+        "angular_speed_rad_s": 0.0007200692203798389,
+        "bounds_xyz": [
+          [
+            0.6399997159858998,
+            0.9209999949096445,
+            -9.037660915964252e-07
+          ],
+          [
+            0.660000000326665,
+            0.9410009742472804,
+            0.020000116011113053
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.48000000032666496,
+          "pcc_lower": -0.6030009742472804,
+          "pcc_upper": -0.48000000032666496,
+          "recovery": -0.22300028401410021
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Yellow_11": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.083597453976094e-05,
+        "angular_speed_rad_s": 0.0008355116030485266,
+        "bounds_xyz": [
+          [
+            0.43999998491145015,
+            1.0209999996542733,
+            -5.693431346150829e-07
+          ],
+          [
+            0.4600000016044035,
+            1.0410005808941425,
+            0.02000001213624808
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.2800000016044035,
+          "pcc_lower": -0.7030005808941424,
+          "pcc_upper": -0.2800000016044035,
+          "recovery": -0.42300001508854984
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Yellow_12": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.1589030621020837e-05,
+        "angular_speed_rad_s": 0.0009753562179760535,
+        "bounds_xyz": [
+          [
+            0.6399997215285964,
+            1.0209999971911654,
+            -9.979791644743052e-07
+          ],
+          [
+            0.6600000000567725,
+            1.041001004413285,
+            0.02000004704174543
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.4800000000567725,
+          "pcc_lower": -0.7030010044132848,
+          "pcc_upper": -0.4800000000567725,
+          "recovery": -0.22300027847140358
+        },
+        "eligible_zones": []
+      },
+      "Medical_Kit_01": {
+        "kind": "medical_kit",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.6518167029411764e-11,
+        "angular_speed_rad_s": 1.6515595467483668e-09,
+        "bounds_xyz": [
+          [
+            0.8945000000007433,
+            1.0404999999985811,
+            -2.0387991519869864e-07
+          ],
+          [
+            0.9195000000007971,
+            1.0654999999986672,
+            0.019999796120259546
+          ]
+        ],
+        "contained_zones": [
+          "recovery"
+        ],
+        "zone_clearance_m": {
+          "hospital": -0.7395000000007972,
+          "pcc_lower": -0.7395000000007972,
+          "pcc_upper": -0.7395000000007972,
+          "recovery": 0.03150000000074327
+        },
+        "eligible_zones": [
+          "recovery"
+        ]
+      },
+      "Medical_Kit_02": {
+        "kind": "medical_kit",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 2.948205317784577e-11,
+        "angular_speed_rad_s": 2.947746296620673e-09,
+        "bounds_xyz": [
+          [
+            0.9345000000000443,
+            1.0404999999998354,
+            -2.0387998214861647e-07
+          ],
+          [
+            0.9595000000002016,
+            1.065499999999925,
+            0.0199997961203265
+          ]
+        ],
+        "contained_zones": [
+          "recovery"
+        ],
+        "zone_clearance_m": {
+          "hospital": -0.7795000000002017,
+          "pcc_lower": -0.7795000000002017,
+          "pcc_upper": -0.7795000000002017,
+          "recovery": 0.0715000000000443
+        },
+        "eligible_zones": [
+          "recovery"
+        ]
+      },
+      "Medical_Kit_03": {
+        "kind": "medical_kit",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 2.3999531901986677e-11,
+        "angular_speed_rad_s": 2.3995796639804397e-09,
+        "bounds_xyz": [
+          [
+            0.8944999999997167,
+            1.085500000000074,
+            -2.0387993683416983e-07
+          ],
+          [
+            0.919499999999861,
+            1.1105000000001042,
+            0.01999979612028118
+          ]
+        ],
+        "contained_zones": [
+          "recovery"
+        ],
+        "zone_clearance_m": {
+          "hospital": -0.739499999999861,
+          "pcc_lower": -0.7725000000001041,
+          "pcc_upper": -0.739499999999861,
+          "recovery": 0.031499999999716755
+        },
+        "eligible_zones": [
+          "recovery"
+        ]
+      },
+      "Medical_Kit_04": {
+        "kind": "medical_kit",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 3.939574645666616e-11,
+        "angular_speed_rad_s": 3.938962219785003e-09,
+        "bounds_xyz": [
+          [
+            0.9345000000001109,
+            1.085500000000245,
+            -2.0388001964119495e-07
+          ],
+          [
+            0.9595000000001888,
+            1.110500000000474,
+            0.01999979612036399
+          ]
+        ],
+        "contained_zones": [
+          "recovery"
+        ],
+        "zone_clearance_m": {
+          "hospital": -0.7795000000001888,
+          "pcc_lower": -0.7795000000001888,
+          "pcc_upper": -0.7795000000001888,
+          "recovery": 0.07049999999952594
+        },
+        "eligible_zones": [
+          "recovery"
+        ]
+      },
+      "Biological_Sample_01": {
+        "kind": "sample",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 4.103158088410388e-06,
+        "angular_speed_rad_s": 8.908174588192566e-05,
+        "bounds_xyz": [
+          [
+            1.0394072579458982,
+            0.562476638278638,
+            -4.653870279802512e-07
+          ],
+          [
+            1.095407308062656,
+            0.6184766584025975,
+            0.005000139518674816
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.9154073080626561,
+          "pcc_lower": -0.9154073080626561,
+          "pcc_upper": -0.9154073080626561,
+          "recovery": -0.13852336172136193
+        },
+        "eligible_zones": [],
+        "slot_clearance_m": {
+          "lab_1": -0.19797753671250534,
+          "lab_2": -0.09797841521589509,
+          "lab_3": 0.001406797747235674
+        },
+        "seated": true,
+        "eligible_slots": [
+          "lab_3"
+        ]
+      },
+      "Biological_Sample_02": {
+        "kind": "sample",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.669888654041242e-05,
+        "angular_speed_rad_s": 0.0002434885985582746,
+        "bounds_xyz": [
+          [
+            1.039076316885925,
+            0.4629885823927997,
+            -3.9026679093901936e-07
+          ],
+          [
+            1.0950763580635676,
+            0.5189885946305166,
+            0.005000090883706549
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.9150763580635677,
+          "pcc_lower": -0.9150763580635677,
+          "pcc_upper": -0.9150763580635677,
+          "recovery": -0.23801141760720024
+        },
+        "eligible_zones": [],
+        "slot_clearance_m": {
+          "lab_1": -0.09849283937297373,
+          "lab_2": 0.0009550582550437066,
+          "lab_3": -0.09751570441237173
+        },
+        "seated": true,
+        "eligible_slots": [
+          "lab_2"
+        ]
+      },
+      "Biological_Sample_03": {
+        "kind": "sample",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.9316794477056347e-05,
+        "angular_speed_rad_s": 0.00022465019032990276,
+        "bounds_xyz": [
+          [
+            1.0391825302001418,
+            0.361692709869377,
+            -3.343269325897791e-07
+          ],
+          [
+            1.0951825672713698,
+            0.4176927162554031,
+            0.005000087006705004
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.9151825672713698,
+          "pcc_lower": -0.9151825672713698,
+          "pcc_upper": -0.9151825672713698,
+          "recovery": -0.33930729013062294
+        },
+        "eligible_zones": [],
+        "slot_clearance_m": {
+          "lab_1": 0.000851098686243737,
+          "lab_2": -0.09881060460266117,
+          "lab_3": -0.19880895404956098
+        },
+        "seated": true,
+        "eligible_slots": [
+          "lab_1"
+        ]
+      }
+    },
+    "inventory": {
+      "yellow_cylinder": 4,
+      "green_cylinder": 4,
+      "red_cylinder": 4,
+      "medical_kit": 4,
+      "sample": 3
+    },
+    "inventory_valid": true,
+    "event_history_complete": true,
+    "initial_setup_valid": true,
+    "human_intervention": false,
+    "robot_currently_outside": false,
+    "physics_warning_count": 0,
+    "robot_outside_count": 0,
+    "simulation_tolerances": {
+      "boundary_epsilon_m": 1e-09,
+      "release_contact_distance_m": 1e-06,
+      "linear_speed_m_s": 0.005,
+      "angular_speed_rad_s": 0.1,
+      "sample_seating_height_m": 0.0005
+    },
+    "scoring_interpretations": [
+      "Samples use distinct slots and must be seated near the hole floor.",
+      "Wrong-color contamination is evaluated from full containment, even if the wrong item is moving or held.",
+      "Yellow distribution uses eligible placements before zone contamination; only uncontaminated PCC patient points remain.",
+      "Stability is instantaneous; a held final view requires a separate time-history check."
+    ]
+  },
+  "official_time_pass": false,
+  "wall_seconds": 16.38327895803377,
+  "maximum_torque_nm": 0.025,
+  "maximum_tilt_rad": 0.31482751531826253,
+  "success": false
+}
