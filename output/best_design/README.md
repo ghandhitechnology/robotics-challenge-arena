@@ -17,6 +17,8 @@ Open `best_design.blend` for the editable seven-scene CAD design. The source is 
 | `final_frame_nominal/` | Saved native scene, metadata, state trajectory and mission report for those videos. |
 | `drive_time_penalty_comparison.png` | Matched PPO comparison of 0.05/s and 0.5/s time penalties. |
 | `search/` | Earlier six-speed comparison before the final support, camera and routing changes. |
+| `search_final/` | Final nine-profile comparison, selected settings and separate held-out evaluation. |
+| `fleet_speed_comparison.png`, `fleet_mission_timeline.png` | Measured profile outcomes and role phases during the nominal mission. |
 
 The adjacent `../best_drive/model/weights.npz` contains the trained drive network. `../best_vision/refined/model.ts` contains the selected CNN. Their directories preserve training histories, validation selection and independent final tests. `../best_vision/onboard_sample_camera_final_frame/` contains the actual onboard camera coupon and accepted-view error measurements.
 

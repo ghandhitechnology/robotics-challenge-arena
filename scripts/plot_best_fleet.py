@@ -55,6 +55,7 @@ def main():
         axis.grid(axis="x", alpha=.15)
         axis.set_axisbelow(True)
     figure.suptitle("Five-robot speed selection: complete every delivery before saving time", fontsize=14)
+    figure.supxlabel("Limits are m/s / rad/s. Blue profiles keep LAB at 0.35 / 2.5 and take GREEN's upper pickups first.", fontsize=10)
     args.output.mkdir(parents=True, exist_ok=True)
     figure.savefig(args.output / "fleet_speed_comparison.png", dpi=170)
     plt.close(figure)
@@ -73,7 +74,7 @@ def main():
     axis.axvline(mission["declaration_seconds"], color="#243c51", linewidth=1.4)
     axis.axvspan(mission["declaration_seconds"], mission["declaration_seconds"] + 5, color="#d0e5db")
     axis.set(yticks=range(5), yticklabels=[name.upper() for name in roles],
-             xlabel="Simulated time from start (seconds)", xlim=(0, max(90, mission["declaration_seconds"] + 7)),
+             xlabel="Simulated time from start (seconds); phase samples every 1 second", xlim=(0, max(90, mission["declaration_seconds"] + 7)),
              title=f"Native mission: {mission['score_at_declaration']['score']} points at {mission['declaration_seconds']:.2f} s, then five-second hold")
     axis.invert_yaxis()
     axis.spines[["top", "right", "left"]].set_visible(False)

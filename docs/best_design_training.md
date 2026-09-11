@@ -90,6 +90,22 @@ python scripts/run_best_fleet.py --drive-limits .48 4 \
 
 The final parameter comparison uses nine profiles and six matched tuning seeds. Selection prioritizes full success rate, then mean official score, then the time-penalized objective. A separate 100-seed test evaluates only the frozen selected profile. Material variation includes wood density by ±15%, material friction by ±20%, wheel friction scaled by 0.75–1.15, and individual motor strength by 0.8–1.0. Arena geometry and task object marks stay fixed. These are unmeasured engineering distributions.
 
+The 54 final tuning missions took 498.8 seconds on G4, using 12 native workers. All source hashes match the frozen `bbc54c3` snapshot, and no episode raised an exception. Four profiles completed all six tuning missions. The selected mixed-speed profile averaged 81.20 seconds, with 89.40 seconds p95. Its six individual times were 85.2, 74.7, 76.2, 80.7, 79.6 and 90.8 seconds. Its maximum fleet tilt was 7.282 degrees.
+
+| Final geometry, speed profile | Full success | Mean successful time | Mean official score |
+| --- | ---: | ---: | ---: |
+| All 0.35 m/s, 2.5 rad/s | 6/6 | 114.1 s | 160.0 |
+| All 0.40 m/s, 2.75 rad/s | 6/6 | 103.6 s | 160.0 |
+| All 0.42 m/s, 3.0 rad/s | 5/6 | 95.8 s | 143.3 |
+| All 0.42 m/s, 3.5 rad/s | 3/6 | 85.1 s | 118.3 |
+| All 0.45 m/s, 3.5 rad/s | 2/6 | 83.0 s | 76.7 |
+| All 0.48 m/s, 4.0 rad/s | 2/6 | 77.1 s | 93.3 |
+| Couriers 0.40 m/s, 2.75 rad/s; LAB 0.35/2.5 | 3/6 | 104.1 s | 125.0 |
+| Couriers 0.45 m/s, 3.5 rad/s; LAB 0.35/2.5 | 6/6 | 85.3 s | 160.0 |
+| Couriers 0.48 m/s, 4.0 rad/s; LAB 0.35/2.5 | 6/6 | 81.2 s | 160.0 |
+
+Mixed-speed profiles also use GREEN's upper-first route. Candidate speed and route changes therefore belong to one profile comparison. Successful-time means exclude failed episodes; the success and score columns retain every trial. Selection and complete episode records are in `output/best_design/search_final/`.
+
 ## Mechanical evidence and simulation limits
 
 The isolated LAB mechanism seated and released three samples for 30 points in 59.8 simulated seconds. The KIT gravity magazine released all four kits for 40 points in 39.44 seconds. Both recordings include a further five-second stable view. Their scenes retain the original arena objects, with only the tested robot present. Shared-fleet timing is measured separately.
