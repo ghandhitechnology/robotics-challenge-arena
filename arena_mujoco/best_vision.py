@@ -448,12 +448,17 @@ def generate_frozen_dataset(root: str | Path, config: VisionConfig, split_counts
     root = Path(root)
     root.mkdir(parents=True, exist_ok=True)
     expected = {"schema_version": DATASET_SCHEMA, "classes": list(CLASS_NAMES),
-                "vision_config": asdict(config), "split_counts": split_counts,
+                "vision_config": json.loads(json.dumps(asdict(config))), "split_counts": split_counts,
                 "split_seeds": split_seeds}
     manifest_path = root / "manifest.json"
     if manifest_path.is_file() and not force:
         existing = json.loads(manifest_path.read_text())
         if all(existing.get(key) == value for key, value in expected.items()):
+            for split, record in existing["splits"].items():
+                for kind, file_record in record["files"].items():
+                    path = root / file_record["file"]
+                    if not path.is_file() or sha256_file(path) != file_record["sha256"]:
+                        raise ValueError(f"Frozen {split} {kind} data is missing or changed: {path}")
             return existing
         raise ValueError(f"Dataset at {root} has a different configuration; use --force-generate")
     if len(set(split_seeds.values())) != len(split_seeds):

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "name": "five_robot_contact_fleet",
+  "name": "five_robot_specialist_fleet",
   "scope": "national_senior_preliminary",
   "design_status": "dimensioned engineering concept; hardware tolerances require measurement",
   "units": "meters",
@@ -118,8 +118,8 @@
     "column_gap_m": 0.015,
     "row_gap_m": 0.0075,
     "outer_margin_m": 0.0075,
-    "empty_cell": "upper_left reserves original four kit positions",
-    "kits_preloaded": false,
+    "empty_cell": "upper_left remains vacant; all four kits are preloaded on KIT",
+    "kits_preloaded": true,
     "deployment_order": [
       "lab",
       "red",
@@ -229,7 +229,7 @@
     "four_robots": "fewer computers and less traffic, but kit tasks serialize with patient transport",
     "six_robots": "extra robot can split long patient routes but leaves no kit staging cell in this layout",
     "forty_modules": "connection alignment, magnet load path, electronics packaging and forty-way traffic dominate a120s task",
-    "preloaded_kit_magazine": "allowed by rules; separate speed optimization requiring gate and feed dynamics before use",
+    "preloaded_kit_magazine": "Adopted as KIT baseline after sequential collection exceeded120s; physical three-gate drop tests required.",
     "vacuum_lab": "keeps annulus clear but needs wood leakage measurement, pressure sensing and pump volume; not baseline"
   },
   "validation_contract": {
@@ -263,8 +263,82 @@
     "extended_tool_y_m": 0.105,
     "extended_footprint_length_m": 0.19,
     "physical_motor_count_lab": 5,
-    "physical_motor_count_fleet": 21,
+    "physical_motor_count_fleet": 22,
     "mechanism": "Twin linear rails with lead screw and encoder micro-motor on the lift carriage. Retract before start; extend for laboratory placement.",
     "laboratory_side_approach": "Lab plate begins x.993; with robot heading east toolat1.068 axleat.963, tireedge.988 leaves5mm floor gap."
+  },
+  "kit_magazine": {
+    "replaces": "KIT lift and parallel jaws",
+    "physical_motor_count_kit": 5,
+    "physical_motor_count_fleet": 22,
+    "preloaded_kit_count": 4,
+    "outer_width_m": 0.117,
+    "chute_center_y_m": 0.051,
+    "chute_outer_depth_m": 0.032,
+    "floor_upper_face_m": 0.042,
+    "floor_thickness_m": 0.001,
+    "floor_center_height_m": 0.0415,
+    "wall_top_height_m": 0.071,
+    "gate_hinge_body_yz_m": [
+      0.035,
+      0.042
+    ],
+    "gate_axis_body": [
+      -1,
+      0,
+      0
+    ],
+    "gate_range_rad": [
+      0,
+      1.5707963267948966
+    ],
+    "max_gate_torque_nm": 0.06,
+    "max_gate_speed_rad_s": 2.5,
+    "gate_tip_min_height_open_m": 0.01,
+    "chutes": [
+      {
+        "id": "hospital",
+        "center_x_m": -0.0295,
+        "outer_width_m": 0.056,
+        "clear_width_m": 0.053,
+        "kit_x_m": [
+          -0.043,
+          -0.016
+        ],
+        "destination": "hospital",
+        "capacity": 2
+      },
+      {
+        "id": "pcc_upper",
+        "center_x_m": 0.0135,
+        "outer_width_m": 0.03,
+        "clear_width_m": 0.027,
+        "kit_x_m": [
+          0.0135
+        ],
+        "destination": "pcc_upper",
+        "capacity": 1
+      },
+      {
+        "id": "pcc_lower",
+        "center_x_m": 0.0445,
+        "outer_width_m": 0.03,
+        "clear_width_m": 0.027,
+        "kit_x_m": [
+          0.0445
+        ],
+        "destination": "pcc_lower",
+        "capacity": 1
+      }
+    ],
+    "kit_center_height_m": 0.052,
+    "mechanism": "Three servo-driven front bottom doors; hospital kits side by side. All chutes overhang the deck so cubes have a clear gravity path to the floor.",
+    "camera": "Rear mast observes all four cube faces; no stacked payloads",
+    "validation_required": [
+      "initial support and start containment",
+      "doors open without floor strike",
+      "all four cubes fall free and settle inside destinations",
+      "hospital pair remains separate in the overhead view"
+    ]
   }
 }

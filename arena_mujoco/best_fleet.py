@@ -74,6 +74,42 @@ def add_compact_robot(root, entry, shared):
     # The inherited servo depiction would exceed the new 110 mm height budget.
     item("robot_comp_lift_servo").set("pos", "0 -.031 .027")
     item("robot_comp_lift_servo").set("size", ".010 .013 .012")
+    if entry["id"] == "kit":
+        base.remove(item("comp_lift_body"))
+        base.remove(item("robot_comp_mast"))
+        temporary.remove(temporary.find("equality"))
+        for element in list(temporary.find("actuator")):
+            if element.get("name") not in meta["motor_names"]:
+                temporary.find("actuator").remove(element)
+        for element in list(temporary.find("sensor")):
+            if element.get("joint") not in meta["wheel_joints"]:
+                temporary.find("sensor").remove(element)
+        gates = []
+        for index, (x, width) in enumerate(((-.0295, .056), (.0135, .030), (.0445, .030))):
+            for side, sign in (("left", -1), ("right", 1)):
+                ET.SubElement(base, "geom", name=f"kit_chute_{index}_{side}", type="box",
+                              pos=numbers([x + sign * (width / 2 - .00075), .051, .030]),
+                              size=".00075 .0175 .013", mass=".003", contype="4",
+                              rgba=".58 .66 .72 1", friction=".25 .0001 .00001")
+            for end, y in (("back", .0335), ("front", .0685)):
+                ET.SubElement(base, "geom", name=f"kit_chute_{index}_{end}", type="box",
+                              pos=numbers([x, y, .030]), size=numbers([width / 2, .0015, .013]),
+                              mass=".003", contype="4", rgba=".58 .66 .72 1")
+            body = ET.SubElement(base, "body", name=f"kit_gate_{index}_body",
+                                 pos=numbers([x, .035, .017]))
+            joint = f"kit_gate_{index}"
+            ET.SubElement(body, "joint", name=joint, type="hinge", axis="-1 0 0",
+                          range="0 1.57079632679", damping=".002", armature=".000002")
+            ET.SubElement(body, "geom", name=f"kit_gate_{index}_floor", type="box",
+                          pos="0 .016 -.0005", size=numbers([width / 2 - .0015, .016, .0005]),
+                          mass=".006", contype="4", rgba=".84 .60 .20 1")
+            actuator = f"kit_gate_{index}_motor"
+            ET.SubElement(temporary.find("actuator"), "position", name=actuator, joint=joint,
+                          kp=".6", kv=".02", ctrlrange="0 1.57079632679", forcerange="-.06 .06")
+            gates.append(actuator)
+        meta.update(gate_motors=gates, gate_joints=[f"kit_gate_{i}" for i in range(3)],
+                    lift_motor=None, grip_motor=None, jaw_joints=[], physical_motor_count=5,
+                    preload_local_xy_m=[[-.043, .051], [-.016, .051], [.0135, .051], [.0445, .051]])
     if entry["id"] == "lab":
         carriage = item("comp_lift_body")
         base.remove(carriage)
@@ -138,6 +174,12 @@ def build_fleet(*, seed=0, randomize=False, only=None, timestep=.001):
     option.set("impratio", "10")
     selected = [r for r in spec["robots"] if only is None or r["id"] in only]
     metadata["robots"] = [add_compact_robot(root, r, spec["shared_robot"]) for r in selected]
+    kit_robot = next((r for r in metadata["robots"] if r["id"] == "kit"), None)
+    if kit_robot:
+        for index, xy in enumerate(kit_robot["preload_local_xy_m"], 1):
+            body = root.find(f".//body[@name='Medical_Kit_{index:02d}']")
+            body.set("pos", numbers([kit_robot["initial_position_m"][0] + xy[0],
+                                      kit_robot["initial_position_m"][1] + xy[1], .052]))
     metadata["design"] = spec["name"]
     metadata["randomize"] = randomize
     metadata["seed"] = seed
@@ -155,9 +197,21 @@ class FleetSimulation:
         self.model = mujoco.MjModel.from_xml_string(self.xml)
         self.data = mujoco.MjData(self.model)
         self.robots = {r["id"]: r for r in self.metadata["robots"]}
+        rng = np.random.default_rng(seed + 711)
+        self.motor_strength = {key: float(rng.uniform(.8, 1.)) if randomize else 1.
+                               for key in self.robots}
+        self.wheel_friction_scale = float(rng.uniform(.75, 1.15)) if randomize else 1.
+        for gid in range(self.model.ngeom):
+            name = self.model.geom(gid).name or ""
+            if "robot_comp_wheel" in name:
+                self.model.geom_friction[gid, 0] *= self.wheel_friction_scale
+        self.metadata["drive_domain"] = {"motor_strength": self.motor_strength,
+                                         "wheel_friction_scale": self.wheel_friction_scale}
         self.targets = {key: np.array([0., 0., .0, .025]) for key in self.robots}
         self.integrals = {key: np.zeros(2) for key in self.robots}
         self.extension_targets = {key: 0. for key in self.robots}
+        self.gate_targets = {key: np.zeros(len(robot.get("gate_motors", [])))
+                             for key, robot in self.robots.items()}
         self.max_torque = 0.
         self.max_tilt = 0.
         self.trace = []
@@ -199,13 +253,15 @@ class FleetSimulation:
                     error = desired[i] - speed
                     self.integrals[key][i] = np.clip(self.integrals[key][i] + .02 * error * self.model.opt.timestep, -.008, .008)
                     torque = .008 * error + self.integrals[key][i]
-                    limit = .025
+                    limit = .025 * self.motor_strength[key]
                     if torque * speed > 0:
                         limit *= max(0, 1 - abs(speed) / robot["motor_no_load_speed_rad_s"])
                     torque = np.clip(torque, -limit, limit)
                     self.data.ctrl[self.model.actuator(actuator).id] = torque
                     self.max_torque = max(self.max_torque, abs(float(torque)))
                 for field, target, rate, force_error in (("lift_motor", lift, .08, .005), ("grip_motor", jaw, .05, .001)):
+                    if not robot.get(field):
+                        continue
                     actuator = self.model.actuator(robot[field]).id
                     joint_field = "lift_joint" if field == "lift_motor" else "jaw_joints"
                     position = self.joint(key, joint_field)
@@ -219,6 +275,12 @@ class FleetSimulation:
                     moved = old + np.clip(self.extension_targets[key] - old,
                                           -.04 * self.model.opt.timestep, .04 * self.model.opt.timestep)
                     self.data.ctrl[actuator] = np.clip(moved, position - .004, position + .004)
+                for index, name in enumerate(robot.get("gate_motors", [])):
+                    actuator = self.model.actuator(name).id
+                    old = self.data.ctrl[actuator]
+                    self.data.ctrl[actuator] = old + np.clip(self.gate_targets[key][index] - old,
+                                                           -2.5 * self.model.opt.timestep,
+                                                           2.5 * self.model.opt.timestep)
             mujoco.mj_step(self.model, self.data)
         mujoco.mj_forward(self.model, self.data)
         if not np.isfinite(self.data.qpos).all() or any(w.number for w in self.data.warning):
