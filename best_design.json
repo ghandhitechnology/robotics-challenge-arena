@@ -1,0 +1,270 @@
+{
+  "schema_version": 1,
+  "name": "five_robot_contact_fleet",
+  "scope": "national_senior_preliminary",
+  "design_status": "dimensioned engineering concept; hardware tolerances require measurement",
+  "units": "meters",
+  "count": 5,
+  "sources": {
+    "rules": "reference/challenge_2026_full.pdf",
+    "official_faq": "https://apply.kosac.re.kr/onlnRcpt/getBscInfo.do?pbancNo=2026-S729",
+    "arena": "arena_spec.json"
+  },
+  "shared_robot": {
+    "footprint_m": [
+      0.125,
+      0.15
+    ],
+    "footprint_bounds_local_m": [
+      [
+        -0.0625,
+        -0.065
+      ],
+      [
+        0.0625,
+        0.085
+      ]
+    ],
+    "height_m": 0.11,
+    "forward_axis": [
+      0,
+      1,
+      0
+    ],
+    "mass_budget_kg": 0.45,
+    "wheel_radius_m": 0.025,
+    "wheel_width_m": 0.008,
+    "wheel_track_m": 0.11,
+    "wheel_axle_y_m": 0.0,
+    "deck_size_m": [
+      0.105,
+      0.09,
+      0.004
+    ],
+    "deck_center_body_m": [
+      0,
+      -0.02,
+      0.027
+    ],
+    "tool_center_body_xy_m": [
+      0,
+      0.065
+    ],
+    "lift_range_m": [
+      0,
+      0.045
+    ],
+    "jaw_aperture_range_m": [
+      0.018,
+      0.068
+    ],
+    "sample_pad_floor_heights_m": [
+      0.0034,
+      0.0048
+    ],
+    "upper_pad_floor_heights_m": [
+      0.006,
+      0.016
+    ],
+    "max_motor_torque_nm": 0.025,
+    "max_wheel_speed_rad_s": 20,
+    "max_lift_force_n": 4,
+    "nominal_normal_force_per_jaw_n": 1,
+    "physical_motor_count": 4,
+    "cruise_target_m_s": 0.35,
+    "precision_approach_m_s": 0.025,
+    "electronics_reserved_volumes_m": {
+      "battery": [
+        0.054,
+        0.032,
+        0.015
+      ],
+      "compute": [
+        0.065,
+        0.03,
+        0.012
+      ],
+      "camera": [
+        0.025,
+        0.024,
+        0.012
+      ],
+      "motor_control": [
+        0.03,
+        0.025,
+        0.01
+      ]
+    },
+    "hardware": {
+      "drive": "2 encoder micro metal gearmotors, Pololu 5188 reference envelope32x12x10mm plus shaft",
+      "lift_grip": "2 ROBOTIS XL330-M288 reference actuators; cable drum lift and opposing rack jaws",
+      "compute": "Pi Zero 2 W-class 65x30mm board, controller MCU and IMU",
+      "camera": "onboard downward-forward camera with tool in view",
+      "battery": "2S pack with regulated6V drive and5V logic/servo rails"
+    },
+    "mechanism": "shared active parallel jaws, compliant upper cylinder/kit pads and thin elevated sample pads, cable lift on twin guide rods"
+  },
+  "start": {
+    "bounds_xy_m": [
+      0.863,
+      0.701,
+      1.143,
+      1.181
+    ],
+    "occupied_extent_xy_m": [
+      0.265,
+      0.465
+    ],
+    "column_gap_m": 0.015,
+    "row_gap_m": 0.0075,
+    "outer_margin_m": 0.0075,
+    "empty_cell": "upper_left reserves original four kit positions",
+    "kits_preloaded": false,
+    "deployment_order": [
+      "lab",
+      "red",
+      "yellow",
+      "kit",
+      "green"
+    ],
+    "deployment_note": "Reverse the lower-left LAB south beside laboratory first; release each following robot into vacated cells. Swept-volume deployment needs simulation verification."
+  },
+  "robots": [
+    {
+      "id": "lab",
+      "role": "three_samples_to_laboratory",
+      "start_xy_m": [
+        0.933,
+        0.7735
+      ],
+      "start_yaw_rad": 0,
+      "rgba": [
+        0.18,
+        0.5,
+        0.95,
+        1
+      ],
+      "target_count": 3
+    },
+    {
+      "id": "red",
+      "role": "three_red_to_hospital",
+      "start_xy_m": [
+        1.073,
+        0.7735
+      ],
+      "start_yaw_rad": 0,
+      "rgba": [
+        0.84,
+        0.16,
+        0.2,
+        1
+      ],
+      "target_count": 3
+    },
+    {
+      "id": "yellow",
+      "role": "three_yellow_split_between_pccs",
+      "start_xy_m": [
+        0.933,
+        0.931
+      ],
+      "start_yaw_rad": 0,
+      "rgba": [
+        0.96,
+        0.66,
+        0.1,
+        1
+      ],
+      "target_count": 3
+    },
+    {
+      "id": "kit",
+      "role": "four_kits_hospital_two_each_pcc_one",
+      "start_xy_m": [
+        1.073,
+        0.931
+      ],
+      "start_yaw_rad": 0,
+      "rgba": [
+        0.73,
+        0.83,
+        0.88,
+        1
+      ],
+      "target_count": 4
+    },
+    {
+      "id": "green",
+      "role": "three_green_to_recovery",
+      "start_xy_m": [
+        1.073,
+        1.0885
+      ],
+      "start_yaw_rad": 0,
+      "rgba": [
+        0.13,
+        0.67,
+        0.42,
+        1
+      ],
+      "target_count": 3
+    }
+  ],
+  "sample_placement": {
+    "sample_diameter_m": 0.056,
+    "slot_diameter_m": 0.06,
+    "radial_clearance_m": 0.002,
+    "plate_height_m": 0.003,
+    "pad_bottom_rim_gap_m": 0.0004,
+    "strategy": "Grip the disc upper edge above the plate, lower onto slot floor, open sideways above rim, lift and reverse. No finger enters the annulus.",
+    "requirements": [
+      "measure plate thickness and flatness",
+      "bound total horizontal placement error below2mm; aim below1mm",
+      "confirm at least0.4mm vertical rim clearance under load",
+      "verify complete release and settle with camera"
+    ]
+  },
+  "alternatives": {
+    "four_robots": "fewer computers and less traffic, but kit tasks serialize with patient transport",
+    "six_robots": "extra robot can split long patient routes but leaves no kit staging cell in this layout",
+    "forty_modules": "connection alignment, magnet load path, electronics packaging and forty-way traffic dominate a120s task",
+    "preloaded_kit_magazine": "allowed by rules; separate speed optimization requiring gate and feed dynamics before use",
+    "vacuum_lab": "keeps annulus clear but needs wood leakage measurement, pressure sensing and pump volume; not baseline"
+  },
+  "validation_contract": {
+    "required": [
+      "initial body and kit containment",
+      "collision-free deployment",
+      "wheel torque and slip",
+      "contact-only grasps and releases",
+      "all16elements scored under120s",
+      "onboard image observations for learned inference",
+      "repeat runs with friction, pose, motor and camera perturbations"
+    ],
+    "claims_excluded": [
+      "fabrication validated",
+      "hardware measured timing",
+      "globally optimal fleet size"
+    ]
+  },
+  "lab_extension": {
+    "axis_body": [
+      0,
+      1,
+      0
+    ],
+    "range_m": [
+      0,
+      0.04
+    ],
+    "max_force_n": 4,
+    "max_speed_m_s": 0.06,
+    "extended_tool_y_m": 0.105,
+    "extended_footprint_length_m": 0.19,
+    "physical_motor_count_lab": 5,
+    "physical_motor_count_fleet": 21,
+    "mechanism": "Twin linear rails with lead screw and encoder micro-motor on the lift carriage. Retract before start; extend for laboratory placement.",
+    "laboratory_side_approach": "Lab plate begins x.993; with robot heading east toolat1.068 axleat.963, tireedge.988 leaves5mm floor gap."
+  }
+}

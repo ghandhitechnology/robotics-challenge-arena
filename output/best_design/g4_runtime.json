@@ -1,0 +1,56 @@
+{
+  "observed_at": "2026-09-11T11:25:48.261463+00:00",
+  "notebook_url": "https://colab.research.google.com/drive/17PG8rfQmQ_49RQ887bSj4YVkAIQjOhZq",
+  "runtime_selector": "G4 GPU",
+  "status": "connected",
+  "gpu": {
+    "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    "memory_total_mib": 97887,
+    "memory_free_mib": 97251,
+    "driver_version": "580.82.07",
+    "torch_device": "cuda:0",
+    "compute_capability": [
+      12,
+      0
+    ]
+  },
+  "software": {
+    "python": "3.13.15",
+    "torch": "2.11.0+cu128",
+    "torch_cuda": "12.8",
+    "cuda_available": true,
+    "mujoco": null,
+    "gymnasium": "1.3.0",
+    "numpy": "2.1.3"
+  },
+  "host": {
+    "cpu_cores": 48,
+    "memory_total_mib": 181130,
+    "memory_available_mib": 178398
+  },
+  "training_started": false,
+  "setup_observed_at": "2026-09-11T11:28:23.761184+00:00",
+  "runtime_setup": {
+    "installed_requirements": [
+      "mujoco==3.12.0"
+    ],
+    "torch_unchanged": "2.11.0+cu128",
+    "mujoco": "3.12.0",
+    "Pillow": "11.3.0",
+    "scipy": "1.16.3",
+    "mujoco_gl": "egl",
+    "egl_vendor_file": "/usr/share/glvnd/egl_vendor.d/10_nvidia.json",
+    "egl_vendor_exists": true
+  },
+  "native_render": {
+    "backend": "EGL",
+    "gl_renderer": "NVIDIA RTX PRO 6000 Blackwell Server Edition/PCIe/SSE2",
+    "shape": [
+      240,
+      320,
+      3
+    ],
+    "pixel_std": 60.26995400378158,
+    "physics_backend": "native MuJoCo CPU"
+  }
+}
