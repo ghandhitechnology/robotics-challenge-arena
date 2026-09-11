@@ -1,0 +1,170 @@
+{
+  "camera_contract": {
+    "center_label": "projection of the target MuJoCo body origin, normalized left/top=0 and right/bottom=1",
+    "crop_rule": "one proposed target in the central crop; zero to three edge distractors",
+    "height_above_board_m": [
+      0.1,
+      0.18
+    ],
+    "maximum_tilt_degrees": 8.0,
+    "name": "vision_inspection",
+    "projection": "perspective",
+    "resolution_px": [
+      72,
+      72
+    ],
+    "vertical_fovy_degrees": [
+      48.0,
+      68.0
+    ]
+  },
+  "classes": [
+    "background",
+    "red",
+    "yellow",
+    "green",
+    "kit",
+    "sample"
+  ],
+  "domain_randomization": [
+    "camera height, field of view, tilt, yaw, and crop offset",
+    "native light color, direction, headlight, paper tone, and material brightness",
+    "object pose, edge distractors, physical box occluders, gain, offset, and sensor noise"
+  ],
+  "generation_seconds": 48.93183336200036,
+  "generator": "native MuJoCo Renderer from build_arena('senior_preliminary')",
+  "mujoco_version": "3.12.0",
+  "render_backend": "egl",
+  "schema_version": 1,
+  "source_sha256": {
+    "arena_mujoco/assets/biohazard.json": "c971c701477eb1cce0ca75a349940ec0f81a4487c060e3de3e7e20bf331a1407",
+    "arena_mujoco/best_vision.py": "0965dc12ac740ef6c6a0eff52481a6edb6bb85e1b4954265efffaafc8bbc88fc",
+    "arena_mujoco/builder.py": "172b4405c59b2ac6ef7142bde3e16bcf2697fe6dd2908fcff4c421007313e51b",
+    "arena_mujoco/geometry.py": "ecf1faf8282dacfb4da7c8fbc9624fb6b5e4dd66c5e2e08f362b433567bd2ff8",
+    "arena_mujoco/materials.py": "266e9b21c4179cda5b05058f88d328ffb69c6b18032f9dee7164e80a866bd2af",
+    "arena_spec.json": "26b10a4a5fc607ab58d1692d9fd9b4a2a466fd6bc789a7c9e7032066c5d4fbf1",
+    "requirements-best-design.txt": "3cb75d4deb214b3495dfc32aede003e56259eb6d9de67c293e24c23ce963aded",
+    "scripts/test_best_vision.py": "eed29b58a021364225bf64f99934fde4b60d94e7357094b906d6c4dd09f1ea00",
+    "scripts/train_best_vision.py": "634c5f1b56e1a89a586b27a284153d4f73c95f15f1fbd8ff052111b97d717e55"
+  },
+  "split_counts": {
+    "test": 3000,
+    "train": 24000,
+    "validation": 3000
+  },
+  "split_seeds": {
+    "test": 20461012,
+    "train": 20261012,
+    "validation": 20361012
+  },
+  "splits": {
+    "test": {
+      "class_counts": {
+        "background": 500,
+        "green": 500,
+        "kit": 500,
+        "red": 500,
+        "sample": 500,
+        "yellow": 500
+      },
+      "count": 3000,
+      "files": {
+        "centers": {
+          "bytes": 24128,
+          "file": "test_centers.npy",
+          "sha256": "1fcb910505212dd540e30bc3c3757259d29a661aedf02c2e5c3f337068b328ae"
+        },
+        "images": {
+          "bytes": 46656128,
+          "file": "test_images.npy",
+          "sha256": "7113b70c1a7ce2e2dda9b3a32b8759844ddad8772d7814750f703fa417741482"
+        },
+        "labels": {
+          "bytes": 3128,
+          "file": "test_labels.npy",
+          "sha256": "66023a6eb18e337536884e5c47c2180faa44c7bafdc89edb24921554c4f322dd"
+        }
+      },
+      "generation_seconds": 4.803796258999682,
+      "samples_per_second": 624.5060860729977,
+      "seed": 20461012
+    },
+    "train": {
+      "class_counts": {
+        "background": 4000,
+        "green": 4000,
+        "kit": 4000,
+        "red": 4000,
+        "sample": 4000,
+        "yellow": 4000
+      },
+      "count": 24000,
+      "files": {
+        "centers": {
+          "bytes": 192128,
+          "file": "train_centers.npy",
+          "sha256": "68fe795b3ded2aef90b6bcf1a8113b649c510db7c1666474cd017b38223b57a6"
+        },
+        "images": {
+          "bytes": 373248128,
+          "file": "train_images.npy",
+          "sha256": "86fdd459ed518299a89b3431592d749c0838214cf8c39a18ca7cc19e92f0384f"
+        },
+        "labels": {
+          "bytes": 24128,
+          "file": "train_labels.npy",
+          "sha256": "e778ffd6a514de9242172fc87deb6a925d1d5e09cd93bb3a20a4326a471fad7b"
+        }
+      },
+      "generation_seconds": 38.84206893299961,
+      "samples_per_second": 617.886756789363,
+      "seed": 20261012
+    },
+    "validation": {
+      "class_counts": {
+        "background": 500,
+        "green": 500,
+        "kit": 500,
+        "red": 500,
+        "sample": 500,
+        "yellow": 500
+      },
+      "count": 3000,
+      "files": {
+        "centers": {
+          "bytes": 24128,
+          "file": "validation_centers.npy",
+          "sha256": "7b3665a2d11d6b956cf91e010b029b36adbf64804a87b1673bba9279c175f67e"
+        },
+        "images": {
+          "bytes": 46656128,
+          "file": "validation_images.npy",
+          "sha256": "cc5d7f735e4a2ac7fc34cf9df2cc42f19e054cfc2224ca480a202ced0a8182c8"
+        },
+        "labels": {
+          "bytes": 3128,
+          "file": "validation_labels.npy",
+          "sha256": "278bf99d8b130baa04cae3a22a64e7fee74a61663519f51baea3af50ae532386"
+        }
+      },
+      "generation_seconds": 4.881611846999476,
+      "samples_per_second": 614.5511142685331,
+      "seed": 20361012
+    }
+  },
+  "vision_config": {
+    "camera_fovy_degrees": [
+      48.0,
+      68.0
+    ],
+    "camera_height_m": [
+      0.1,
+      0.18
+    ],
+    "camera_tilt_degrees": 8.0,
+    "channels": 32,
+    "image_size": 72,
+    "settle_steps": 8,
+    "target_center_limit": 0.22
+  }
+}

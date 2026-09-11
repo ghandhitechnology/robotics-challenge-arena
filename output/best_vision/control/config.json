@@ -1,0 +1,27 @@
+{
+  "batch_size": 512,
+  "compile": true,
+  "dataset": "/content/robotics_best_design/output/best_vision/dataset",
+  "dataset_manifest_sha256": "62a3e7d61b827ea9dc82b8c5ea8406e65e0848eb3aec2224d1dfa73ec7315fd8",
+  "device": "cuda",
+  "epochs": 100,
+  "learning_rate": 0.003,
+  "patience": 12,
+  "seed": 20260911,
+  "vision_config": {
+    "camera_fovy_degrees": [
+      48.0,
+      68.0
+    ],
+    "camera_height_m": [
+      0.1,
+      0.18
+    ],
+    "camera_tilt_degrees": 8.0,
+    "channels": 32,
+    "image_size": 72,
+    "settle_steps": 8,
+    "target_center_limit": 0.22
+  },
+  "workers": 8
+}

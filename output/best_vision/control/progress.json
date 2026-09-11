@@ -1,0 +1,6 @@
+{
+  "artifact": "output/best_vision/model_control/model.ts",
+  "artifact_sha256": "7dc3a5628cb92898ca588a9989f45a633b350261c052e1702ef6e30595bbd447",
+  "phase": "complete",
+  "selected_epoch": 21
+}

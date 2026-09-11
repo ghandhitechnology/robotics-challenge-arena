@@ -1,0 +1,21 @@
+{
+  "started_at_utc": "2026-09-11T12:18:53.170562+00:00",
+  "command": [
+    "/usr/bin/python3",
+    "scripts/test_best_drive.py",
+    "--dataset",
+    "output/best_drive/dataset",
+    "--model",
+    "output/best_drive/model",
+    "--workers",
+    "24",
+    "--min-reach-rate",
+    ".95",
+    "--max-final-distance-m",
+    ".002"
+  ],
+  "return_code": 0,
+  "wrapper_elapsed_seconds": 42.4720469469994,
+  "evaluation_count": 1,
+  "held_out_test": true
+}

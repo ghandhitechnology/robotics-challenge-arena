@@ -1,0 +1,36 @@
+{
+  "batch_size": 4096,
+  "closed_loop_validation_episodes": 40,
+  "compile": true,
+  "dagger_episodes": 180,
+  "dagger_rounds": 2,
+  "dataset": "/content/robotics_competition_9ce70498/output/best_drive/dataset",
+  "dataset_manifest_sha256": "412610c17219f392518b2b514f7965d58fb53bd32c210a3ecd87c2f1e465c70a",
+  "device": "cuda",
+  "drive_config": {
+    "body_speed_scale_m_s": 0.4,
+    "body_yaw_scale_rad_s": 3.0,
+    "episode_seconds": 12.0,
+    "goal_scale_m": 0.1,
+    "goal_tolerance_m": 0.002,
+    "heading_tolerance_rad": 0.015,
+    "hidden_dim": 128,
+    "max_forward_m_s": 0.35,
+    "max_yaw_rad_s": 2.5,
+    "observation_dim": 8,
+    "wheel_speed_scale_rad_s": 20.0
+  },
+  "epochs": 200,
+  "learning_rate": 0.002,
+  "patience": 18,
+  "ppo_clip": 0.2,
+  "ppo_episodes_per_update": 24,
+  "ppo_epochs": 4,
+  "ppo_target_kl": 0.02,
+  "ppo_updates": 20,
+  "seed": 20260911,
+  "time_penalties_per_second": [
+    0.05,
+    0.5
+  ]
+}

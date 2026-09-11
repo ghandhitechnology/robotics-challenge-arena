@@ -1,0 +1,300 @@
+{
+  "artifacts": {
+    "examples": "test_examples.png",
+    "selection": "selection.json"
+  },
+  "camera_contract": {
+    "height_above_sample_center_m": [
+      0.1,
+      0.18
+    ],
+    "inference_inputs": "RGB crop, CNN result, crop origin, intrinsics, extrinsics, and docking plane",
+    "resolution_px": [
+      224,
+      224
+    ],
+    "sample_diameter_m": 0.056,
+    "target_center_limit_normalized": 0.08,
+    "tilt_degrees": [
+      0.0,
+      8.0
+    ],
+    "vertical_fovy_degrees": [
+      48.0,
+      68.0
+    ]
+  },
+  "claim_scope": "RGB crop precision under the stated calibrated camera contract; docking control and mission success are separate tests.",
+  "development": {
+    "accepted": 155,
+    "accepted_position_error": {
+      "count": 155,
+      "maximum_mm": 0.6269374174314001,
+      "median_mm": 0.22423996907592134,
+      "p95_mm": 0.4680179275968296
+    },
+    "by_camera_height": {
+      "100_to_127_mm": {
+        "accepted": 56,
+        "accepted_errors": {
+          "count": 56,
+          "maximum_mm": 0.4769988479249575,
+          "median_mm": 0.23991886013029018,
+          "p95_mm": 0.43805656734907195
+        },
+        "count": 58,
+        "coverage": 0.9655172413793104
+      },
+      "127_to_154_mm": {
+        "accepted": 58,
+        "accepted_errors": {
+          "count": 58,
+          "maximum_mm": 0.6269374174314001,
+          "median_mm": 0.21924630195853373,
+          "p95_mm": 0.5035841145206348
+        },
+        "count": 59,
+        "coverage": 0.9830508474576272
+      },
+      "154_to_180_mm": {
+        "accepted": 41,
+        "accepted_errors": {
+          "count": 41,
+          "maximum_mm": 0.5353603602319346,
+          "median_mm": 0.22422976575123624,
+          "p95_mm": 0.48947863779398537
+        },
+        "count": 43,
+        "coverage": 0.9534883720930233
+      }
+    },
+    "by_occluder_count": {
+      "one": {
+        "accepted": 59,
+        "accepted_errors": {
+          "count": 59,
+          "maximum_mm": 0.5826100134976603,
+          "median_mm": 0.224915656151522,
+          "p95_mm": 0.40570635998605903
+        },
+        "count": 60,
+        "coverage": 0.9833333333333333
+      },
+      "two": {
+        "accepted": 48,
+        "accepted_errors": {
+          "count": 48,
+          "maximum_mm": 0.6269374174314001,
+          "median_mm": 0.2323120024119648,
+          "p95_mm": 0.46315200477119406
+        },
+        "count": 51,
+        "coverage": 0.9411764705882353
+      },
+      "zero": {
+        "accepted": 48,
+        "accepted_errors": {
+          "count": 48,
+          "maximum_mm": 0.5870452252190386,
+          "median_mm": 0.21941699924932243,
+          "p95_mm": 0.48958246219541346
+        },
+        "count": 49,
+        "coverage": 0.9795918367346939
+      }
+    },
+    "by_tilt": {
+      "0_to_2.67_deg": {
+        "accepted": 44,
+        "accepted_errors": {
+          "count": 44,
+          "maximum_mm": 0.3835391185260118,
+          "median_mm": 0.18072099058079147,
+          "p95_mm": 0.3595883826067322
+        },
+        "count": 47,
+        "coverage": 0.9361702127659575
+      },
+      "2.67_to_5.34_deg": {
+        "accepted": 62,
+        "accepted_errors": {
+          "count": 62,
+          "maximum_mm": 0.5826100134976603,
+          "median_mm": 0.23652791010369645,
+          "p95_mm": 0.4374349472727338
+        },
+        "count": 64,
+        "coverage": 0.96875
+      },
+      "5.34_to_8_deg": {
+        "accepted": 49,
+        "accepted_errors": {
+          "count": 49,
+          "maximum_mm": 0.6269374174314001,
+          "median_mm": 0.2908483500533459,
+          "p95_mm": 0.517071563196095
+        },
+        "count": 49,
+        "coverage": 1.0
+      }
+    },
+    "cnn_sample_proposal_coverage": 0.99375,
+    "coverage": 0.96875,
+    "examples": 160,
+    "geometry_coverage_given_cnn_proposal": 0.9748427672955975,
+    "rejections": {
+      "cnn_confidence": 1,
+      "radius_consistency": 4
+    }
+  },
+  "development_seed": 20260941,
+  "evaluation_role": "independent final test after development threshold selection",
+  "final_test": {
+    "accepted": 300,
+    "accepted_position_error": {
+      "count": 300,
+      "maximum_mm": 1.0786248164967516,
+      "median_mm": 0.23174128103123856,
+      "p95_mm": 0.49328055009149013
+    },
+    "by_camera_height": {
+      "100_to_127_mm": {
+        "accepted": 117,
+        "accepted_errors": {
+          "count": 117,
+          "maximum_mm": 0.5692553095153159,
+          "median_mm": 0.21519532661003907,
+          "p95_mm": 0.461878827825336
+        },
+        "count": 121,
+        "coverage": 0.9669421487603306
+      },
+      "127_to_154_mm": {
+        "accepted": 94,
+        "accepted_errors": {
+          "count": 94,
+          "maximum_mm": 1.005694438632555,
+          "median_mm": 0.23920968342449273,
+          "p95_mm": 0.5204929749038584
+        },
+        "count": 99,
+        "coverage": 0.9494949494949495
+      },
+      "154_to_180_mm": {
+        "accepted": 89,
+        "accepted_errors": {
+          "count": 89,
+          "maximum_mm": 1.0786248164967516,
+          "median_mm": 0.25490667284969437,
+          "p95_mm": 0.509765859468525
+        },
+        "count": 100,
+        "coverage": 0.89
+      }
+    },
+    "by_occluder_count": {
+      "one": {
+        "accepted": 121,
+        "accepted_errors": {
+          "count": 121,
+          "maximum_mm": 1.0786248164967516,
+          "median_mm": 0.2493810539872987,
+          "p95_mm": 0.5280373778145757
+        },
+        "count": 126,
+        "coverage": 0.9603174603174603
+      },
+      "two": {
+        "accepted": 80,
+        "accepted_errors": {
+          "count": 80,
+          "maximum_mm": 0.5692553095153159,
+          "median_mm": 0.21967297603206565,
+          "p95_mm": 0.4662656457445609
+        },
+        "count": 93,
+        "coverage": 0.8602150537634409
+      },
+      "zero": {
+        "accepted": 99,
+        "accepted_errors": {
+          "count": 99,
+          "maximum_mm": 1.0476641358253316,
+          "median_mm": 0.21519532661003907,
+          "p95_mm": 0.4884004944071217
+        },
+        "count": 101,
+        "coverage": 0.9801980198019802
+      }
+    },
+    "by_tilt": {
+      "0_to_2.67_deg": {
+        "accepted": 94,
+        "accepted_errors": {
+          "count": 94,
+          "maximum_mm": 1.0786248164967516,
+          "median_mm": 0.1917284682463541,
+          "p95_mm": 0.34656491804440615
+        },
+        "count": 99,
+        "coverage": 0.9494949494949495
+      },
+      "2.67_to_5.34_deg": {
+        "accepted": 103,
+        "accepted_errors": {
+          "count": 103,
+          "maximum_mm": 1.005694438632555,
+          "median_mm": 0.22484803203554266,
+          "p95_mm": 0.42419576273491094
+        },
+        "count": 110,
+        "coverage": 0.9363636363636364
+      },
+      "5.34_to_8_deg": {
+        "accepted": 103,
+        "accepted_errors": {
+          "count": 103,
+          "maximum_mm": 0.623826815141847,
+          "median_mm": 0.325653252619276,
+          "p95_mm": 0.5514290846581203
+        },
+        "count": 111,
+        "coverage": 0.9279279279279279
+      }
+    },
+    "cnn_sample_proposal_coverage": 1.0,
+    "coverage": 0.9375,
+    "examples": 320,
+    "geometry_coverage_given_cnn_proposal": 0.9375,
+    "rejections": {
+      "circle_fit": 1,
+      "radial_residual": 2,
+      "radius_consistency": 17
+    }
+  },
+  "model": "/Users/pyu/projects/hackertons/robotics-best-design/output/best_vision/refined/model.ts",
+  "model_sha256": "7532f12a04597ea9b8388e399dad7c15a52e746b602bdb4c0c8abf598b942266",
+  "runtime": {
+    "device": "cpu",
+    "gpu": null,
+    "mujoco": "3.12.0",
+    "python": "3.12.13",
+    "seconds": 84.67528654192574,
+    "torch": "2.14.0"
+  },
+  "schema_version": 1,
+  "seeds_disjoint": true,
+  "selected_thresholds": {
+    "maximum_coarse_offset_px": 10.0,
+    "maximum_radial_residual_px": 0.65,
+    "maximum_radius_relative_error": 0.06,
+    "minimum_arc_coverage": 0.3,
+    "minimum_cnn_confidence": 0.995,
+    "minimum_edge_points": 36
+  },
+  "source_sha256": {
+    "refiner": "20345ae94a8d57f315f8418dcb1bbce84d38bbdb419f0e804556259fa0be42ba",
+    "test_script": "f1400ca67797a7d3167430948974259297e6367fe206525554ae062af20ed424"
+  },
+  "test_seed": 20264941
+}

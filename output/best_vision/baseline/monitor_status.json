@@ -1,0 +1,226 @@
+{
+  "observed_at_utc": "2026-09-11T11:36:18.207678+00:00",
+  "pid": 18625,
+  "process": "Zs         02:43 58.4  0.0",
+  "nvidia_smi": "0 %, 651 MiB, 96600 MiB, 31, 83.26 W",
+  "resolved_sha": "6e0a4a5f6646a1b99ffd93b1662d151093fef303",
+  "history_path": "/content/robotics_best_design/output/best_vision/progress/history.json",
+  "log_path": "/content/robotics_best_design/output/best_vision/train.log",
+  "selected_epoch": 33,
+  "epochs_completed": 45,
+  "early_stopped": true,
+  "validation": {
+    "uncalibrated": {
+      "accuracy": 0.9966666666666667,
+      "macro_f1": 0.9966602320346175,
+      "negative_log_likelihood": 0.03362378105521202,
+      "expected_calibration_error_15_bin": 0.02419360116124149,
+      "confusion_true_rows_predicted_columns": [
+        [
+          500,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          500,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          499,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          500,
+          0,
+          0
+        ],
+        [
+          3,
+          4,
+          0,
+          1,
+          492,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          499
+        ]
+      ],
+      "per_class": {
+        "background": {
+          "precision": 0.9940357852882704,
+          "recall": 1.0,
+          "f1": 0.9970089730807578,
+          "support": 500
+        },
+        "red": {
+          "precision": 0.9920634920634921,
+          "recall": 1.0,
+          "f1": 0.9960159362549801,
+          "support": 500
+        },
+        "yellow": {
+          "precision": 0.998,
+          "recall": 0.998,
+          "f1": 0.998,
+          "support": 500
+        },
+        "green": {
+          "precision": 0.998003992015968,
+          "recall": 1.0,
+          "f1": 0.9990009990009989,
+          "support": 500
+        },
+        "kit": {
+          "precision": 1.0,
+          "recall": 0.984,
+          "f1": 0.9919354838709677,
+          "support": 500
+        },
+        "sample": {
+          "precision": 0.998,
+          "recall": 0.998,
+          "f1": 0.998,
+          "support": 500
+        }
+      }
+    },
+    "temperature": 0.6465024269662166,
+    "calibrated": {
+      "accuracy": 0.9966666666666667,
+      "macro_f1": 0.9966602320346175,
+      "negative_log_likelihood": 0.014787732623517513,
+      "expected_calibration_error_15_bin": 0.0017917121251424277,
+      "confusion_true_rows_predicted_columns": [
+        [
+          500,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          500,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          499,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          500,
+          0,
+          0
+        ],
+        [
+          3,
+          4,
+          0,
+          1,
+          492,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          499
+        ]
+      ],
+      "per_class": {
+        "background": {
+          "precision": 0.9940357852882704,
+          "recall": 1.0,
+          "f1": 0.9970089730807578,
+          "support": 500
+        },
+        "red": {
+          "precision": 0.9920634920634921,
+          "recall": 1.0,
+          "f1": 0.9960159362549801,
+          "support": 500
+        },
+        "yellow": {
+          "precision": 0.998,
+          "recall": 0.998,
+          "f1": 0.998,
+          "support": 500
+        },
+        "green": {
+          "precision": 0.998003992015968,
+          "recall": 1.0,
+          "f1": 0.9990009990009989,
+          "support": 500
+        },
+        "kit": {
+          "precision": 1.0,
+          "recall": 0.984,
+          "f1": 0.9919354838709677,
+          "support": 500
+        },
+        "sample": {
+          "precision": 0.998,
+          "recall": 0.998,
+          "f1": 0.998,
+          "support": 500
+        }
+      }
+    },
+    "localization": {
+      "foreground_count": 2500,
+      "mean_normalized": 0.013036249205470085,
+      "median_pixels": 0.7762083411216736,
+      "mean_pixels": 0.9386099576950073,
+      "p95_pixels": 2.0982956886291504,
+      "max_pixels": 26.690336227416992
+    }
+  },
+  "timing": {
+    "dataset_seconds_this_run": 48.93610871100009,
+    "training_seconds": 25.380171281000003,
+    "total_seconds": 84.9625267399997
+  },
+  "artifact_sha256": "1bac4bfe6c47aaf80093fd8f33637f2249331f523a2694f00ba5ef6237bf0690",
+  "gpu": {
+    "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    "capability": [
+      12,
+      0
+    ],
+    "cuda_runtime": "12.8",
+    "peak_allocated_bytes": 857216512
+  }
+}

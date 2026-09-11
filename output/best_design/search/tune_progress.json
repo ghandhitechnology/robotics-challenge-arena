@@ -1,0 +1,391 @@
+{
+  "mode": "tune",
+  "completed": 36,
+  "total": 36,
+  "elapsed_seconds": 283.5430367629997,
+  "last_episode": {
+    "limits": [
+      0.48,
+      4.0
+    ],
+    "seed": 147285861,
+    "success": false,
+    "score": 130,
+    "task_score": 130,
+    "declaration_seconds": 120.00000000020893,
+    "deployment_seconds": 12.279999999998633,
+    "failures": {
+      "lab": "lab dropped Biological_Sample_03 in transit"
+    },
+    "completed_robots": [
+      "kit",
+      "red",
+      "yellow"
+    ],
+    "unfinished_robots": [
+      "green"
+    ],
+    "hold": {
+      "sample_interval_s": 0.1,
+      "samples": 50,
+      "minimum_score": 130,
+      "violations": [
+        {
+          "time_s": 120.1000000002094,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 120.20000000020988,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 120.30000000021036,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 120.40000000021084,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 120.50000000021132,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 120.60000000021179,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 120.70000000021227,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 120.80000000021275,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 120.90000000021323,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 121.0000000002137,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 121.10000000021418,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 121.20000000021466,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 121.30000000021514,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 121.40000000021561,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 121.50000000021609,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 121.60000000021657,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 121.70000000021705,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 121.80000000021752,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 121.900000000218,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 122.00000000021848,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 122.10000000021896,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 122.20000000021943,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 122.30000000021991,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 122.40000000022039,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 122.50000000022087,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 122.60000000022134,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 122.70000000022182,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 122.8000000002223,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 122.90000000022278,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 123.00000000022325,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 123.10000000022373,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 123.20000000022421,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 123.30000000022468,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 123.40000000022516,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 123.50000000022564,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 123.60000000022612,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 123.7000000002266,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 123.80000000022707,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 123.90000000022755,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 124.00000000022803,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 124.1000000002285,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 124.20000000022898,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 124.30000000022946,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 124.40000000022994,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 124.50000000023041,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 124.60000000023089,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 124.70000000023137,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 124.80000000023185,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 124.90000000023232,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        },
+        {
+          "time_s": 125.0000000002328,
+          "task_score": 130,
+          "score": 130,
+          "robot_currently_outside": false,
+          "physics_warning_count": 0
+        }
+      ]
+    },
+    "max_torque_nm": 0.024194892219924668,
+    "max_tilt_rad": 0.3189452314343521,
+    "physics_warning_count": 0,
+    "wall_seconds": 90.2945997529996,
+    "exception": null
+  }
+}

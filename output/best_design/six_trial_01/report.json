@@ -1,0 +1,7862 @@
+{
+  "variant": {
+    "schema_version": 1,
+    "name": "five_robot_specialist_fleet \u2014 sixth flexible courier experiment",
+    "scope": "national_senior_preliminary",
+    "design_status": "dimensioned engineering concept; hardware tolerances require measurement",
+    "units": "meters",
+    "count": 6,
+    "sources": {
+      "rules": "reference/challenge_2026_full.pdf",
+      "official_faq": "https://apply.kosac.re.kr/onlnRcpt/getBscInfo.do?pbancNo=2026-S729",
+      "arena": "arena_spec.json"
+    },
+    "shared_robot": {
+      "footprint_m": [
+        0.125,
+        0.15
+      ],
+      "footprint_bounds_local_m": [
+        [
+          -0.0625,
+          -0.065
+        ],
+        [
+          0.0625,
+          0.085
+        ]
+      ],
+      "height_m": 0.11,
+      "forward_axis": [
+        0,
+        1,
+        0
+      ],
+      "mass_budget_kg": 0.45,
+      "wheel_radius_m": 0.025,
+      "wheel_width_m": 0.008,
+      "wheel_track_m": 0.11,
+      "wheel_axle_y_m": 0.0,
+      "deck_size_m": [
+        0.105,
+        0.09,
+        0.004
+      ],
+      "deck_center_body_m": [
+        0,
+        -0.02,
+        0.027
+      ],
+      "tool_center_body_xy_m": [
+        0,
+        0.065
+      ],
+      "lift_range_m": [
+        0,
+        0.045
+      ],
+      "jaw_aperture_range_m": [
+        0.018,
+        0.068
+      ],
+      "sample_pad_floor_heights_m": [
+        0.0034,
+        0.0048
+      ],
+      "upper_pad_floor_heights_m": [
+        0.006,
+        0.016
+      ],
+      "max_motor_torque_nm": 0.025,
+      "max_wheel_speed_rad_s": 20,
+      "max_lift_force_n": 4,
+      "nominal_normal_force_per_jaw_n": 1,
+      "physical_motor_count": 4,
+      "cruise_target_m_s": 0.35,
+      "precision_approach_m_s": 0.025,
+      "electronics_reserved_volumes_m": {
+        "battery": [
+          0.054,
+          0.032,
+          0.015
+        ],
+        "compute": [
+          0.065,
+          0.03,
+          0.012
+        ],
+        "camera": [
+          0.025,
+          0.024,
+          0.012
+        ],
+        "motor_control": [
+          0.03,
+          0.025,
+          0.01
+        ]
+      },
+      "hardware": {
+        "drive": "2 encoder micro metal gearmotors, Pololu 5188 reference envelope32x12x10mm plus shaft",
+        "lift_grip": "2 ROBOTIS XL330-M288 reference actuators; cable drum lift and opposing rack jaws",
+        "compute": "Pi Zero 2 W-class 65x30mm board, controller MCU and IMU",
+        "camera": "onboard downward-forward camera with tool in view",
+        "battery": "2S pack with regulated6V drive and5V logic/servo rails"
+      },
+      "mechanism": "shared active parallel jaws, compliant upper cylinder/kit pads and thin elevated sample pads, cable lift on twin guide rods"
+    },
+    "start": {
+      "bounds_xy_m": [
+        0.863,
+        0.701,
+        1.143,
+        1.181
+      ],
+      "occupied_extent_xy_m": [
+        0.265,
+        0.465
+      ],
+      "column_gap_m": 0.015,
+      "row_gap_m": 0.0075,
+      "outer_margin_m": 0.0075,
+      "empty_cell": "upper_left remains vacant; all four kits are preloaded on KIT",
+      "kits_preloaded": true,
+      "deployment_order": [
+        "lab",
+        "red",
+        "yellow",
+        "kit",
+        "green"
+      ],
+      "deployment_note": "Reverse the lower-left LAB south beside laboratory first; release each following robot into vacated cells. Swept-volume deployment needs simulation verification."
+    },
+    "robots": [
+      {
+        "id": "lab",
+        "role": "three_samples_to_laboratory",
+        "start_xy_m": [
+          0.933,
+          0.7735
+        ],
+        "start_yaw_rad": 0,
+        "rgba": [
+          0.18,
+          0.5,
+          0.95,
+          1
+        ],
+        "target_count": 3
+      },
+      {
+        "id": "red",
+        "role": "three_red_to_hospital",
+        "start_xy_m": [
+          1.073,
+          0.7735
+        ],
+        "start_yaw_rad": 0,
+        "rgba": [
+          0.84,
+          0.16,
+          0.2,
+          1
+        ],
+        "target_count": 3
+      },
+      {
+        "id": "yellow",
+        "role": "three_yellow_split_between_pccs",
+        "start_xy_m": [
+          0.933,
+          0.931
+        ],
+        "start_yaw_rad": 0,
+        "rgba": [
+          0.96,
+          0.66,
+          0.1,
+          1
+        ],
+        "target_count": 3
+      },
+      {
+        "id": "kit",
+        "role": "four_kits_hospital_two_each_pcc_one",
+        "start_xy_m": [
+          1.073,
+          0.931
+        ],
+        "start_yaw_rad": 0,
+        "rgba": [
+          0.73,
+          0.83,
+          0.88,
+          1
+        ],
+        "target_count": 4
+      },
+      {
+        "id": "green",
+        "role": "three_green_to_recovery",
+        "start_xy_m": [
+          1.073,
+          1.0885
+        ],
+        "start_yaw_rad": 0,
+        "rgba": [
+          0.13,
+          0.67,
+          0.42,
+          1
+        ],
+        "target_count": 3
+      },
+      {
+        "id": "aux",
+        "role": "two_lower_yellow_and_one_lower_green",
+        "start_xy_m": [
+          0.933,
+          1.0885
+        ],
+        "start_yaw_rad": 0,
+        "rgba": [
+          0.75,
+          0.25,
+          0.8,
+          1.0
+        ],
+        "target_count": 3
+      }
+    ],
+    "sample_placement": {
+      "sample_diameter_m": 0.056,
+      "slot_diameter_m": 0.06,
+      "radial_clearance_m": 0.002,
+      "plate_height_m": 0.003,
+      "pad_bottom_rim_gap_m": 0.0004,
+      "strategy": "Grip the disc upper edge above the plate, lower onto slot floor, open sideways above rim, lift and reverse. No finger enters the annulus.",
+      "requirements": [
+        "measure plate thickness and flatness",
+        "bound total horizontal placement error below2mm; aim below1mm",
+        "confirm at least0.4mm vertical rim clearance under load",
+        "verify complete release and settle with camera"
+      ]
+    },
+    "alternatives": {
+      "four_robots": "fewer computers and less traffic, but kit tasks serialize with patient transport",
+      "six_robots": "extra robot can split long patient routes but leaves no kit staging cell in this layout",
+      "forty_modules": "connection alignment, magnet load path, electronics packaging and forty-way traffic dominate a120s task",
+      "preloaded_kit_magazine": "Adopted as KIT baseline after sequential collection exceeded120s; physical three-gate drop tests required.",
+      "vacuum_lab": "keeps annulus clear but needs wood leakage measurement, pressure sensing and pump volume; not baseline"
+    },
+    "validation_contract": {
+      "required": [
+        "initial body and kit containment",
+        "collision-free deployment",
+        "wheel torque and slip",
+        "contact-only grasps and releases",
+        "all16elements scored under120s",
+        "onboard image observations for learned inference",
+        "repeat runs with friction, pose, motor and camera perturbations"
+      ],
+      "claims_excluded": [
+        "fabrication validated",
+        "hardware measured timing",
+        "globally optimal fleet size"
+      ]
+    },
+    "lab_extension": {
+      "axis_body": [
+        0,
+        1,
+        0
+      ],
+      "range_m": [
+        0,
+        0.04
+      ],
+      "max_force_n": 4,
+      "max_speed_m_s": 0.06,
+      "extended_tool_y_m": 0.105,
+      "extended_footprint_length_m": 0.19,
+      "physical_motor_count_lab": 5,
+      "physical_motor_count_fleet": 22,
+      "mechanism": "Twin linear rails with lead screw and encoder micro-motor on the lift carriage. Retract before start; extend for laboratory placement.",
+      "laboratory_side_approach": "Lab plate begins x.993; with robot heading east toolat1.068 axleat.963, tireedge.988 leaves5mm floor gap."
+    },
+    "kit_magazine": {
+      "replaces": "KIT lift and parallel jaws",
+      "physical_motor_count_kit": 5,
+      "physical_motor_count_fleet": 22,
+      "preloaded_kit_count": 4,
+      "outer_width_m": 0.117,
+      "chute_center_y_m": 0.051,
+      "chute_outer_depth_m": 0.032,
+      "floor_upper_face_m": 0.042,
+      "floor_thickness_m": 0.001,
+      "floor_center_height_m": 0.0415,
+      "wall_top_height_m": 0.071,
+      "gate_hinge_body_yz_m": [
+        0.035,
+        0.042
+      ],
+      "gate_axis_body": [
+        -1,
+        0,
+        0
+      ],
+      "gate_range_rad": [
+        0,
+        1.5707963267948966
+      ],
+      "max_gate_torque_nm": 0.06,
+      "max_gate_speed_rad_s": 2.5,
+      "gate_tip_min_height_open_m": 0.01,
+      "chutes": [
+        {
+          "id": "hospital",
+          "center_x_m": -0.0295,
+          "outer_width_m": 0.056,
+          "clear_width_m": 0.053,
+          "kit_x_m": [
+            -0.043,
+            -0.016
+          ],
+          "destination": "hospital",
+          "capacity": 2
+        },
+        {
+          "id": "pcc_upper",
+          "center_x_m": 0.0135,
+          "outer_width_m": 0.03,
+          "clear_width_m": 0.027,
+          "kit_x_m": [
+            0.0135
+          ],
+          "destination": "pcc_upper",
+          "capacity": 1
+        },
+        {
+          "id": "pcc_lower",
+          "center_x_m": 0.0445,
+          "outer_width_m": 0.03,
+          "clear_width_m": 0.027,
+          "kit_x_m": [
+            0.0445
+          ],
+          "destination": "pcc_lower",
+          "capacity": 1
+        }
+      ],
+      "kit_center_height_m": 0.052,
+      "mechanism": "Three servo-driven front bottom doors; hospital kits side by side. All chutes overhang the deck so cubes have a clear gravity path to the floor.",
+      "camera": "Rear mast observes all four cube faces; no stacked payloads",
+      "validation_required": [
+        "initial support and start containment",
+        "doors open without floor strike",
+        "all four cubes fall free and settle inside destinations",
+        "hospital pair remains separate in the overhead view"
+      ]
+    }
+  },
+  "initial_setup": {
+    "valid": true,
+    "errors": [],
+    "robot_bounds_xyz": {
+      "fleet_lab_competition_robot": [
+        [
+          0.8705,
+          0.7084999999999999,
+          0.0
+        ],
+        [
+          0.9955,
+          0.8565,
+          0.094
+        ]
+      ],
+      "fleet_red_competition_robot": [
+        [
+          1.0105,
+          0.7084999999999999,
+          0.0
+        ],
+        [
+          1.1355,
+          0.8565,
+          0.094
+        ]
+      ],
+      "fleet_yellow_competition_robot": [
+        [
+          0.8705,
+          0.866,
+          0.0
+        ],
+        [
+          0.9955,
+          1.014,
+          0.094
+        ]
+      ],
+      "fleet_kit_competition_robot": [
+        [
+          1.0105,
+          0.866,
+          0.0
+        ],
+        [
+          1.1355,
+          1.0010000000000001,
+          0.068
+        ]
+      ],
+      "fleet_green_competition_robot": [
+        [
+          1.0105,
+          1.0235,
+          0.0
+        ],
+        [
+          1.1355,
+          1.1715,
+          0.094
+        ]
+      ],
+      "fleet_aux_competition_robot": [
+        [
+          0.8705,
+          1.0235,
+          0.0
+        ],
+        [
+          0.9955,
+          1.1715,
+          0.094
+        ]
+      ]
+    },
+    "start_bounds_xy": [
+      0.863,
+      0.701,
+      1.143,
+      1.181
+    ],
+    "objects": {
+      "Cylinder_Yellow_01": {
+        "kind": "yellow_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.44,
+            0.13999999999999999,
+            1.9999999999999185e-05
+          ],
+          [
+            0.46,
+            0.16,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Yellow_02": {
+        "kind": "yellow_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.64,
+            0.13999999999999999,
+            1.9999999999999185e-05
+          ],
+          [
+            0.66,
+            0.16,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Green_03": {
+        "kind": "green_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.44,
+            0.24,
+            1.9999999999999185e-05
+          ],
+          [
+            0.46,
+            0.26,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Green_04": {
+        "kind": "green_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.64,
+            0.24,
+            1.9999999999999185e-05
+          ],
+          [
+            0.66,
+            0.26,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Red_05": {
+        "kind": "red_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.44,
+            0.33999999999999997,
+            1.9999999999999185e-05
+          ],
+          [
+            0.46,
+            0.36,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Red_06": {
+        "kind": "red_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.64,
+            0.33999999999999997,
+            1.9999999999999185e-05
+          ],
+          [
+            0.66,
+            0.36,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Red_07": {
+        "kind": "red_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.44,
+            0.821,
+            1.9999999999999185e-05
+          ],
+          [
+            0.46,
+            0.841,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Red_08": {
+        "kind": "red_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.64,
+            0.821,
+            1.9999999999999185e-05
+          ],
+          [
+            0.66,
+            0.841,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Green_09": {
+        "kind": "green_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.44,
+            0.921,
+            1.9999999999999185e-05
+          ],
+          [
+            0.46,
+            0.9410000000000001,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Green_10": {
+        "kind": "green_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.64,
+            0.921,
+            1.9999999999999185e-05
+          ],
+          [
+            0.66,
+            0.9410000000000001,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Yellow_11": {
+        "kind": "yellow_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.44,
+            1.021,
+            1.9999999999999185e-05
+          ],
+          [
+            0.46,
+            1.041,
+            0.02002
+          ]
+        ]
+      },
+      "Cylinder_Yellow_12": {
+        "kind": "yellow_cylinder",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.64,
+            1.021,
+            1.9999999999999185e-05
+          ],
+          [
+            0.66,
+            1.041,
+            0.02002
+          ]
+        ]
+      },
+      "Medical_Kit_01": {
+        "kind": "medical_kit",
+        "on_diagram_mark": false,
+        "upright": true,
+        "on_floor": false,
+        "preloaded": true,
+        "bounds_xyz": [
+          [
+            1.0175,
+            0.9695,
+            0.041999999999999996
+          ],
+          [
+            1.0425,
+            0.9944999999999999,
+            0.062
+          ]
+        ]
+      },
+      "Medical_Kit_02": {
+        "kind": "medical_kit",
+        "on_diagram_mark": false,
+        "upright": true,
+        "on_floor": false,
+        "preloaded": true,
+        "bounds_xyz": [
+          [
+            1.0445,
+            0.9695,
+            0.041999999999999996
+          ],
+          [
+            1.0695,
+            0.9944999999999999,
+            0.062
+          ]
+        ]
+      },
+      "Medical_Kit_03": {
+        "kind": "medical_kit",
+        "on_diagram_mark": false,
+        "upright": true,
+        "on_floor": false,
+        "preloaded": true,
+        "bounds_xyz": [
+          [
+            1.074,
+            0.9695,
+            0.041999999999999996
+          ],
+          [
+            1.099,
+            0.9944999999999999,
+            0.062
+          ]
+        ]
+      },
+      "Medical_Kit_04": {
+        "kind": "medical_kit",
+        "on_diagram_mark": false,
+        "upright": true,
+        "on_floor": false,
+        "preloaded": true,
+        "bounds_xyz": [
+          [
+            1.105,
+            0.9695,
+            0.041999999999999996
+          ],
+          [
+            1.13,
+            0.9944999999999999,
+            0.062
+          ]
+        ]
+      },
+      "Biological_Sample_01": {
+        "kind": "sample",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            0.944,
+            0.11699999999999999,
+            2.0000000000000052e-05
+          ],
+          [
+            1.0,
+            0.173,
+            0.00502
+          ]
+        ]
+      },
+      "Biological_Sample_02": {
+        "kind": "sample",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            1.044,
+            0.167,
+            2.0000000000000052e-05
+          ],
+          [
+            1.1,
+            0.223,
+            0.00502
+          ]
+        ]
+      },
+      "Biological_Sample_03": {
+        "kind": "sample",
+        "on_diagram_mark": true,
+        "upright": true,
+        "on_floor": true,
+        "preloaded": false,
+        "bounds_xyz": [
+          [
+            1.044,
+            0.067,
+            2.0000000000000052e-05
+          ],
+          [
+            1.1,
+            0.123,
+            0.00502
+          ]
+        ]
+      }
+    },
+    "preloaded_kits": [
+      "Medical_Kit_01",
+      "Medical_Kit_02",
+      "Medical_Kit_03",
+      "Medical_Kit_04"
+    ],
+    "overlaps": [],
+    "simulation_tolerances": {
+      "position_m": 1e-06,
+      "floor_height_m": 0.0001,
+      "penetration_m": 1e-05,
+      "support_gap_m": 0.0001,
+      "initial_speed": 1e-08,
+      "upright_cosine": 0.999999
+    },
+    "layout_source": "arena_spec.json senior_preliminary reconstructed diagram positions"
+  },
+  "declaration_seconds": 120.00000000020893,
+  "deployment_seconds": 24.040000000006398,
+  "departed": {
+    "lab": 10.339999999999709,
+    "red": 16.819999999997574,
+    "kit": 17.79999999999877,
+    "yellow": 20.820000000002462,
+    "green": 24.040000000006398
+  },
+  "completed_robots": [
+    "green",
+    "lab"
+  ],
+  "unfinished_robots": [
+    "red",
+    "yellow"
+  ],
+  "failures": {
+    "kit": "kit turn timeout at unload kit gate 0: 1.4393",
+    "aux": "aux line timeout at deploy: goal [0.55   0.5905], pose [0.56455414 0.5974023 ]"
+  },
+  "events": {
+    "lab": [
+      {
+        "event": "grasp",
+        "object": "Biological_Sample_01",
+        "time_s": 16.53999999999723
+      },
+      {
+        "event": "release",
+        "object": "Biological_Sample_01",
+        "time_s": 25.08000000000767,
+        "position_m": [
+          1.0674954510651473,
+          0.3893555899536103,
+          0.002499897236291942
+        ]
+      },
+      {
+        "event": "grasp",
+        "object": "Biological_Sample_02",
+        "time_s": 34.2400000000109
+      },
+      {
+        "event": "release",
+        "object": "Biological_Sample_02",
+        "time_s": 42.35999999999198,
+        "position_m": [
+          1.0672591122487378,
+          0.48920658888727564,
+          0.0024999047191249938
+        ]
+      },
+      {
+        "event": "grasp",
+        "object": "Biological_Sample_03",
+        "time_s": 51.99999999996951
+      },
+      {
+        "event": "release",
+        "object": "Biological_Sample_03",
+        "time_s": 60.61999999994942,
+        "position_m": [
+          1.0672995437960684,
+          0.5891959595365294,
+          0.002510485690571028
+        ]
+      }
+    ],
+    "red": [],
+    "yellow": [],
+    "kit": [],
+    "green": [
+      {
+        "event": "grasp",
+        "object": "Cylinder_Green_10",
+        "time_s": 26.100000000008915
+      },
+      {
+        "event": "release",
+        "object": "Cylinder_Green_10",
+        "time_s": 33.80000000001193,
+        "position_m": [
+          1.0774508484329322,
+          1.02919085581281,
+          0.010000099661549295
+        ]
+      },
+      {
+        "event": "grasp",
+        "object": "Cylinder_Green_09",
+        "time_s": 42.459999999991744
+      },
+      {
+        "event": "release",
+        "object": "Cylinder_Green_09",
+        "time_s": 50.199999999973706,
+        "position_m": [
+          1.0775211730521266,
+          0.8808621868404938,
+          0.009999748961433713
+        ]
+      }
+    ],
+    "aux": []
+  },
+  "traffic_trace": [
+    {
+      "time_s": 1.0000000000000007,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.9327155717934957,
+            0.642796776876825
+          ],
+          "phase": "deploy"
+        },
+        "red": {
+          "xy": [
+            1.0729954697732809,
+            0.7734989299042205
+          ],
+          "phase": "wait for departure"
+        },
+        "yellow": {
+          "xy": [
+            0.9329954616870122,
+            0.9310155628127702
+          ],
+          "phase": "wait for departure"
+        },
+        "kit": {
+          "xy": [
+            1.073000028141575,
+            0.9310066273774219
+          ],
+          "phase": "wait for departure"
+        },
+        "green": {
+          "xy": [
+            1.0729954651893059,
+            1.0884945379555386
+          ],
+          "phase": "wait for departure"
+        },
+        "aux": {
+          "xy": [
+            0.93299545227207,
+            1.0884975248159798
+          ],
+          "phase": "wait for departure"
+        }
+      }
+    },
+    {
+      "time_s": 1.9999999999998905,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.932749710954597,
+            0.643898781202133
+          ],
+          "phase": "deploy"
+        },
+        "red": {
+          "xy": [
+            1.0729954697167647,
+            0.7734995937949034
+          ],
+          "phase": "wait for departure"
+        },
+        "yellow": {
+          "xy": [
+            0.932995459952142,
+            0.9310198477067367
+          ],
+          "phase": "wait for departure"
+        },
+        "kit": {
+          "xy": [
+            1.0730000304548641,
+            0.9310081491800741
+          ],
+          "phase": "wait for departure"
+        },
+        "green": {
+          "xy": [
+            1.0729954651613591,
+            1.088494588051518
+          ],
+          "phase": "wait for departure"
+        },
+        "aux": {
+          "xy": [
+            0.9329954522088985,
+            1.08849789960789
+          ],
+          "phase": "wait for departure"
+        }
+      }
+    },
+    {
+      "time_s": 2.9999999999997806,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.7833804585296267,
+            0.6409812195843339
+          ],
+          "phase": "deploy"
+        },
+        "red": {
+          "xy": [
+            1.072995469705965,
+            0.7734997313785572
+          ],
+          "phase": "wait for departure"
+        },
+        "yellow": {
+          "xy": [
+            0.9329954590196261,
+            0.9310207775749209
+          ],
+          "phase": "wait for departure"
+        },
+        "kit": {
+          "xy": [
+            1.0730000231506274,
+            0.9310086546507578
+          ],
+          "phase": "wait for departure"
+        },
+        "green": {
+          "xy": [
+            1.0729954651392621,
+            1.0884946187388598
+          ],
+          "phase": "wait for departure"
+        },
+        "aux": {
+          "xy": [
+            0.9329954521797313,
+            1.0884979846980416
+          ],
+          "phase": "wait for departure"
+        }
+      }
+    },
+    {
+      "time_s": 3.9999999999996705,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.7815309824139469,
+            0.6401115011960253
+          ],
+          "phase": "deploy"
+        },
+        "red": {
+          "xy": [
+            1.0730383771973677,
+            0.7728130141602924
+          ],
+          "phase": "deploy"
+        },
+        "yellow": {
+          "xy": [
+            0.9329954584111426,
+            0.931021000833977
+          ],
+          "phase": "wait for departure"
+        },
+        "kit": {
+          "xy": [
+            1.0730000234803458,
+            0.931008875191439
+          ],
+          "phase": "wait for departure"
+        },
+        "green": {
+          "xy": [
+            1.0729954651220113,
+            1.0884946414184127
+          ],
+          "phase": "wait for departure"
+        },
+        "aux": {
+          "xy": [
+            0.9329954521618439,
+            1.0884980079239834
+          ],
+          "phase": "wait for departure"
+        }
+      }
+    },
+    {
+      "time_s": 5.000000000000004,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.7901229874099112,
+            0.5790023342998081
+          ],
+          "phase": "deploy"
+        },
+        "red": {
+          "xy": [
+            0.9823886117352304,
+            0.7730620715758522
+          ],
+          "phase": "deploy"
+        },
+        "yellow": {
+          "xy": [
+            0.9329954579651014,
+            0.9310210704295119
+          ],
+          "phase": "wait for departure"
+        },
+        "kit": {
+          "xy": [
+            1.0730000220348064,
+            0.9310091365463586
+          ],
+          "phase": "wait for departure"
+        },
+        "green": {
+          "xy": [
+            1.0729954651076379,
+            1.0884946592390132
+          ],
+          "phase": "wait for departure"
+        },
+        "aux": {
+          "xy": [
+            0.9329954521489447,
+            1.0884980170400047
+          ],
+          "phase": "wait for departure"
+        }
+      }
+    },
+    {
+      "time_s": 6.000000000000338,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8293250888844989,
+            0.30518782441558656
+          ],
+          "phase": "deploy"
+        },
+        "red": {
+          "xy": [
+            0.7841409122206153,
+            0.7734936448918128
+          ],
+          "phase": "deploy"
+        },
+        "yellow": {
+          "xy": [
+            0.9330138513795373,
+            0.9117612601962592
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            1.0730000357568181,
+            0.9310093738252568
+          ],
+          "phase": "wait for departure"
+        },
+        "green": {
+          "xy": [
+            1.0729954650959084,
+            1.0884946734807623
+          ],
+          "phase": "wait for departure"
+        },
+        "aux": {
+          "xy": [
+            0.9329954521388436,
+            1.0884980222609362
+          ],
+          "phase": "wait for departure"
+        }
+      }
+    },
+    {
+      "time_s": 7.000000000000672,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8306501948701556,
+            0.186008240461035
+          ],
+          "phase": "deploy"
+        },
+        "red": {
+          "xy": [
+            0.7824030635071446,
+            0.7737752081198329
+          ],
+          "phase": "deploy"
+        },
+        "yellow": {
+          "xy": [
+            0.9330408926113435,
+            0.7531076191586314
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            1.07300002838128,
+            0.9310095491381684
+          ],
+          "phase": "wait for departure"
+        },
+        "green": {
+          "xy": [
+            1.0729954650865237,
+            1.0884946849134098
+          ],
+          "phase": "wait for departure"
+        },
+        "aux": {
+          "xy": [
+            0.9329954521310574,
+            1.0884980259252912
+          ],
+          "phase": "wait for departure"
+        }
+      }
+    },
+    {
+      "time_s": 8.000000000001005,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8304480365542384,
+            0.14873633156752347
+          ],
+          "phase": "deploy"
+        },
+        "red": {
+          "xy": [
+            0.7807272322897056,
+            0.5955611289048932
+          ],
+          "phase": "deploy"
+        },
+        "yellow": {
+          "xy": [
+            0.9329900513546303,
+            0.7510226432658814
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            1.0730000338881915,
+            0.931009794793907
+          ],
+          "phase": "wait for departure"
+        },
+        "green": {
+          "xy": [
+            1.0729954650788218,
+            1.0884946941008338
+          ],
+          "phase": "wait for departure"
+        },
+        "aux": {
+          "xy": [
+            0.9329954521251583,
+            1.0884980286875567
+          ],
+          "phase": "wait for departure"
+        }
+      }
+    },
+    {
+      "time_s": 9.000000000000451,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8304324041455091,
+            0.15007051163559978
+          ],
+          "phase": "deploy"
+        },
+        "red": {
+          "xy": [
+            0.7807238052011503,
+            0.5948838872565099
+          ],
+          "phase": "deploy"
+        },
+        "yellow": {
+          "xy": [
+            0.7831496684854822,
+            0.7504453303115328
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            1.073000029704905,
+            0.9310099956527519
+          ],
+          "phase": "wait for departure"
+        },
+        "green": {
+          "xy": [
+            1.0729954650728701,
+            1.088494701486536
+          ],
+          "phase": "wait for departure"
+        },
+        "aux": {
+          "xy": [
+            0.9329954521210964,
+            1.0884980308135968
+          ],
+          "phase": "wait for departure"
+        }
+      }
+    },
+    {
+      "time_s": 9.999999999999897,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8643001192250102,
+            0.14805907734076115
+          ],
+          "phase": "deploy"
+        },
+        "red": {
+          "xy": [
+            0.7808456718162495,
+            0.595138972273161
+          ],
+          "phase": "deploy"
+        },
+        "yellow": {
+          "xy": [
+            0.7820134282234414,
+            0.7499280475417269
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            1.0729301711133856,
+            0.9138744713785388
+          ],
+          "phase": "deploy"
+        },
+        "green": {
+          "xy": [
+            1.0729954650684694,
+            1.0884947074238587
+          ],
+          "phase": "wait for departure"
+        },
+        "aux": {
+          "xy": [
+            0.9329954521175126,
+            1.0884980324588334
+          ],
+          "phase": "wait for departure"
+        }
+      }
+    },
+    {
+      "time_s": 10.999999999999343,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8641223475183493,
+            0.14805861947833954
+          ],
+          "phase": "deploy"
+        },
+        "red": {
+          "xy": [
+            0.4540610773471598,
+            0.5925872972199916
+          ],
+          "phase": "deploy"
+        },
+        "yellow": {
+          "xy": [
+            0.7807379462894477,
+            0.6750636815420705
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            1.0729546976522741,
+            0.913345428546385
+          ],
+          "phase": "deploy"
+        },
+        "green": {
+          "xy": [
+            1.0729954650643256,
+            1.0884947121966955
+          ],
+          "phase": "wait for departure"
+        },
+        "aux": {
+          "xy": [
+            0.9329954521149464,
+            1.088498033733887
+          ],
+          "phase": "wait for departure"
+        }
+      }
+    },
+    {
+      "time_s": 11.999999999998789,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8642334433743014,
+            0.1480523923935775
+          ],
+          "phase": "pick Biological_Sample_01"
+        },
+        "red": {
+          "xy": [
+            0.22881287682533047,
+            0.5905420906331951
+          ],
+          "phase": "deploy"
+        },
+        "yellow": {
+          "xy": [
+            0.7795689197540334,
+            0.5939252716414771
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.7886633448075441,
+            0.9112176995394662
+          ],
+          "phase": "deploy"
+        },
+        "green": {
+          "xy": [
+            1.0729954650611233,
+            1.0884947160331893
+          ],
+          "phase": "wait for departure"
+        },
+        "aux": {
+          "xy": [
+            0.9329954521125271,
+            1.088498034722589
+          ],
+          "phase": "wait for departure"
+        }
+      }
+    },
+    {
+      "time_s": 12.999999999998234,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.7951918602225285,
+            0.1462304076854978
+          ],
+          "phase": "pick Biological_Sample_01"
+        },
+        "red": {
+          "xy": [
+            0.22759502870043982,
+            0.5912304996037051
+          ],
+          "phase": "deploy"
+        },
+        "yellow": {
+          "xy": [
+            0.7793235122149972,
+            0.5948066870373261
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.7853820101444103,
+            0.9111481670037113
+          ],
+          "phase": "deploy"
+        },
+        "green": {
+          "xy": [
+            1.0731338366251244,
+            1.0903542973938922
+          ],
+          "phase": "wait for departure"
+        },
+        "aux": {
+          "xy": [
+            0.9319057881808923,
+            1.0892289690016979
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 13.99999999999768,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.7958639542260564,
+            0.1462485141373531
+          ],
+          "phase": "pick Biological_Sample_01"
+        },
+        "red": {
+          "xy": [
+            0.225383676420046,
+            0.8016335297061724
+          ],
+          "phase": "deploy"
+        },
+        "yellow": {
+          "xy": [
+            0.5521206877047918,
+            0.5930350939339272
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.7965040848217165,
+            0.828898512989999
+          ],
+          "phase": "deploy"
+        },
+        "green": {
+          "xy": [
+            1.0734009945003762,
+            1.0906037276776668
+          ],
+          "phase": "wait for departure"
+        },
+        "aux": {
+          "xy": [
+            0.9260754903862949,
+            1.088615623444701
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 14.999999999997126,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8670378463969304,
+            0.14570343578871506
+          ],
+          "phase": "pick Biological_Sample_01"
+        },
+        "red": {
+          "xy": [
+            0.2254030261255577,
+            0.8287011994006008
+          ],
+          "phase": "deploy"
+        },
+        "yellow": {
+          "xy": [
+            0.2393963145750607,
+            0.5906453659785121
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.8295476003359838,
+            0.5938897553371547
+          ],
+          "phase": "deploy"
+        },
+        "green": {
+          "xy": [
+            1.0733853308433732,
+            1.0900577554138462
+          ],
+          "phase": "wait for departure"
+        },
+        "aux": {
+          "xy": [
+            0.7062383048868702,
+            1.0883397897578229
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 15.999999999996572,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8665419181043734,
+            0.14571168836248113
+          ],
+          "phase": "pick Biological_Sample_01"
+        },
+        "red": {
+          "xy": [
+            0.32020736952030765,
+            0.8296910524853575
+          ],
+          "phase": "deploy"
+        },
+        "yellow": {
+          "xy": [
+            0.2269118822297284,
+            0.5927563594649703
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.8297715703982024,
+            0.5954186717617446
+          ],
+          "phase": "deploy"
+        },
+        "green": {
+          "xy": [
+            1.0733827375904368,
+            1.0899593538738266
+          ],
+          "phase": "wait for departure"
+        },
+        "aux": {
+          "xy": [
+            0.5539527251579406,
+            1.0877855693397644
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 16.999999999997794,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.829236222163147,
+            0.14537435849232486
+          ],
+          "phase": "pick Biological_Sample_01"
+        },
+        "red": {
+          "xy": [
+            0.38136825455510903,
+            0.8306591637012102
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.226117519554611,
+            0.7113202361685314
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.6329451408555054,
+            0.5926658403886162
+          ],
+          "phase": "deploy"
+        },
+        "green": {
+          "xy": [
+            1.072365066056747,
+            1.0903412166271174
+          ],
+          "phase": "deploy"
+        },
+        "aux": {
+          "xy": [
+            0.5543826925163751,
+            1.0876998208729272
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 17.999999999999016,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8327386548430085,
+            0.14576984498533238
+          ],
+          "phase": "deliver Biological_Sample_01"
+        },
+        "red": {
+          "xy": [
+            0.381126344143449,
+            0.8306571235992345
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.22505835827956153,
+            1.0192950923574662
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.555175538706646,
+            0.5909320754236559
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            1.0256854223238399,
+            1.0904633787154978
+          ],
+          "phase": "deploy"
+        },
+        "aux": {
+          "xy": [
+            0.5541361206117376,
+            1.023570029038146
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 19.000000000000238,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8331893949522804,
+            0.1453636089629409
+          ],
+          "phase": "deliver Biological_Sample_01"
+        },
+        "red": {
+          "xy": [
+            0.381078850545072,
+            0.8306569250954734
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.2258456055093747,
+            1.0274312272121082
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5578726098430605,
+            0.5655880323581943
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.7836335138851908,
+            1.090059506790999
+          ],
+          "phase": "deploy"
+        },
+        "aux": {
+          "xy": [
+            0.5540493528014585,
+            0.6961958479851388
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 20.00000000000146,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8306073044717937,
+            0.38390305826737803
+          ],
+          "phase": "deliver Biological_Sample_01"
+        },
+        "red": {
+          "xy": [
+            0.3810699579910132,
+            0.8306569607706363
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.352594364128475,
+            1.0294648471659487
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5642017518783177,
+            0.5174473178615129
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.784653615402393,
+            1.0906774925009717
+          ],
+          "phase": "deploy"
+        },
+        "aux": {
+          "xy": [
+            0.5603814873485856,
+            0.6480632508616894
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 21.000000000002682,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8305847937752259,
+            0.38637298422107424
+          ],
+          "phase": "deliver Biological_Sample_01"
+        },
+        "red": {
+          "xy": [
+            0.38106851404973036,
+            0.8306569568194029
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38140672669769454,
+            1.030380392282259
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5642241451270945,
+            0.5172588077777589
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8176531004700266,
+            0.9758633901193923
+          ],
+          "phase": "deploy"
+        },
+        "aux": {
+          "xy": [
+            0.5604086845824655,
+            0.6478747834319271
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 22.000000000003904,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8305228480366003,
+            0.3865727150353027
+          ],
+          "phase": "deliver Biological_Sample_01"
+        },
+        "red": {
+          "xy": [
+            0.38106791761652997,
+            0.8306569732255554
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812463527252219,
+            1.0303791582579551
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5642117644286804,
+            0.5173363064284897
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8292913727733103,
+            0.9340868947827392
+          ],
+          "phase": "deploy"
+        },
+        "aux": {
+          "xy": [
+            0.5604009303119768,
+            0.6479523185925402
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 23.000000000005127,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.9613799945520745,
+            0.3890053812761476
+          ],
+          "phase": "deliver Biological_Sample_01"
+        },
+        "red": {
+          "xy": [
+            0.38106760196297085,
+            0.830656986693038
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812181873019593,
+            1.0303791105491806
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5641990119994599,
+            0.5174165313369758
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8261742746959849,
+            0.9329876105688629
+          ],
+          "phase": "deploy"
+        },
+        "aux": {
+          "xy": [
+            0.5603927996264254,
+            0.6480325816995512
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 24.00000000000635,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.9616580220844144,
+            0.3890151614162323
+          ],
+          "phase": "deliver Biological_Sample_01"
+        },
+        "red": {
+          "xy": [
+            0.38106737787723527,
+            0.8306569979588942
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812142410669828,
+            1.0303790798913548
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5641861627107415,
+            0.5174974860211945
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.7182167849129529,
+            0.9317863566414168
+          ],
+          "phase": "deploy"
+        },
+        "aux": {
+          "xy": [
+            0.5603845947555451,
+            0.6481135758916095
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 25.00000000000757,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.9616446734477385,
+            0.38901697305776894
+          ],
+          "phase": "deliver Biological_Sample_01"
+        },
+        "red": {
+          "xy": [
+            0.38106720022497304,
+            0.8306570074393453
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121391237853863,
+            1.0303790750020485
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.564173174828636,
+            0.5175795580725894
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.7158481463953913,
+            0.931768712342508
+          ],
+          "phase": "pick Cylinder_Green_10"
+        },
+        "aux": {
+          "xy": [
+            0.5603762330544977,
+            0.6481956851790466
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 26.000000000008793,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8332212592526653,
+            0.390013907161113
+          ],
+          "phase": "deliver Biological_Sample_01"
+        },
+        "red": {
+          "xy": [
+            0.3810670548658441,
+            0.8306570154138911
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812144831553019,
+            1.0303790648271653
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5652016875937544,
+            0.5097247107832622
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.7158410663135399,
+            0.9317686016433887
+          ],
+          "phase": "pick Cylinder_Green_10"
+        },
+        "aux": {
+          "xy": [
+            0.5614092513295735,
+            0.6403409992960661
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 27.000000000010015,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8333394528616094,
+            0.39007872785244746
+          ],
+          "phase": "pick Biological_Sample_02"
+        },
+        "red": {
+          "xy": [
+            0.38106693493764704,
+            0.8306570221088518
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121514839487775,
+            1.030379053191938
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690539511148563,
+            0.4799869908643027
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8266347980044221,
+            0.9317373494976067
+          ],
+          "phase": "pick Cylinder_Green_10"
+        },
+        "aux": {
+          "xy": [
+            0.5652961314554038,
+            0.6104462615247311
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 28.000000000011237,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8323774123754154,
+            0.30579192168269104
+          ],
+          "phase": "pick Biological_Sample_02"
+        },
+        "red": {
+          "xy": [
+            0.38106683577576006,
+            0.8306570277141384
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121575390551554,
+            1.0303790417005074
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5694549756553865,
+            0.4717491127956388
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8283100314584061,
+            0.931320983415307
+          ],
+          "phase": "deliver Cylinder_Green_10"
+        },
+        "aux": {
+          "xy": [
+            0.5657520620636072,
+            0.6045184642905544
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 29.00000000001246,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.83054568992565,
+            0.19848921909111653
+          ],
+          "phase": "pick Biological_Sample_02"
+        },
+        "red": {
+          "xy": [
+            0.38106675373447657,
+            0.8306570323998471
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121627904213895,
+            1.0303790309537744
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691628707253151,
+            0.4644008405693025
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8300935808549543,
+            1.0145450079918206
+          ],
+          "phase": "deliver Cylinder_Green_10"
+        },
+        "aux": {
+          "xy": [
+            0.5652811139204682,
+            0.6008288641839993
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 30.00000000001368,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8304617281165052,
+            0.19945887516187613
+          ],
+          "phase": "pick Biological_Sample_02"
+        },
+        "red": {
+          "xy": [
+            0.3810666858440325,
+            0.8306570363075526
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812167293242017,
+            1.0303790211293822
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5688812545709454,
+            0.4597352553513545
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8302884439565026,
+            1.026164327098449
+          ],
+          "phase": "deliver Cylinder_Green_10"
+        },
+        "aux": {
+          "xy": [
+            0.5648512551344878,
+            0.598597552220597
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 31.000000000014904,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8937692091081518,
+            0.19706643092314202
+          ],
+          "phase": "pick Biological_Sample_02"
+        },
+        "red": {
+          "xy": [
+            0.3810666296586038,
+            0.8306570395637451
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812171143139041,
+            1.030379012281453
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690562412209554,
+            0.4623064838661005
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8303746089168186,
+            1.0250575978778451
+          ],
+          "phase": "deliver Cylinder_Green_10"
+        },
+        "aux": {
+          "xy": [
+            0.565463365554359,
+            0.6010424994134861
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 32.00000000001612,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.9330423684447567,
+            0.19672874975891647
+          ],
+          "phase": "pick Biological_Sample_02"
+        },
+        "red": {
+          "xy": [
+            0.38106658315746045,
+            0.830657042273459
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812174432143797,
+            1.0303790043961927
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690977343951638,
+            0.46288974821899026
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            1.0117004111849974,
+            1.0288466480719158
+          ],
+          "phase": "deliver Cylinder_Green_10"
+        },
+        "aux": {
+          "xy": [
+            0.5655705815601741,
+            0.6014709568459904
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 33.00000000001379,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.9667522060212317,
+            0.1958483587429791
+          ],
+          "phase": "pick Biological_Sample_02"
+        },
+        "red": {
+          "xy": [
+            0.3810665446697276,
+            0.8306570445262625
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121772411650706,
+            1.0303789974248725
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.569112229846901,
+            0.463094112645593
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            1.0113485678273186,
+            1.028840398027208
+          ],
+          "phase": "deliver Cylinder_Green_10"
+        },
+        "aux": {
+          "xy": [
+            0.5655877473707687,
+            0.6015395259330648
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 34.00000000001146,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.9668062852039946,
+            0.19584847889798834
+          ],
+          "phase": "pick Biological_Sample_02"
+        },
+        "red": {
+          "xy": [
+            0.38106651281350906,
+            0.8306570463965942
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121796398979124,
+            1.030378991295087
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.569119386629109,
+            0.4631984717942095
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.9702919956481431,
+            1.0287544831322684
+          ],
+          "phase": "deliver Cylinder_Green_10"
+        },
+        "aux": {
+          "xy": [
+            0.5655857027495228,
+            0.6015304082590124
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 35.00000000000913,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8309820638014707,
+            0.19548846162619446
+          ],
+          "phase": "pick Biological_Sample_02"
+        },
+        "red": {
+          "xy": [
+            0.3810664864464416,
+            0.8306570479487869
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121816880621257,
+            1.0303789859346926
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691236612931894,
+            0.4632644044933682
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8335375270533236,
+            1.0295955819579465
+          ],
+          "phase": "deliver Cylinder_Green_10"
+        },
+        "aux": {
+          "xy": [
+            0.5655791636668274,
+            0.6015027517099938
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 36.0000000000068,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.83281406980221,
+            0.1952598039854135
+          ],
+          "phase": "deliver Biological_Sample_02"
+        },
+        "red": {
+          "xy": [
+            0.38106646462079935,
+            0.8306570492359865
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812183436751699,
+            1.0303789812619868
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691266112602285,
+            0.46331282041033905
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8344783699399076,
+            1.0303288314342156
+          ],
+          "phase": "pick Cylinder_Green_09"
+        },
+        "aux": {
+          "xy": [
+            0.5655726487158376,
+            0.6014749520909931
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 37.00000000000447,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8320116899725888,
+            0.4074544815155179
+          ],
+          "phase": "deliver Biological_Sample_02"
+        },
+        "red": {
+          "xy": [
+            0.3810664465546175,
+            0.8306570503032202
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812184929657834,
+            1.0303789772065106
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691287176788733,
+            0.46335016952100644
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8307605015921485,
+            0.9340084563847444
+          ],
+          "phase": "pick Cylinder_Green_09"
+        },
+        "aux": {
+          "xy": [
+            0.5655669955103682,
+            0.6014505056243084
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 38.00000000000214,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8302439563701818,
+            0.48665295664429165
+          ],
+          "phase": "deliver Biological_Sample_02"
+        },
+        "red": {
+          "xy": [
+            0.38106643159929204,
+            0.8306570511863854
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121862041254506,
+            1.0303789736947067
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691301124905103,
+            0.46337856982525655
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8307918201761676,
+            0.9348084685370674
+          ],
+          "phase": "pick Cylinder_Green_09"
+        },
+        "aux": {
+          "xy": [
+            0.5655621925488827,
+            0.6014287658019778
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 38.99999999999981,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8306234315826336,
+            0.4868363400929329
+          ],
+          "phase": "deliver Biological_Sample_02"
+        },
+        "red": {
+          "xy": [
+            0.3810664192192017,
+            0.830657051918319
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812187292062943,
+            1.030378970659525
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691312855793454,
+            0.4634037452374256
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8307709993194705,
+            0.933805758948852
+          ],
+          "phase": "pick Cylinder_Green_09"
+        },
+        "aux": {
+          "xy": [
+            0.5655588807403849,
+            0.6014144359750679
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 39.99999999999748,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.9569797995253968,
+            0.48885390752319885
+          ],
+          "phase": "deliver Biological_Sample_02"
+        },
+        "red": {
+          "xy": [
+            0.38106640897515215,
+            0.8306570525224282
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812188220732671,
+            1.0303789680432736
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691318487457581,
+            0.4634216145249958
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.7180217225764532,
+            0.9339746551309352
+          ],
+          "phase": "pick Cylinder_Green_09"
+        },
+        "aux": {
+          "xy": [
+            0.5655557459659079,
+            0.6014001117136695
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 40.99999999999515,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.9614281557740482,
+            0.4890456357137752
+          ],
+          "phase": "deliver Biological_Sample_02"
+        },
+        "red": {
+          "xy": [
+            0.3810664004949936,
+            0.8306570530202648
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812189013423681,
+            1.0303789657913098
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691320349166816,
+            0.4634349207850484
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.5164737732501316,
+            0.9311905839540077
+          ],
+          "phase": "pick Cylinder_Green_09"
+        },
+        "aux": {
+          "xy": [
+            0.5655529735053028,
+            0.6013872533241839
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 41.999999999992816,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.9613896927028378,
+            0.4890437338512686
+          ],
+          "phase": "deliver Biological_Sample_02"
+        },
+        "red": {
+          "xy": [
+            0.38106639347518595,
+            0.8306570534313241
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121896933594324,
+            1.0303789638476684
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691319947249291,
+            0.4634453555570337
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.5168902644743455,
+            0.9311937569282552
+          ],
+          "phase": "pick Cylinder_Green_09"
+        },
+        "aux": {
+          "xy": [
+            0.5655507400267,
+            0.601376467212925
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 42.999999999990486,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8352233351649835,
+            0.49002992519594707
+          ],
+          "phase": "deliver Biological_Sample_02"
+        },
+        "red": {
+          "xy": [
+            0.3810663876653774,
+            0.8306570537718649
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812190273825697,
+            1.0303789621779231
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691319392297409,
+            0.46345562285965614
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.6837229331869646,
+            0.9316149529094362
+          ],
+          "phase": "pick Cylinder_Green_09"
+        },
+        "aux": {
+          "xy": [
+            0.5655496246733999,
+            0.6013703274609717
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 43.999999999988155,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8329407159445511,
+            0.48995453181570175
+          ],
+          "phase": "pick Biological_Sample_03"
+        },
+        "red": {
+          "xy": [
+            0.38106638286175554,
+            0.8306570540534076
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121907673731315,
+            1.0303789607490617
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.569131616677185,
+            0.4634627605643283
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8275598697597263,
+            0.9314356822621411
+          ],
+          "phase": "deliver Cylinder_Green_09"
+        },
+        "aux": {
+          "xy": [
+            0.5655485122349247,
+            0.6013642093306516
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 44.999999999985825,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8330147484901474,
+            0.46404168558581615
+          ],
+          "phase": "pick Biological_Sample_03"
+        },
+        "red": {
+          "xy": [
+            0.38106637888182043,
+            0.8306570542861269
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812191188214205,
+            1.0303789595241963
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691311398819806,
+            0.4634681424176013
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.828538718148453,
+            0.9309998841562815
+          ],
+          "phase": "deliver Cylinder_Green_09"
+        },
+        "aux": {
+          "xy": [
+            0.5655475729921853,
+            0.601358773349368
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 45.999999999983494,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8304094687366171,
+            0.12402467716640782
+          ],
+          "phase": "pick Biological_Sample_03"
+        },
+        "red": {
+          "xy": [
+            0.3810663755860408,
+            0.8306570544754363
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812191547284538,
+            1.0303789584754435
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691305827809222,
+            0.46347241800189143
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8309130803927287,
+            0.8831866362808529
+          ],
+          "phase": "deliver Cylinder_Green_09"
+        },
+        "aux": {
+          "xy": [
+            0.5655468533087666,
+            0.601354226101065
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 46.99999999998116,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8288159876582842,
+            0.10032143918917011
+          ],
+          "phase": "pick Biological_Sample_03"
+        },
+        "red": {
+          "xy": [
+            0.3810663728587909,
+            0.830657054634497
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812191853724539,
+            1.0303789575774804
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.56912994359376,
+            0.463475893115114
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8302660021581233,
+            0.8850325950755006
+          ],
+          "phase": "deliver Cylinder_Green_09"
+        },
+        "aux": {
+          "xy": [
+            0.5655463183597228,
+            0.601350490808583
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 47.99999999997883,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8722559693516074,
+            0.09924825427838012
+          ],
+          "phase": "pick Biological_Sample_03"
+        },
+        "red": {
+          "xy": [
+            0.38106637060018683,
+            0.8306570547633394
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812192115260709,
+            1.0303789568079207
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.56912926836539,
+            0.4634787012645684
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.9941653718035869,
+            0.8819314463125142
+          ],
+          "phase": "deliver Cylinder_Green_09"
+        },
+        "aux": {
+          "xy": [
+            0.5655459447868929,
+            0.6013473957063242
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 48.9999999999765,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8937557731229102,
+            0.09741189093379217
+          ],
+          "phase": "pick Biological_Sample_03"
+        },
+        "red": {
+          "xy": [
+            0.3810663687339066,
+            0.8306570548674496
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121923384734735,
+            1.0303789561473258
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691285409029226,
+            0.4634809820510289
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            1.01073323961662,
+            0.8812271829880125
+          ],
+          "phase": "deliver Cylinder_Green_09"
+        },
+        "aux": {
+          "xy": [
+            0.5655456976433184,
+            0.60134481988129
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 49.99999999997417,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.9623887729415738,
+            0.09619045911097147
+          ],
+          "phase": "pick Biological_Sample_03"
+        },
+        "red": {
+          "xy": [
+            0.3810663671893847,
+            0.8306570549525005
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812192528891756,
+            1.0303789555819798
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.569127762170466,
+            0.46348285000412576
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            1.0105712343516353,
+            0.8812299496231807
+          ],
+          "phase": "deliver Cylinder_Green_09"
+        },
+        "aux": {
+          "xy": [
+            0.5655455618722613,
+            0.601342692167235
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 50.99999999997184,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.966740461424501,
+            0.09600136454869516
+          ],
+          "phase": "pick Biological_Sample_03"
+        },
+        "red": {
+          "xy": [
+            0.3810663659113059,
+            0.8306570550213613
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812192691374595,
+            1.0303789550975926
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691269715510754,
+            0.4634843830083212
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8344427059833185,
+            0.8804416329183733
+          ],
+          "phase": "deliver Cylinder_Green_09"
+        },
+        "aux": {
+          "xy": [
+            0.5655455081085355,
+            0.6013409123210037
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 51.99999999996951,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.9668048870701265,
+            0.09600347903091062
+          ],
+          "phase": "pick Biological_Sample_03"
+        },
+        "red": {
+          "xy": [
+            0.38106636485375295,
+            0.8306570550784853
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121928300104185,
+            1.030378954684235
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691261325832346,
+            0.4634855824982264
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.835619780972277,
+            0.8816089605006939
+          ],
+          "phase": "park"
+        },
+        "aux": {
+          "xy": [
+            0.5655455234391019,
+            0.6013393815994182
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 52.99999999996718,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8311331213920119,
+            0.09555952546532784
+          ],
+          "phase": "pick Biological_Sample_03"
+        },
+        "red": {
+          "xy": [
+            0.3810663639769759,
+            0.8306570551246971
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121929483881584,
+            1.0303789543298059
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691252930882003,
+            0.46348664533178674
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8346816092016891,
+            0.8926651172862383
+          ],
+          "phase": "park"
+        },
+        "aux": {
+          "xy": [
+            0.5655455873517916,
+            0.6013380993288041
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 53.99999999996485,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8327345114300491,
+            0.09488918678002353
+          ],
+          "phase": "deliver Biological_Sample_03"
+        },
+        "red": {
+          "xy": [
+            0.38106636324922,
+            0.8306570551633458
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.381219304939177,
+            1.0303789540280381
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691244411340497,
+            0.4634875360219515
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304095809917553,
+            1.0964964485617656
+          ],
+          "phase": "park"
+        },
+        "aux": {
+          "xy": [
+            0.5655456780616954,
+            0.6013370418393276
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 54.99999999996252,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8328211552927505,
+            0.2952504836197209
+          ],
+          "phase": "deliver Biological_Sample_03"
+        },
+        "red": {
+          "xy": [
+            0.381066362648805,
+            0.830657055191546
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121931356003974,
+            1.0303789537671804
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691235759711913,
+            0.46348827364466705
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304259594301888,
+            1.0959091558689111
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655458226616212,
+            0.6013361200115092
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 55.99999999996019,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8298171605182525,
+            0.5830123853213883
+          ],
+          "phase": "deliver Biological_Sample_03"
+        },
+        "red": {
+          "xy": [
+            0.3810663621537619,
+            0.8306570552135476
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121932091140054,
+            1.0303789535439023
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691226959889929,
+            0.46348889737501114
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304292378731305,
+            1.095773904838964
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.565545998701489,
+            0.6013353233973034
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 56.99999999995786,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8304133420865405,
+            0.5869720659496449
+          ],
+          "phase": "deliver Biological_Sample_03"
+        },
+        "red": {
+          "xy": [
+            0.38106636174480957,
+            0.8306570552335324
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121932718404766,
+            1.0303789533554175
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691218144106726,
+            0.463489375370407
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304299093618547,
+            1.0957442002037163
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655461695913029,
+            0.6013345720316913
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 57.99999999995553,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.9440190644603623,
+            0.5883213598576998
+          ],
+          "phase": "deliver Biological_Sample_03"
+        },
+        "red": {
+          "xy": [
+            0.3810663614071357,
+            0.8306570552464304
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121933254014834,
+            1.0303789531913925
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691209267137851,
+            0.46348980443590626
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304300815061579,
+            1.0957366896875376
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655463741838693,
+            0.6013339474210148
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 58.9999999999532,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.9613595469227527,
+            0.5889502982116258
+          ],
+          "phase": "deliver Biological_Sample_03"
+        },
+        "red": {
+          "xy": [
+            0.38106636112770303,
+            0.8306570552554368
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.381219337106421,
+            1.0303789530504397
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691200486161657,
+            0.46349028138734794
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304301482015938,
+            1.095734075067246
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655466147750898,
+            0.6013334386638607
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 59.999999999950866,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.9614337316106374,
+            0.5889508727945407
+          ],
+          "phase": "deliver Biological_Sample_03"
+        },
+        "red": {
+          "xy": [
+            0.3810663608967609,
+            0.8306570552616044
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193410008983,
+            1.030378952929531
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691191594649264,
+            0.4634907020354998
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304301866991933,
+            1.0957326953986868
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655468798871175,
+            0.6013329852903466
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 60.999999999948535,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8682283386587799,
+            0.5893819590019574
+          ],
+          "phase": "deliver Biological_Sample_03"
+        },
+        "red": {
+          "xy": [
+            0.38106636070614996,
+            0.8306570552664583
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121934432063675,
+            1.030378952826573
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.569118265585978,
+            0.46349089418073336
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304302138125309,
+            1.0957317435631169
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655470983998956,
+            0.6013323975585709
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 61.999999999946205,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8332135179570046,
+            0.589967049900723
+          ],
+          "phase": "park clear of transit"
+        },
+        "red": {
+          "xy": [
+            0.3810663605524533,
+            0.8306570552690722
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193471554201,
+            1.0303789527373588
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691173494128832,
+            0.4634911646573505
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304302342629178,
+            1.095731016377359
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655473485501252,
+            0.6013319660212296
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 62.999999999943874,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.833092664418307,
+            0.5899236029063657
+          ],
+          "phase": "park clear of transit"
+        },
+        "red": {
+          "xy": [
+            0.3810663604247671,
+            0.83065705527255
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193495753729,
+            1.0303789526632594
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691164527584097,
+            0.46349139958785907
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304302500417463,
+            1.0957304437583648
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655475991021361,
+            0.6013315376017531
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 63.999999999941544,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.832367428279628,
+            0.3544828189146464
+          ],
+          "phase": "park clear of transit"
+        },
+        "red": {
+          "xy": [
+            0.38106636031242547,
+            0.8306570552714796
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121935164139126,
+            1.0303789525964564
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691155479967204,
+            0.46349158557633485
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304302623301618,
+            1.0957299890791972
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655478521911087,
+            0.6013311174507049
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 64.99999999994631,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8299650109260958,
+            0.08059790098231744
+          ],
+          "phase": "park clear of transit"
+        },
+        "red": {
+          "xy": [
+            0.38106636022286755,
+            0.8306570552689991
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193533988414,
+            1.0303789525389004
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691146542989632,
+            0.4634917631065883
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304302719502981,
+            1.0957296272104586
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655481037074923,
+            0.601330732853806
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 65.99999999995109,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.8288381007570205,
+            0.0804914403138073
+          ],
+          "phase": "park clear of transit"
+        },
+        "red": {
+          "xy": [
+            0.38106636015051254,
+            0.8306570552692175
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193548966685,
+            1.0303789524921068
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691137610867867,
+            0.4634919896251949
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304302795129179,
+            1.0957293390056098
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655483759273499,
+            0.6013304332192498
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 66.99999999995586,
+      "robots": {
+        "lab": {
+          "xy": [
+            0.971452112658431,
+            0.07621908976545659
+          ],
+          "phase": "park clear of transit"
+        },
+        "red": {
+          "xy": [
+            0.381066360089277,
+            0.8306570552656044
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193561784464,
+            1.030378952449158
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691128690020757,
+            0.46349214095400926
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304302854685532,
+            1.0957291094098045
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655486175157253,
+            0.6013300340463155
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 67.99999999996064,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0158403380996959,
+            0.07503266022683004
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.38106636004140765,
+            0.8306570552608046
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121935726607387,
+            1.0303789524115894
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691119830612238,
+            0.4634923261568023
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304302901715779,
+            1.095728926481033
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655488899169054,
+            0.6013297306683723
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 68.99999999996541,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0155276854782211,
+            0.07503983439213077
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.38106636000259964,
+            0.8306570552554357
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193581913258,
+            1.0303789523786988
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691110794737809,
+            0.4634924426852883
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304302938921457,
+            1.0957287807221483
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655491475969198,
+            0.6013293368118372
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 69.99999999997019,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.015469238652985,
+            0.07504107096088371
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663599717476,
+            0.8306570552495984
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193589802497,
+            1.0303789523498559
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691101861643523,
+            0.4634926136523739
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304302968397125,
+            1.0957286645731559
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655494310124356,
+            0.6013290396546583
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 70.99999999997496,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154580549373415,
+            0.07504129438998709
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.38106635994584775,
+            0.8306570552434543
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121935965217735,
+            1.0303789523245561
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691092991631438,
+            0.4634928391011723
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304302991781194,
+            1.095728572014922
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655497301246631,
+            0.6013287813177818
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 71.99999999997974,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154564474151466,
+            0.07504132871845093
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663599249889,
+            0.8306570552371307
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936022292197,
+            1.03037895230229
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691084204590144,
+            0.46349305722121514
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303010345716,
+            1.0957284982528923
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655500229028456,
+            0.6013285273238429
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 72.99999999998451,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154567102212206,
+            0.07504132891371922
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663599082226,
+            0.8306570552305167
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193607084419,
+            1.0303789522824973
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691075261885535,
+            0.4634931782286808
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303025094615,
+            1.0957284394680757
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655503003335499,
+            0.6013281940064557
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 73.99999999998929,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154572770605772,
+            0.07504132395980721
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663598951201,
+            0.8306570552235943
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193611208152,
+            1.030378952264974
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691066294481301,
+            0.4634933778229852
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303036827331,
+            1.0957283926182677
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.565550586966819,
+            0.6013279027250641
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 74.99999999999406,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154578376542576,
+            0.07504131907149464
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663598852408,
+            0.830657055216503
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936147068397,
+            1.0303789522492908
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691057480679944,
+            0.4634934389034434
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303046154977,
+            1.0957283552787724
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655508618235799,
+            0.6013275514060613
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 75.99999999999883,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154583375949457,
+            0.07504131501075781
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663598772953,
+            0.8306570552093012
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936176761284,
+            1.0303789522351565
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691048460153499,
+            0.4634935865916956
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303053581654,
+            1.0957283255191272
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655511440577323,
+            0.601327232533277
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 77.00000000000361,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.015458773670253,
+            0.07504131174275562
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663598706998,
+            0.8306570552020615
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193620205162,
+            1.0303789522223266
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691039413541239,
+            0.46349352248688314
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303059487677,
+            1.095728301799401
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655513946736362,
+            0.6013267534386009
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 78.00000000000838,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154591520925298,
+            0.07504130912267845
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663598653117,
+            0.8306570551947978
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936223392255,
+            1.030378952210696
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691030274916958,
+            0.46349360970930886
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303064188959,
+            1.0957282828926616
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655516864069615,
+            0.601326434649844
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 79.00000000001316,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154594800888308,
+            0.07504130701530794
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663598626672,
+            0.8306570551874017
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193624139062,
+            1.0303789522000681
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691021364754794,
+            0.4634937054687147
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303067934203,
+            1.095728267824563
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655519827514314,
+            0.6013261362353913
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 80.00000000001793,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154597642987062,
+            0.07504130531305257
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.38106635986077153,
+            0.8306570551799103
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193625655952,
+            1.0303789521902216
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691012520760549,
+            0.463493872392986
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303070915361,
+            1.0957282558132828
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655522867565596,
+            0.6013258786449079
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 81.00000000002271,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.015460010550858,
+            0.07504130393090591
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663598593081,
+            0.8306570551723554
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193626939575,
+            1.0303789521810995
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5691004178118191,
+            0.46349431113655093
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303073288947,
+            1.095728246238316
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655525967946297,
+            0.6013257642054497
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 82.00000000002748,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.015460223911377,
+            0.07504130280291034
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663598590104,
+            0.8306570551646387
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936280157853,
+            1.0303789521726419
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690995620998596,
+            0.46349457815220857
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303075183207,
+            1.095728238605255
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655528671195421,
+            0.601325483711917
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 83.00000000003226,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154604087726238,
+            0.0750413018773299
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663598593041,
+            0.8306570551569568
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936289149105,
+            1.0303789521645819
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690986996753344,
+            0.46349473588070456
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303076688753,
+            1.0957282325203852
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655531182868803,
+            0.6013251245878273
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 84.00000000003703,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154605689422112,
+            0.07504130111412516
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663598602869,
+            0.8306570551493521
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193629671197,
+            1.0303789521569937
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690978369420979,
+            0.46349490150089634
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.830430307788381,
+            1.095728227669092
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655533695845308,
+            0.6013247744244873
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 85.00000000004181,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.015460707717859,
+            0.07504130048228609
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663598622152,
+            0.830657055141705
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936302983667,
+            1.0303789521498328
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690969803872927,
+            0.4634951157221358
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303078838793,
+            1.0957282238009127
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655536337078481,
+            0.6013244765049223
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 86.00000000004658,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.015460827957893,
+            0.0750412999570474
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663598638328,
+            0.8306570551340389
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936308216353,
+            1.0303789521429072
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690961141941382,
+            0.46349526376060274
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303079597696,
+            1.0957282207161958
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655538836673719,
+            0.6013241215175449
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 87.00000000005136,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154609321381207,
+            0.07504129951941746
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.38106635986618687,
+            0.8306570551262923
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193631252257,
+            1.030378952136335
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690952535384761,
+            0.46349537790266154
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.830430308020631,
+            1.0957282182561805
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655541338456695,
+            0.6013237635513687
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 88.00000000005613,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154610224036327,
+            0.07504129915271215
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663598689916,
+            0.830657055118589
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936315986715,
+            1.030378952129919
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690944032778186,
+            0.4634955313544353
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303080687735,
+            1.0957282162935238
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655543902308549,
+            0.6013234399093578
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 89.00000000006091,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154611006130292,
+            0.0750412988450239
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663598712426,
+            0.8306570551108293
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193631889001,
+            1.0303789521236661
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690935372533149,
+            0.46349570799033724
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303081074187,
+            1.095728214727684
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655546406773554,
+            0.6013231179350957
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 90.00000000006568,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154611683773784,
+            0.07504129858517664
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.38106635987357673,
+            0.8306570551030218
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936321171684,
+            1.0303789521176214
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690926832027249,
+            0.46349586353805433
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303081376347,
+            1.0957282134782178
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655548943210679,
+            0.6013227976688637
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 91.00000000007046,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154612270919932,
+            0.07504129836551365
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663598759408,
+            0.8306570550951602
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193632292789,
+            1.0303789521117857
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690918210149054,
+            0.4634959705462386
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303081615313,
+            1.0957282124805492
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655551467328631,
+            0.6013224453931791
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 92.00000000007523,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154612779654744,
+            0.0750412981784746
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.38106635987867216,
+            0.8306570550873111
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193632427467,
+            1.0303789521061009
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690909699931218,
+            0.46349610460176854
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303081810535,
+            1.0957282116837648
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655554010910425,
+            0.6013221306571896
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 93.00000000008001,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154613220450937,
+            0.07504129801987583
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.38106635988151927,
+            0.8306570550795052
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193632520749,
+            1.0303789521005255
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690901070764478,
+            0.4634962828771096
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303081964081,
+            1.0957282110471172
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655556584644996,
+            0.6013218217618465
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 94.00000000008478,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.015461360238556,
+            0.07504129788454489
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.38106635988504967,
+            0.8306570550716497
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193632585119,
+            1.0303789520950624
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690892500684744,
+            0.46349643650275735
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082081278,
+            1.0957282105380726
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.56555591100499,
+            0.6013215058487169
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 95.00000000008956,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154613933319798,
+            0.07504129776959996
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.38106635988895693,
+            0.8306570550637308
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936326168504,
+            1.0303789520896223
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690883948177541,
+            0.46349659720027075
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082181048,
+            1.095728210130792
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655561665672997,
+            0.6013212005645847
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 96.00000000009433,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154614220067542,
+            0.07504129767080546
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.38106635989210763,
+            0.8306570550558958
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193632631163,
+            1.0303789520843147
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.56908754572103,
+            0.4634967500045192
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082257103,
+            1.0957282098044905
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655564210737749,
+            0.601320895785634
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 97.0000000000991,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.015461446853405,
+            0.0750412975866778
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.38106635989480747,
+            0.8306570550481512
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936326259703,
+            1.0303789520789863
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.569086693913865,
+            0.4634968833042044
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082309592,
+            1.0957282095431378
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655566686515773,
+            0.601320572088478
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 98.00000000010388,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154614683829088,
+            0.0750412975139892
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663598981162,
+            0.8306570550404122
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.381219363260403,
+            1.0303789520738487
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690858351745307,
+            0.46349701058860104
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082356175,
+            1.0957282093328942
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655569244939401,
+            0.601320255944474
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 99.00000000010866,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154614870383631,
+            0.07504129745204965
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.38106635990106547,
+            0.8306570550326363
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193632561947,
+            1.0303789520685749
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690849866258595,
+            0.4634971954328144
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.830430308239551,
+            1.095728209164077
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655571799024499,
+            0.6013199640741356
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 100.00000000011343,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154615032037604,
+            0.07504129739839345
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663599045473,
+            0.8306570550248271
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193632518977,
+            1.0303789520634608
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690841326598388,
+            0.46349737784536915
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082425405,
+            1.09572820902823
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655574321080213,
+            0.6013196661034718
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 101.0000000001182,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154615172107753,
+            0.0750412973525828
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663599077154,
+            0.8306570550169384
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.381219363245151,
+            1.0303789520583913
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690832841201644,
+            0.463497502148426
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082443107,
+            1.0957282089182263
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655576793679925,
+            0.6013193470330953
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 102.00000000012298,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154615293490128,
+            0.07504129731314449
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663599108551,
+            0.830657055009054
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193632381948,
+            1.0303789520532711
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690824337016572,
+            0.4634976583148431
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082456336,
+            1.095728208829198
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655579296887151,
+            0.6013190315811672
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 103.00000000012776,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154615398687428,
+            0.07504129727922879
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663599143527,
+            0.8306570550012946
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936323091105,
+            1.0303789520481785
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690815815652599,
+            0.46349783600695615
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082464922,
+            1.0957282087560187
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655581761002169,
+            0.6013187335338984
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 104.00000000013253,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154615489848915,
+            0.07504129725005364
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.38106635991774856,
+            0.8306570549934836
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936322340305,
+            1.0303789520430835
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690807303136918,
+            0.4634980173330199
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082476729,
+            1.095728208696413
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655584191665217,
+            0.601318439380845
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 105.0000000001373,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154615568863943,
+            0.07504129722487375
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663599209687,
+            0.8306570549856765
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193632147961,
+            1.0303789520380944
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690798869630745,
+            0.46349819289537575
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082482596,
+            1.0957282086473383
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655586666168915,
+            0.6013181450750998
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 106.00000000014208,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154615637336832,
+            0.07504129720320787
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663599242297,
+            0.8306570549778112
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936320520394,
+            1.030378952033067
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.569079041067318,
+            0.46349835780629506
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.830430308248816,
+            1.095728208606789
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655589140513444,
+            0.6013178453021576
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 107.00000000014685,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154615696679998,
+            0.0750412971843976
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663599273514,
+            0.8306570549698701
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936319593136,
+            1.0303789520280289
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690782026692219,
+            0.46349851403372366
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082491856,
+            1.0957282085726865
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655591598636205,
+            0.6013175386884435
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 108.00000000015163,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154615748120952,
+            0.07504129716821978
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.38106635993143,
+            0.8306570549620865
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936318677624,
+            1.03037895202289
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690773651009191,
+            0.463498660987903
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082494425,
+            1.0957282085439233
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655594038783694,
+            0.6013172265771733
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 109.0000000001564,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154615792720643,
+            0.07504129715400501
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663599350506,
+            0.830657054954304
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193631773218,
+            1.0303789520179176
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690765313617111,
+            0.46349881985397334
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082498005,
+            1.0957282085193536
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.565559654308248,
+            0.6013169331480307
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 110.00000000016118,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154615831354543,
+            0.07504129714204194
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.38106635993808097,
+            0.8306570549464523
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936316694766,
+            1.0303789520128877
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690756873363195,
+            0.4634989319480897
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082491861,
+            1.0957282084980087
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655598912709487,
+            0.6013166072487051
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 111.00000000016595,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154615864845775,
+            0.07504129713168486
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663599417967,
+            0.8306570549385996
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.381219363157038,
+            1.0303789520078552
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690748504774944,
+            0.4634991039447386
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082484915,
+            1.095728208479474
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655601362731174,
+            0.601316313292184
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 112.00000000017073,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.015461589389153,
+            0.07504129712264726
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.381066359945488,
+            0.8306570549306679
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936314660787,
+            1.0303789520028972
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.569074000450402,
+            0.4634992417840119
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082481483,
+            1.0957282084631303
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655603724437454,
+            0.6013159939402862
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 113.0000000001755,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.015461591908307,
+            0.07504129711521282
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.38106635994830096,
+            0.8306570549227479
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936313583105,
+            1.0303789519979103
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690731568419731,
+            0.4634994147521533
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082478292,
+            1.0957282084485984
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655606204261394,
+            0.6013157164109929
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 114.00000000018028,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154615940932623,
+            0.07504129710886878
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663599507132,
+            0.8306570549150303
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936312438914,
+            1.0303789519931081
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690723123750322,
+            0.46349962682996537
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082473575,
+            1.0957282084353301
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655608659847661,
+            0.6013154399900699
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 115.00000000018505,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154615959882245,
+            0.07504129710318422
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.38106635995410665,
+            0.8306570549072354
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936311200744,
+            1.0303789519882074
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690714799832864,
+            0.4634998252215845
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082466347,
+            1.0957282084232467
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.565561122188128,
+            0.60131517494877
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 116.00000000018983,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154615976315606,
+            0.07504129709774549
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.38106635995810134,
+            0.8306570548993956
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936310015386,
+            1.0303789519832223
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690706420400214,
+            0.46349998215851274
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082463296,
+            1.095728208412204
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.565561374970558,
+            0.6013148752220543
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 117.0000000001946,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154615990577542,
+            0.07504129709381716
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663599602176,
+            0.8306570548915071
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936308924453,
+            1.030378951978224
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.569069801024034,
+            0.4635001130986142
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082462254,
+            1.095728208401611
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655616324495182,
+            0.6013145655377898
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 118.00000000019938,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154616002955714,
+            0.07504129709005744
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663599633998,
+            0.8306570548835498
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936307744264,
+            1.0303789519733078
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690689671253188,
+            0.4635002626872096
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082454618,
+            1.095728208391644
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655618916146214,
+            0.601314271743043
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 119.00000000020415,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154616013709385,
+            0.07504129708709054
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.3810663599666029,
+            0.8306570548757939
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.3812193630666311,
+            1.0303789519682716
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690681321660332,
+            0.46350046614947177
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082448173,
+            1.0957282083812734
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655621571309091,
+            0.6013140090888787
+          ],
+          "phase": "deploy"
+        }
+      }
+    },
+    {
+      "time_s": 120.00000000020893,
+      "robots": {
+        "lab": {
+          "xy": [
+            1.0154616023043217,
+            0.0750412970842944
+          ],
+          "phase": "finished"
+        },
+        "red": {
+          "xy": [
+            0.381066359970645,
+            0.8306570548679123
+          ],
+          "phase": "wait for KIT to clear upper west lane"
+        },
+        "yellow": {
+          "xy": [
+            0.38121936305525644,
+            1.0303789519633175
+          ],
+          "phase": "deploy"
+        },
+        "kit": {
+          "xy": [
+            0.5690673025384229,
+            0.4635006078329697
+          ],
+          "phase": "unload kit gate 0"
+        },
+        "green": {
+          "xy": [
+            0.8304303082442076,
+            1.095728208371337
+          ],
+          "phase": "finished"
+        },
+        "aux": {
+          "xy": [
+            0.5655624087940253,
+            0.6013137108724815
+          ],
+          "phase": "deploy"
+        }
+      }
+    }
+  ],
+  "score_at_declaration": {
+    "profile": "national_senior_preliminary",
+    "mode": "official_120s",
+    "elapsed_seconds": 120.00000000020893,
+    "requested_time_limit_s": 120,
+    "official_time_limit_s": 120.0,
+    "within_requested_time_limit": true,
+    "within_official_time": true,
+    "task_score": 50,
+    "penalty_points": 0,
+    "score": 50,
+    "maximum_score": 160,
+    "per_task": {
+      "samples": {
+        "scored_count": 3,
+        "required_count": 3,
+        "points": 30,
+        "maximum_points": 30
+      },
+      "kits": {
+        "scored_count": 0,
+        "required_count": 4,
+        "points": 0,
+        "maximum_points": 40
+      },
+      "red_patients": {
+        "scored_count": 0,
+        "required_count": 3,
+        "points": 0,
+        "maximum_points": 30
+      },
+      "yellow_patients": {
+        "scored_count": 0,
+        "required_count": 3,
+        "points": 0,
+        "maximum_points": 30
+      },
+      "green_patients": {
+        "scored_count": 2,
+        "required_count": 3,
+        "points": 20,
+        "maximum_points": 30
+      }
+    },
+    "all_tasks_complete": false,
+    "feasibility_success": false,
+    "official_success": false,
+    "success": false,
+    "official_score": 50,
+    "sample_slot_assignments": {
+      "lab_1": "Biological_Sample_01",
+      "lab_2": "Biological_Sample_02",
+      "lab_3": "Biological_Sample_03"
+    },
+    "kit_counts_by_zone": {
+      "hospital": 0,
+      "pcc_lower": 0,
+      "pcc_upper": 0
+    },
+    "yellow_counts_by_pcc": {
+      "pcc_lower": 0,
+      "pcc_upper": 0
+    },
+    "yellow_distribution_satisfied": false,
+    "contaminated_zones": {},
+    "objects": {
+      "Cylinder_Yellow_01": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 7.828421798236638e-06,
+        "angular_speed_rad_s": 0.0007670736509934032,
+        "bounds_xyz": [
+          [
+            0.4400000006468584,
+            0.1399992161113827,
+            -4.3959241033397767e-07
+          ],
+          [
+            0.4600001165454277,
+            0.16000000767564462,
+            0.020000360411217173
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.2800001165454277,
+          "pcc_lower": -0.2800001165454277,
+          "pcc_upper": -0.7410007838886173,
+          "recovery": -0.5610007838886173
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Yellow_02": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 7.979463262414067e-06,
+        "angular_speed_rad_s": 0.0007675892448467703,
+        "bounds_xyz": [
+          [
+            0.6400000008301002,
+            0.13999957461215845,
+            -3.1789711120444597e-07
+          ],
+          [
+            0.6600000121504116,
+            0.1600000038811084,
+            0.020000111520685548
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.4800000121504116,
+          "pcc_lower": -0.4800000121504116,
+          "pcc_upper": -0.7410004253878415,
+          "recovery": -0.5610004253878416
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Green_03": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 2.8904698967036515e-05,
+        "angular_speed_rad_s": 0.0007035140872806543,
+        "bounds_xyz": [
+          [
+            0.4399999981949329,
+            0.23999900186103876,
+            -6.264475892678312e-07
+          ],
+          [
+            0.46000028078967986,
+            0.2600000058939823,
+            0.020000416594147735
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.28000028078967987,
+          "pcc_lower": -0.28000028078967987,
+          "pcc_upper": -0.6410009981389613,
+          "recovery": -0.4610009981389612
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Green_04": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 3.222339896693727e-05,
+        "angular_speed_rad_s": 0.00040621962368007317,
+        "bounds_xyz": [
+          [
+            0.6399995525452727,
+            0.23999913357318822,
+            -6.897059354905172e-07
+          ],
+          [
+            0.6599999965114939,
+            0.26000000769062426,
+            0.020000290690890002
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.4799999965114939,
+          "pcc_lower": -0.4799999965114939,
+          "pcc_upper": -0.6410008664268118,
+          "recovery": -0.4610008664268117
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_05": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 9.717100793829406e-06,
+        "angular_speed_rad_s": 0.0009381606492178876,
+        "bounds_xyz": [
+          [
+            0.43999999759382696,
+            0.33999925449869484,
+            -3.7034314580644545e-07
+          ],
+          [
+            0.46000026289566515,
+            0.3600000042046412,
+            0.020000424918346815
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.28000026289566515,
+          "pcc_lower": -0.28000026289566515,
+          "pcc_upper": -0.5410007455013052,
+          "recovery": -0.423000002406173
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_06": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 8.62826993769437e-06,
+        "angular_speed_rad_s": 0.0002700299385799235,
+        "bounds_xyz": [
+          [
+            0.639999000682748,
+            0.33999986122349335,
+            -8.137052732535427e-07
+          ],
+          [
+            0.6600000053511738,
+            0.3600000095813358,
+            0.020000201856967527
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.48000000535117376,
+          "pcc_lower": -0.48000000535117376,
+          "pcc_upper": -0.5410001387765067,
+          "recovery": -0.3610001387765066
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_07": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 3.60221404873645e-05,
+        "angular_speed_rad_s": 0.0003811592748474294,
+        "bounds_xyz": [
+          [
+            0.43999999936477596,
+            0.8210000002873761,
+            -6.805429308837097e-07
+          ],
+          [
+            0.4600009876003298,
+            0.841000241520365,
+            0.020000336708273145
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.2800009876003298,
+          "pcc_lower": -0.5030002415203649,
+          "pcc_upper": -0.2800009876003298,
+          "recovery": -0.423000000635224
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_08": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.2629679624362446e-05,
+        "angular_speed_rad_s": 0.0006469395006516204,
+        "bounds_xyz": [
+          [
+            0.6399998522094776,
+            0.8209999949039712,
+            -3.81161337503072e-07
+          ],
+          [
+            0.6599999974035611,
+            0.8410006094640108,
+            0.020000250316557243
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.4799999974035611,
+          "pcc_lower": -0.5030006094640107,
+          "pcc_upper": -0.4799999974035611,
+          "recovery": -0.22300014779052235
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Green_09": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.2675994892261915e-05,
+        "angular_speed_rad_s": 0.0010743665179074181,
+        "bounds_xyz": [
+          [
+            1.0675209620641635,
+            0.8708621458616851,
+            -2.418216310789284e-07
+          ],
+          [
+            1.0875214460349674,
+            0.8908621991595435,
+            0.02000024507453655
+          ]
+        ],
+        "contained_zones": [
+          "recovery"
+        ],
+        "zone_clearance_m": {
+          "hospital": -0.9075214460349674,
+          "pcc_lower": -0.9075214460349674,
+          "pcc_upper": -0.9075214460349674,
+          "recovery": 0.05547855396503265
+        },
+        "eligible_zones": [
+          "recovery"
+        ]
+      },
+      "Cylinder_Green_10": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.5431627640533955e-05,
+        "angular_speed_rad_s": 0.0012206798406982316,
+        "bounds_xyz": [
+          [
+            1.0674506014859186,
+            1.0191907047333912,
+            -8.784355857455878e-07
+          ],
+          [
+            1.087451292625598,
+            1.0391911893516403,
+            0.01999996567343209
+          ]
+        ],
+        "contained_zones": [
+          "recovery"
+        ],
+        "zone_clearance_m": {
+          "hospital": -0.907451292625598,
+          "pcc_lower": -0.907451292625598,
+          "pcc_upper": -0.907451292625598,
+          "recovery": 0.055548707374402095
+        },
+        "eligible_zones": [
+          "recovery"
+        ]
+      },
+      "Cylinder_Yellow_11": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 9.087741058948806e-06,
+        "angular_speed_rad_s": 0.0008161740038225348,
+        "bounds_xyz": [
+          [
+            0.43999993525660863,
+            1.020999996110906,
+            -7.261629786665252e-07
+          ],
+          [
+            0.4600000018848601,
+            1.0410007746256187,
+            0.02000005519761737
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.28000000188486013,
+          "pcc_lower": -0.7030007746256186,
+          "pcc_upper": -0.28000000188486013,
+          "recovery": -0.42300006474339136
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Yellow_12": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": false,
+        "linear_speed_m_s": 992.7898364596456,
+        "angular_speed_rad_s": 21.594227624733165,
+        "bounds_xyz": [
+          [
+            0.5486104806206062,
+            16.480411223730297,
+            -50236.56690824335
+          ],
+          [
+            0.5709021206314,
+            16.5015489378226,
+            -50236.544881815375
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -15.6405489378226,
+          "pcc_lower": -16.1635489378226,
+          "pcc_upper": -15.3205489378226,
+          "recovery": -15.3205489378226
+        },
+        "eligible_zones": []
+      },
+      "Medical_Kit_01": {
+        "kind": "medical_kit",
+        "released": false,
+        "stable": false,
+        "linear_speed_m_s": 0.004946959492327506,
+        "angular_speed_rad_s": 0.3141364974247631,
+        "bounds_xyz": [
+          [
+            0.5937968441706614,
+            0.3988159905048207,
+            0.04188016834117787
+          ],
+          [
+            0.6206794039249335,
+            0.4257809002235023,
+            0.06199369823529219
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.4406794039249335,
+          "pcc_lower": -0.4406794039249335,
+          "pcc_upper": -0.4821840094951793,
+          "recovery": -0.30218400949517926
+        },
+        "eligible_zones": []
+      },
+      "Medical_Kit_02": {
+        "kind": "medical_kit",
+        "released": false,
+        "stable": false,
+        "linear_speed_m_s": 0.0027556456536426428,
+        "angular_speed_rad_s": 0.16776802371211103,
+        "bounds_xyz": [
+          [
+            0.5688556195330645,
+            0.40102469238713406,
+            0.04188921047941864
+          ],
+          [
+            0.5952156747998767,
+            0.42745918328829086,
+            0.06199404154181207
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.4152156747998767,
+          "pcc_lower": -0.4152156747998767,
+          "pcc_upper": -0.47997530761286594,
+          "recovery": -0.2999753076128659
+        },
+        "eligible_zones": []
+      },
+      "Medical_Kit_03": {
+        "kind": "medical_kit",
+        "released": false,
+        "stable": true,
+        "linear_speed_m_s": 8.283632428212636e-05,
+        "angular_speed_rad_s": 0.003121490655032159,
+        "bounds_xyz": [
+          [
+            0.5372934543782831,
+            0.4011701596341595,
+            0.041914388228506516
+          ],
+          [
+            0.5650859369226214,
+            0.4290156355365917,
+            0.061989486511640074
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.38508593692262144,
+          "pcc_lower": -0.38508593692262144,
+          "pcc_upper": -0.47982984036584053,
+          "recovery": -0.32570654562171686
+        },
+        "eligible_zones": []
+      },
+      "Medical_Kit_04": {
+        "kind": "medical_kit",
+        "released": false,
+        "stable": true,
+        "linear_speed_m_s": 7.286195304127938e-05,
+        "angular_speed_rad_s": 0.0027022405514719678,
+        "bounds_xyz": [
+          [
+            0.506872455279892,
+            0.40261233292668785,
+            0.04190534502958194
+          ],
+          [
+            0.5338406315470579,
+            0.42963723017533884,
+            0.06198302248982588
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.35384063154705786,
+          "pcc_lower": -0.35384063154705786,
+          "pcc_upper": -0.47838766707331215,
+          "recovery": -0.356127544720108
+        },
+        "eligible_zones": []
+      },
+      "Biological_Sample_01": {
+        "kind": "sample",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 3.3327641394790044e-05,
+        "angular_speed_rad_s": 0.00043229901985682867,
+        "bounds_xyz": [
+          [
+            1.0394954921585924,
+            0.36135560939255224,
+            -4.235543048930479e-07
+          ],
+          [
+            1.0954955302081755,
+            0.41735561475783095,
+            0.005000006820025505
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.9154955302081755,
+          "pcc_lower": -0.9154955302081755,
+          "pcc_upper": -0.9154955302081755,
+          "recovery": -0.3396443906074477
+        },
+        "eligible_zones": [],
+        "slot_clearance_m": {
+          "lab_1": 0.0007493369659509926,
+          "lab_2": -0.09914564884123589,
+          "lab_3": -0.19914502330657888
+        },
+        "seated": true,
+        "eligible_slots": [
+          "lab_1"
+        ]
+      },
+      "Biological_Sample_02": {
+        "kind": "sample",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.620329576168742e-05,
+        "angular_speed_rad_s": 0.0001812494239696777,
+        "bounds_xyz": [
+          [
+            1.0392590783883193,
+            0.46120657942370774,
+            -4.37369932344573e-07
+          ],
+          [
+            1.095259125822789,
+            0.5172065929269791,
+            0.00500011502550347
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.9152591258227891,
+          "pcc_lower": -0.9152591258227891,
+          "pcc_upper": -0.9152591258227891,
+          "recovery": -0.23979342057629222
+        },
+        "eligible_zones": [],
+        "slot_clearance_m": {
+          "lab_1": -0.09670937332289176,
+          "lab_2": 0.0005093955515014827,
+          "lab_3": -0.0992961303154325
+        },
+        "seated": true,
+        "eligible_slots": [
+          "lab_2"
+        ]
+      },
+      "Biological_Sample_03": {
+        "kind": "sample",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 5.426737541428515e-06,
+        "angular_speed_rad_s": 9.143076947128927e-05,
+        "bounds_xyz": [
+          [
+            1.0392990291962123,
+            0.5611967588466089,
+            -4.599331213392746e-07
+          ],
+          [
+            1.0952990789969599,
+            0.617196778909421,
+            0.005000141424146327
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.91529907899696,
+          "pcc_lower": -0.91529907899696,
+          "pcc_upper": -0.91529907899696,
+          "recovery": -0.13980324115339104
+        },
+        "eligible_zones": [],
+        "slot_clearance_m": {
+          "lab_1": -0.19669801518694513,
+          "lab_2": -0.09669926776500049,
+          "lab_3": 0.0005202035371820388
+        },
+        "seated": true,
+        "eligible_slots": [
+          "lab_3"
+        ]
+      }
+    },
+    "inventory": {
+      "yellow_cylinder": 4,
+      "green_cylinder": 4,
+      "red_cylinder": 4,
+      "medical_kit": 4,
+      "sample": 3
+    },
+    "inventory_valid": true,
+    "event_history_complete": true,
+    "initial_setup_valid": true,
+    "human_intervention": false,
+    "robot_currently_outside": false,
+    "physics_warning_count": 0,
+    "robot_outside_count": 0,
+    "simulation_tolerances": {
+      "boundary_epsilon_m": 1e-09,
+      "release_contact_distance_m": 1e-06,
+      "linear_speed_m_s": 0.005,
+      "angular_speed_rad_s": 0.1,
+      "sample_seating_height_m": 0.0005
+    },
+    "scoring_interpretations": [
+      "Samples use distinct slots and must be seated near the hole floor.",
+      "Wrong-color contamination is evaluated from full containment, even if the wrong item is moving or held.",
+      "Yellow distribution uses eligible placements before zone contamination; only uncontaminated PCC patient points remain.",
+      "Stability is instantaneous; a held final view requires a separate time-history check."
+    ]
+  },
+  "score_after_five_seconds": {
+    "profile": "national_senior_preliminary",
+    "mode": "official_120s",
+    "elapsed_seconds": 125.0000000002328,
+    "requested_time_limit_s": 120,
+    "official_time_limit_s": 120.0,
+    "within_requested_time_limit": false,
+    "within_official_time": false,
+    "task_score": 50,
+    "penalty_points": 0,
+    "score": 50,
+    "maximum_score": 160,
+    "per_task": {
+      "samples": {
+        "scored_count": 3,
+        "required_count": 3,
+        "points": 30,
+        "maximum_points": 30
+      },
+      "kits": {
+        "scored_count": 0,
+        "required_count": 4,
+        "points": 0,
+        "maximum_points": 40
+      },
+      "red_patients": {
+        "scored_count": 0,
+        "required_count": 3,
+        "points": 0,
+        "maximum_points": 30
+      },
+      "yellow_patients": {
+        "scored_count": 0,
+        "required_count": 3,
+        "points": 0,
+        "maximum_points": 30
+      },
+      "green_patients": {
+        "scored_count": 2,
+        "required_count": 3,
+        "points": 20,
+        "maximum_points": 30
+      }
+    },
+    "all_tasks_complete": false,
+    "feasibility_success": false,
+    "official_success": false,
+    "success": false,
+    "official_score": null,
+    "sample_slot_assignments": {
+      "lab_1": "Biological_Sample_01",
+      "lab_2": "Biological_Sample_02",
+      "lab_3": "Biological_Sample_03"
+    },
+    "kit_counts_by_zone": {
+      "hospital": 0,
+      "pcc_lower": 0,
+      "pcc_upper": 0
+    },
+    "yellow_counts_by_pcc": {
+      "pcc_lower": 0,
+      "pcc_upper": 0
+    },
+    "yellow_distribution_satisfied": false,
+    "contaminated_zones": {},
+    "objects": {
+      "Cylinder_Yellow_01": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.1459701015846847e-05,
+        "angular_speed_rad_s": 0.0009697101878476998,
+        "bounds_xyz": [
+          [
+            0.440000000669054,
+            0.13999927526008865,
+            -7.389239180203427e-07
+          ],
+          [
+            0.46000009450655954,
+            0.16000000801192948,
+            0.019999999811576567
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.28000009450655955,
+          "pcc_lower": -0.28000009450655955,
+          "pcc_upper": -0.7410007247399113,
+          "recovery": -0.5610007247399114
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Yellow_02": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 8.723575441709632e-06,
+        "angular_speed_rad_s": 0.0007880864633686897,
+        "bounds_xyz": [
+          [
+            0.6400000008216296,
+            0.1399990074609441,
+            -8.842481455436507e-07
+          ],
+          [
+            0.6600000283127867,
+            0.16000000409672613,
+            0.020000112767027144
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.4800000283127867,
+          "pcc_lower": -0.4800000283127867,
+          "pcc_upper": -0.7410009925390559,
+          "recovery": -0.5610009925390559
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Green_03": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 8.488250847006931e-06,
+        "angular_speed_rad_s": 0.0007716942183712503,
+        "bounds_xyz": [
+          [
+            0.4399999981081748,
+            0.2399991873884362,
+            -7.723348735156482e-07
+          ],
+          [
+            0.46000024588011845,
+            0.2600000061741072,
+            0.020000083116356378
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.28000024588011846,
+          "pcc_lower": -0.28000024588011846,
+          "pcc_upper": -0.6410008126115638,
+          "recovery": -0.4610008126115638
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Green_04": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 6.353598449196597e-05,
+        "angular_speed_rad_s": 0.0011368541941940672,
+        "bounds_xyz": [
+          [
+            0.6399995469599229,
+            0.23999911667942006,
+            -6.709067865255658e-07
+          ],
+          [
+            0.6599999963614791,
+            0.2600000080118088,
+            0.020000327304285834
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.4799999963614791,
+          "pcc_lower": -0.4799999963614791,
+          "pcc_upper": -0.6410008833205799,
+          "recovery": -0.46100088332057987
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_05": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 7.441028969942184e-05,
+        "angular_speed_rad_s": 0.0009607302799230917,
+        "bounds_xyz": [
+          [
+            0.43999999751787583,
+            0.3399990417324095,
+            -6.699446456672614e-07
+          ],
+          [
+            0.4600004009728064,
+            0.3600000043426604,
+            0.02000037379122646
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.28000040097280643,
+          "pcc_lower": -0.28000040097280643,
+          "pcc_upper": -0.5410009582675905,
+          "recovery": -0.42300000248212416
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_06": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 2.494563574303654e-05,
+        "angular_speed_rad_s": 0.0002502693905987893,
+        "bounds_xyz": [
+          [
+            0.6399990224024041,
+            0.339999852443882,
+            -7.477544691162491e-07
+          ],
+          [
+            0.6600000055861059,
+            0.3600000099807531,
+            0.020000247970299555
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.48000000558610595,
+          "pcc_lower": -0.48000000558610595,
+          "pcc_upper": -0.541000147556118,
+          "recovery": -0.361000147556118
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_07": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 7.702881350369002e-05,
+        "angular_speed_rad_s": 0.00103750104727256,
+        "bounds_xyz": [
+          [
+            0.4399999993346036,
+            0.8210000002958807,
+            -6.293626818639625e-07
+          ],
+          [
+            0.4600009759260754,
+            0.841000230276517,
+            0.020000373941184195
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.2800009759260754,
+          "pcc_lower": -0.5030002302765171,
+          "pcc_upper": -0.2800009759260754,
+          "recovery": -0.4230000006653964
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Red_08": {
+        "kind": "red_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 5.109940595259591e-05,
+        "angular_speed_rad_s": 0.0006751675429286186,
+        "bounds_xyz": [
+          [
+            0.6399997338910229,
+            0.8209999947724911,
+            -7.568176205469818e-07
+          ],
+          [
+            0.6599999972767309,
+            0.8410010529542236,
+            0.020000333648133015
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.47999999727673087,
+          "pcc_lower": -0.5030010529542235,
+          "pcc_upper": -0.47999999727673087,
+          "recovery": -0.22300026610897705
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Green_09": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.5781681664475158e-05,
+        "angular_speed_rad_s": 0.0011452545887199249,
+        "bounds_xyz": [
+          [
+            1.0675209615053383,
+            0.8708621456657699,
+            -5.287184332361528e-07
+          ],
+          [
+            1.087521431866872,
+            0.8908622532169599,
+            0.019999953781880665
+          ]
+        ],
+        "contained_zones": [
+          "recovery"
+        ],
+        "zone_clearance_m": {
+          "hospital": -0.9075214318668721,
+          "pcc_lower": -0.9075214318668721,
+          "pcc_upper": -0.9075214318668721,
+          "recovery": 0.055478568133128014
+        },
+        "eligible_zones": [
+          "recovery"
+        ]
+      },
+      "Cylinder_Green_10": {
+        "kind": "green_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.580113739566123e-05,
+        "angular_speed_rad_s": 0.0012384597360616844,
+        "bounds_xyz": [
+          [
+            1.0674506008275275,
+            1.019190704300644,
+            -6.602889703732212e-07
+          ],
+          [
+            1.0874510972380318,
+            1.0391910392211594,
+            0.019999938536258838
+          ]
+        ],
+        "contained_zones": [
+          "recovery"
+        ],
+        "zone_clearance_m": {
+          "hospital": -0.9074510972380319,
+          "pcc_lower": -0.9074510972380319,
+          "pcc_upper": -0.9074510972380319,
+          "recovery": 0.05554890276196822
+        },
+        "eligible_zones": [
+          "recovery"
+        ]
+      },
+      "Cylinder_Yellow_11": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.544516647047068e-05,
+        "angular_speed_rad_s": 0.0008398952895972038,
+        "bounds_xyz": [
+          [
+            0.43999997306414773,
+            1.0209999957394942,
+            -5.171222797542563e-07
+          ],
+          [
+            0.4600000019176974,
+            1.0410005304600696,
+            0.020000018375909364
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.2800000019176974,
+          "pcc_lower": -0.7030005304600695,
+          "pcc_upper": -0.2800000019176974,
+          "recovery": -0.42300002693585226
+        },
+        "eligible_zones": []
+      },
+      "Cylinder_Yellow_12": {
+        "kind": "yellow_cylinder",
+        "released": true,
+        "stable": false,
+        "linear_speed_m_s": 1041.8398359174332,
+        "angular_speed_rad_s": 21.587171854580788,
+        "bounds_xyz": [
+          [
+            0.552206289296286,
+            17.23594377226315,
+            -55323.16570995835
+          ],
+          [
+            0.5754308968205972,
+            17.258305575398595,
+            -55323.14337951252
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -16.397305575398594,
+          "pcc_lower": -16.920305575398594,
+          "pcc_upper": -16.077305575398594,
+          "recovery": -16.077305575398594
+        },
+        "eligible_zones": []
+      },
+      "Medical_Kit_01": {
+        "kind": "medical_kit",
+        "released": false,
+        "stable": false,
+        "linear_speed_m_s": 0.002706159460208949,
+        "angular_speed_rad_s": 0.1665423866764508,
+        "bounds_xyz": [
+          [
+            0.5937769268803776,
+            0.3988213152392192,
+            0.04189132076218964
+          ],
+          [
+            0.6206745589171763,
+            0.42579320197118625,
+            0.0619936876310173
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.4406745589171763,
+          "pcc_lower": -0.4406745589171763,
+          "pcc_upper": -0.4821786847607808,
+          "recovery": -0.30217868476078075
+        },
+        "eligible_zones": []
+      },
+      "Medical_Kit_02": {
+        "kind": "medical_kit",
+        "released": false,
+        "stable": false,
+        "linear_speed_m_s": 0.004642217302187666,
+        "angular_speed_rad_s": 0.2984323144554435,
+        "bounds_xyz": [
+          [
+            0.5688344199362606,
+            0.4010152333559124,
+            0.041878779963145984
+          ],
+          [
+            0.5952096966600281,
+            0.4274728492480928,
+            0.06199410418171433
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.4152096966600281,
+          "pcc_lower": -0.4152096966600281,
+          "pcc_upper": -0.4799847666440876,
+          "recovery": -0.2999847666440876
+        },
+        "eligible_zones": []
+      },
+      "Medical_Kit_03": {
+        "kind": "medical_kit",
+        "released": false,
+        "stable": true,
+        "linear_speed_m_s": 9.99746765303988e-05,
+        "angular_speed_rad_s": 0.0034826665453732025,
+        "bounds_xyz": [
+          [
+            0.537282970629295,
+            0.4011718438560684,
+            0.04191443337271621
+          ],
+          [
+            0.5650777779952443,
+            0.4290196127015692,
+            0.061989496082771996
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.3850777779952443,
+          "pcc_lower": -0.3850777779952443,
+          "pcc_upper": -0.4798281561439316,
+          "recovery": -0.325717029370705
+        },
+        "eligible_zones": []
+      },
+      "Medical_Kit_04": {
+        "kind": "medical_kit",
+        "released": false,
+        "stable": true,
+        "linear_speed_m_s": 9.200704307414758e-05,
+        "angular_speed_rad_s": 0.003083930994971594,
+        "bounds_xyz": [
+          [
+            0.5068620437846931,
+            0.4026172379563792,
+            0.04190538507753502
+          ],
+          [
+            0.5338326864740697,
+            0.4296445722033759,
+            0.06198303383411567
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.3538326864740697,
+          "pcc_lower": -0.3538326864740697,
+          "pcc_upper": -0.4783827620436208,
+          "recovery": -0.35613795621530686
+        },
+        "eligible_zones": []
+      },
+      "Biological_Sample_01": {
+        "kind": "sample",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.2220685284526755e-05,
+        "angular_speed_rad_s": 0.00028066837279226573,
+        "bounds_xyz": [
+          [
+            1.0394954955167366,
+            0.3613556106342151,
+            -3.702909479818238e-07
+          ],
+          [
+            1.0954955451408996,
+            0.4173556202286835,
+            0.005000195827361767
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.9154955451408997,
+          "pcc_lower": -0.9154955451408997,
+          "pcc_upper": -0.9154955451408997,
+          "recovery": -0.33964438936578484
+        },
+        "eligible_zones": [],
+        "slot_clearance_m": {
+          "lab_1": 0.0007493394567260545,
+          "lab_2": -0.09914564758283953,
+          "lab_3": -0.19914502205649773
+        },
+        "seated": true,
+        "eligible_slots": [
+          "lab_1"
+        ]
+      },
+      "Biological_Sample_02": {
+        "kind": "sample",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 1.2876091119492155e-05,
+        "angular_speed_rad_s": 0.0002464616396236657,
+        "bounds_xyz": [
+          [
+            1.0392590784180913,
+            0.4612065794619335,
+            -4.905945532132118e-07
+          ],
+          [
+            1.0952591462656807,
+            0.5172065993033252,
+            0.005000301182108953
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.9152591462656807,
+          "pcc_lower": -0.9152591462656807,
+          "pcc_upper": -0.9152591462656807,
+          "recovery": -0.23979342053806646
+        },
+        "eligible_zones": [],
+        "slot_clearance_m": {
+          "lab_1": -0.09670937954561987,
+          "lab_2": 0.000509395599466958,
+          "lab_3": -0.0992961302769938
+        },
+        "seated": true,
+        "eligible_slots": [
+          "lab_2"
+        ]
+      },
+      "Biological_Sample_03": {
+        "kind": "sample",
+        "released": true,
+        "stable": true,
+        "linear_speed_m_s": 7.381163949222534e-06,
+        "angular_speed_rad_s": 0.00017564278355381582,
+        "bounds_xyz": [
+          [
+            1.039299029200208,
+            0.561196758834934,
+            -4.604541319662772e-07
+          ],
+          [
+            1.095299079009634,
+            0.6171967794315774,
+            0.005000143250891809
+          ]
+        ],
+        "contained_zones": [],
+        "zone_clearance_m": {
+          "hospital": -0.915299079009634,
+          "pcc_lower": -0.915299079009634,
+          "pcc_upper": -0.915299079009634,
+          "recovery": -0.13980324116506593
+        },
+        "eligible_zones": [],
+        "slot_clearance_m": {
+          "lab_1": -0.19669801570905363,
+          "lab_2": -0.09669926828705383,
+          "lab_3": 0.0005202035288039454
+        },
+        "seated": true,
+        "eligible_slots": [
+          "lab_3"
+        ]
+      }
+    },
+    "inventory": {
+      "yellow_cylinder": 4,
+      "green_cylinder": 4,
+      "red_cylinder": 4,
+      "medical_kit": 4,
+      "sample": 3
+    },
+    "inventory_valid": true,
+    "event_history_complete": true,
+    "initial_setup_valid": true,
+    "human_intervention": false,
+    "robot_currently_outside": false,
+    "physics_warning_count": 0,
+    "robot_outside_count": 0,
+    "simulation_tolerances": {
+      "boundary_epsilon_m": 1e-09,
+      "release_contact_distance_m": 1e-06,
+      "linear_speed_m_s": 0.005,
+      "angular_speed_rad_s": 0.1,
+      "sample_seating_height_m": 0.0005
+    },
+    "scoring_interpretations": [
+      "Samples use distinct slots and must be seated near the hole floor.",
+      "Wrong-color contamination is evaluated from full containment, even if the wrong item is moving or held.",
+      "Yellow distribution uses eligible placements before zone contamination; only uncontaminated PCC patient points remain.",
+      "Stability is instantaneous; a held final view requires a separate time-history check."
+    ]
+  },
+  "minimum_hold_score": 50,
+  "wall_seconds": 109.2035504579544,
+  "success": false
+}

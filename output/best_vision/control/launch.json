@@ -1,0 +1,12 @@
+{
+  "started_at_utc": "2026-09-11T11:49:16.479574+00:00",
+  "resolved_sha": "6e0a4a5f6646a1b99ffd93b1662d151093fef303",
+  "dataset_manifest_sha256": "62a3e7d61b827ea9dc82b8c5ea8406e65e0848eb3aec2224d1dfa73ec7315fd8",
+  "dataset_regeneration": false,
+  "command": [
+    "/usr/bin/python3",
+    "/content/robotics_best_design/control_train_wrapper.py"
+  ],
+  "log_path": "/content/robotics_best_design/output/best_vision/model_control/train.log",
+  "pid": 23715
+}
