@@ -1,0 +1,25 @@
+{
+  "benchmark_commit": "e2be32d42e5dd0b8486881919f37c2d4a13cc419",
+  "change": "Count each robot inside-to-fully-outside transition independently, including overlapping exits and re-exits.",
+  "file": "arena_mujoco/competition_events.py",
+  "benchmark_sha256": "f6841726d246047b8211bdb51a86964ee53630a21d59e9f9ef9f4e3ba4abb5e2",
+  "corrected_sha256": "efe6bf046b7dc0c6eb1800f27b33cdf6262ed70cab4d76ef283912da7c0ab179",
+  "relevant_tests_passed": 14,
+  "negative_control": "The new native overlapping-exit regression fails on the old updater when YELLOW exits while RED remains outside: 1 instead of 2.",
+  "coverage": [
+    "overlapping exits",
+    "independent re-entry and re-exit",
+    "unchanged repeated observations",
+    "simultaneous exits",
+    "robot names in event records",
+    "minus 10 points for each transition"
+  ],
+  "equivalence": {
+    "scope": "Valid initialized runs with the same recorded native states.",
+    "zero_exit_predicate": "Old count is zero if and only if the corrected count is zero. Both stay positive after the first observed exit.",
+    "qualification": "Official success requires zero penalties, so success and early-declaration predicates are unchanged.",
+    "physics": "Motion reads neither counter nor event log. Both implementations call mj_forward once; added bounds calculations do not mutate physics.",
+    "changed_metrics": "Failed-run penalty totals, objective returns and mean score may decrease."
+  },
+  "reproducibility": "Benchmark reports keep their original e2be32d commit and hashes. Historical event states should be resumed under their recorded source."
+}

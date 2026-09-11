@@ -42,19 +42,24 @@ def _inside(low, high, rectangle, tolerance=1e-9):
                 and np.all(high[:2] <= np.asarray(rectangle[2:]) + tolerance))
 
 
-def robot_fully_outside(model, data, metadata):
-    """Return whether any robot's complete collision AABB misses the field.
+def _robots_fully_outside(model, data, metadata):
+    """Return each robot's complete collision AABB exit status.
 
     This conservative test includes wheels, raised links, and extended jaws.
     A diagonal shape whose AABB still touches the field is counted as inside.
     """
     mujoco.mj_forward(model, data)
     x0, y0, x1, y1 = _default_rules()["geometry"]["field_bounds_xy"]
-    for gids in _robot_groups(model, metadata).values():
+    outside = {}
+    for name, gids in _robot_groups(model, metadata).items():
         low, high = _bounds(model, data, gids)
-        if high[0] < x0 or high[1] < y0 or low[0] > x1 or low[1] > y1:
-            return True
-    return False
+        outside[name] = bool(high[0] < x0 or high[1] < y0 or low[0] > x1 or low[1] > y1)
+    return outside
+
+
+def robot_fully_outside(model, data, metadata):
+    """Return whether any robot's complete collision AABB misses the field."""
+    return any(_robots_fully_outside(model, data, metadata).values())
 
 
 @lru_cache(maxsize=1)
@@ -171,28 +176,32 @@ def initialize_competition_events(model, data, metadata):
         raise ValueError("Competition event history can only start at time zero")
     setup = validate_initial_setup(model, data, metadata)
     metadata["competition_initial_setup"] = setup
+    outside = _robots_fully_outside(model, data, metadata)
     metadata["competition_events"] = {"robot_outside_count": 0, "human_intervention": False,
                                       "initial_setup_valid": setup["valid"],
-                                      "robot_was_fully_outside": robot_fully_outside(model, data, metadata),
+                                      "robot_was_fully_outside": any(outside.values()),
+                                      "robots_were_fully_outside": outside,
                                       "last_observed_time_s": 0.0, "events": []}
     return setup
 
 
 def update_competition_events(model, data, metadata, *, human_intervention=False):
-    """Call after each control step; count each inside-to-outside transition."""
+    """Call after each control step; count each robot's inside-to-outside transitions."""
     events = metadata["competition_events"]
-    if "robot_was_fully_outside" not in events:
+    if "robots_were_fully_outside" not in events:
         raise ValueError("Initialize competition event history before stepping")
     now = float(data.time)
     if now < events["last_observed_time_s"]:
         raise ValueError("Competition time moved backwards; initialize a new run")
-    outside = robot_fully_outside(model, data, metadata)
-    if outside and not events["robot_was_fully_outside"]:
-        events["robot_outside_count"] += 1
-        events["events"].append({"event": "robot_fully_outside", "time_s": now})
+    outside = _robots_fully_outside(model, data, metadata)
+    for name, is_outside in outside.items():
+        if is_outside and not events["robots_were_fully_outside"][name]:
+            events["robot_outside_count"] += 1
+            events["events"].append({"event": "robot_fully_outside", "robot": name, "time_s": now})
     if human_intervention and not events["human_intervention"]:
         events["human_intervention"] = True
         events["events"].append({"event": "human_intervention", "time_s": now})
-    events["robot_was_fully_outside"] = outside
+    events["robot_was_fully_outside"] = any(outside.values())
+    events["robots_were_fully_outside"] = outside
     events["last_observed_time_s"] = now
     return events
