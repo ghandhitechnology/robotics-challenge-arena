@@ -19,6 +19,8 @@ if __name__ == "__main__":
     parser.add_argument("--time-penalty-per-second", type=float, default=.5)
     parser.add_argument("--drive-limits", type=float, nargs=2, default=(.35, 2.5), metavar=("M_S", "RAD_S"))
     parser.add_argument("--drive-policy", help="exported weights.npz or its model directory")
+    parser.add_argument("--lab-drive-limits", type=float, nargs=2, metavar=("M_S", "RAD_S"))
+    parser.add_argument("--green-upper-first", action="store_true")
     args = vars(parser.parse_args())
     result = run(**args)
     print(json.dumps({key: result[key] for key in ("success", "declaration_seconds", "deployment_seconds", "failures", "wall_seconds")}, indent=2))

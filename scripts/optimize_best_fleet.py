@@ -19,6 +19,11 @@ sys.path.insert(0, str(ROOT))
 from arena_mujoco.best_mission import mission_sources, run
 
 SPEEDS = ((.35, 2.5), (.40, 2.75), (.42, 3.), (.42, 3.5), (.45, 3.5), (.48, 4.))
+PROFILES = [{"name": f"uniform_{speed[0]:g}_{speed[1]:g}", "limits": list(speed),
+             "lab_limits": None, "green_upper_first": False} for speed in SPEEDS]
+PROFILES += [{"name": f"fast_couriers_{speed[0]:g}_{speed[1]:g}", "limits": list(speed),
+              "lab_limits": [.35, 2.5], "green_upper_first": True}
+             for speed in ((.40, 2.75), (.45, 3.5), (.48, 4.))]
 
 
 def sources():
@@ -33,13 +38,15 @@ def save(path, value):
 
 
 def episode(task):
-    limits, seed = task
+    profile, seed = task
+    limits = profile["limits"]
     try:
-        report = run(seed=seed, randomize=True, drive_limits=limits)
+        report = run(seed=seed, randomize=True, drive_limits=limits,
+                     lab_drive_limits=profile["lab_limits"], green_upper_first=profile["green_upper_first"])
         initial = report["score_at_declaration"]
         final = report["score_after_five_seconds"]
         return {
-            "limits": list(limits), "seed": seed, "success": report["success"],
+            "profile": profile["name"], "limits": list(limits), "seed": seed, "success": report["success"],
             "score": min(initial["score"], final["score"]),
             "task_score": min(initial["task_score"], final["task_score"]),
             "declaration_seconds": report["declaration_seconds"],
@@ -55,7 +62,7 @@ def episode(task):
         }
     except Exception as error:
         # A failed simulator episode stays in the trial count and earns zero.
-        return {"limits": list(limits), "seed": seed, "success": False,
+        return {"profile": profile["name"], "limits": list(limits), "seed": seed, "success": False,
                 "score": 0, "task_score": 0, "declaration_seconds": 120.,
                 "failures": {}, "exception": f"{type(error).__name__}: {error}"}
 
@@ -73,6 +80,10 @@ def summary(rows):
         "mean_task_objective": float(np.mean([10 * row["score"] - .5 * row["declaration_seconds"] for row in rows])),
         "mean_success_seconds": float(np.mean(times)) if times else None,
         "p95_success_seconds": float(np.quantile(times, .95)) if times else None,
+        "maximum_tilt_degrees": float(np.degrees(max(
+            (max(row.get("max_tilt_rad", {}).values(), default=0.)
+             if isinstance(row.get("max_tilt_rad"), dict) else row.get("max_tilt_rad", 0.))
+            for row in rows))),
         "exceptions": sum(row.get("exception") is not None for row in rows),
     }
 
@@ -82,7 +93,7 @@ def main():
     parser.add_argument("mode", choices=("tune", "test"))
     parser.add_argument("--output", type=Path, default=ROOT / "output/best_design/search")
     parser.add_argument("--workers", type=int, default=12)
-    parser.add_argument("--episodes", type=int, help="defaults: 6 per speed for tuning, 100 for test")
+    parser.add_argument("--episodes", type=int, help="defaults: 6 per profile for tuning, 100 for test")
     parser.add_argument("--selection", type=Path)
     args = parser.parse_args()
     if args.workers < 1 or (args.episodes is not None and args.episodes < 1):
@@ -90,7 +101,7 @@ def main():
     source_hashes = sources()
     count = args.episodes or (6 if args.mode == "tune" else 100)
     if args.mode == "tune":
-        speeds = SPEEDS
+        profiles = PROFILES
         seeds = np.random.default_rng(202609115).integers(0, 1_000_000_000, count).tolist()
         selection = None
     else:
@@ -98,10 +109,10 @@ def main():
         selection = json.loads(selection_path.read_text())
         if selection["source_sha256"] != source_hashes:
             raise ValueError("Mission sources differ from speed selection; create a new tuning run")
-        speeds = (tuple(selection["selected_limits"]),)
+        profiles = (selection["selected_profile"],)
         seeds = np.random.default_rng(202609116).integers(1_000_000_000, 2_000_000_000, count).tolist()
     started = time.perf_counter()
-    tasks = [(speed, seed) for speed in speeds for seed in seeds]
+    tasks = [(profile, seed) for profile in profiles for seed in seeds]
     rows = []
     context = multiprocessing.get_context("spawn")
     with ProcessPoolExecutor(max_workers=args.workers, mp_context=context) as pool:
@@ -115,9 +126,9 @@ def main():
             print(json.dumps({"completed": len(rows), "total": len(tasks), **row}), flush=True)
     if sources() != source_hashes:
         raise RuntimeError("Mission sources changed during evaluation")
-    rows.sort(key=lambda row: (row["limits"], row["seed"]))
-    candidates = [{"limits": list(speed), **summary([row for row in rows if row["limits"] == list(speed)])}
-                  for speed in speeds]
+    rows.sort(key=lambda row: (row["profile"], row["seed"]))
+    candidates = [{**profile, **summary([row for row in rows if row["profile"] == profile["name"]])}
+                  for profile in profiles]
     result = {
         "method": "matched native mission parameter search" if args.mode == "tune" else "frozen held-out native mission test",
         "source_sha256": source_hashes,
@@ -132,6 +143,7 @@ def main():
             item["full_success_rate"], item["mean_score"], item["mean_task_objective"]))
         save(args.output / "selection.json", {
             "selected_limits": selected["limits"], "source_sha256": source_hashes,
+            "selected_profile": next(profile for profile in profiles if profile["name"] == selected["name"]),
             "selection_rule": "maximize full success rate, then mean official score, then score minus elapsed-time cost",
             "validation": selected, "tuning_seeds": seeds,
             "test_evaluation": "not run"})

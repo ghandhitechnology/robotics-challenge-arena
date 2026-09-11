@@ -158,7 +158,83 @@ def add_compact_robot(root, entry, shared):
                 wheel_track_m=.110, wheel_axle_y_m=0., lift_range_m=[0., .045],
                 initial_position_m=[*entry["start_xy_m"], .025],
                 grasp_center_body_m=[0., .065, -.0209])
+    if entry.get("front_anti_tip_caster"):
+        add_front_anti_tip_caster(root, base, meta, entry["front_anti_tip_caster"])
+    if entry.get("inspection_camera"):
+        add_inspection_camera(base, meta, entry["inspection_camera"])
     return meta
+
+
+def add_front_anti_tip_caster(root, base, metadata, component):
+    """Add a passive support with a small floor gap and no extra actuator."""
+    prefix = f"fleet_{metadata['id']}_"
+    rear = base.find(f"body[@name='{prefix}comp_caster_body']")
+    front = copy.deepcopy(rear)
+    for element in front.iter():
+        for key, value in list(element.attrib.items()):
+            if "caster" in value:
+                element.set(key, value.replace("caster", "front_caster"))
+    front.set("pos", numbers(component["center_body_m"]))
+    ball = front.find("geom")
+    ball.set("size", str(component["ball_radius_m"]))
+    ball.set("mass", str(component["mass_kg"]["ball"]))
+    base.append(front)
+    ET.SubElement(base, "geom", name=prefix + "robot_comp_front_caster_bracket", type="box",
+                  pos=numbers(component["bracket_center_body_m"]),
+                  size=numbers(np.asarray(component["bracket_size_m"]) / 2),
+                  mass=str(component["mass_kg"]["bracket"]), contype="4", conaffinity="7",
+                  rgba=".55 .60 .66 1")
+    ET.SubElement(base, "geom", name=prefix + "robot_comp_front_caster_housing", type="cylinder",
+                  pos=numbers(component["housing_center_body_m"]),
+                  size=numbers([component["housing_radius_m"], component["housing_half_height_m"]]),
+                  mass=str(component["mass_kg"]["housing"]), contype="4", conaffinity="7",
+                  rgba=".55 .60 .66 1")
+    for body in base.iter("body"):
+        if body is not front:
+            ET.SubElement(root.find("contact"), "exclude", body1=front.get("name"), body2=body.get("name"))
+    metadata["mass_kg"] += sum(component["mass_kg"].values())
+    metadata["front_anti_tip_caster"] = copy.deepcopy(component)
+
+
+def add_inspection_camera(base, metadata, component):
+    """Attach the calibrated downward camera and its explicit module mass."""
+    prefix = f"fleet_{metadata['id']}_"
+    carriage = base.find(f".//body[@name='{prefix}comp_lift_body']")
+    camera_name = prefix + "sample_inspection"
+    ET.SubElement(carriage, "camera", name=camera_name,
+                  pos=numbers(component["optical_center_carriage_m"]), quat="1 0 0 0",
+                  fovy=str(component["vertical_fov_degrees"]))
+    outer = np.asarray(component["module_size_m"], dtype=float)
+    aperture = np.asarray(component["clear_aperture_m"], dtype=float)
+    center = np.asarray(component["module_center_carriage_m"], dtype=float)
+    if np.any(aperture <= 0) or np.any(aperture >= outer[:2]):
+        raise ValueError("Camera aperture must fit strictly inside its module")
+    side_width = (outer[0] - aperture[0]) / 2
+    end_width = (outer[1] - aperture[1]) / 2
+    pieces = []
+    for sign, side in ((-1, "left"), (1, "right")):
+        size = np.array([side_width, outer[1], outer[2]])
+        position = center + [sign * (aperture[0] / 2 + side_width / 2), 0, 0]
+        pieces.append((side, position, size))
+    for sign, end in ((-1, "rear"), (1, "front")):
+        size = np.array([aperture[0], end_width, outer[2]])
+        position = center + [0, sign * (aperture[1] / 2 + end_width / 2), 0]
+        pieces.append((end, position, size))
+    volume = sum(float(np.prod(size)) for _, _, size in pieces)
+    frame_mass = component["mass_kg"] - component["backplate_mass_kg"]
+    for name, position, size in pieces:
+        ET.SubElement(carriage, "geom", name=prefix + "inspection_camera_frame_" + name,
+                      type="box", pos=numbers(position), size=numbers(size / 2),
+                      mass=str(frame_mass * float(np.prod(size)) / volume),
+                      rgba=".12 .16 .18 1", contype="4", conaffinity="7")
+    # The sensor board sits behind the optical center, clear of every forward ray.
+    ET.SubElement(carriage, "geom", name=prefix + "inspection_camera_backplate", type="box",
+                  pos=numbers(component["backplate_center_carriage_m"]),
+                  size=numbers(np.asarray(component["backplate_size_m"]) / 2),
+                  mass=str(component["backplate_mass_kg"]), rgba=".05 .27 .18 1",
+                  contype="4", conaffinity="7")
+    metadata["mass_kg"] += component["mass_kg"]
+    metadata["inspection_camera"] = {**copy.deepcopy(component), "camera_name": camera_name}
 
 
 def build_fleet(*, seed=0, randomize=False, only=None, timestep=.001):
@@ -192,7 +268,8 @@ class FleetSimulation:
 
     control_dt = .02
 
-    def __init__(self, *, seed=0, randomize=False, only=None, timestep=.001, drive_limits=(.35, 2.5)):
+    def __init__(self, *, seed=0, randomize=False, only=None, timestep=.001,
+                 drive_limits=(.35, 2.5), robot_drive_limits=None):
         self.drive_limits = np.asarray(drive_limits, dtype=float)
         if self.drive_limits.shape != (2,) or not np.isfinite(self.drive_limits).all() or np.any(self.drive_limits <= 0):
             raise ValueError("Drive limits must be two finite positive velocity limits")
@@ -201,6 +278,18 @@ class FleetSimulation:
         self.model = mujoco.MjModel.from_xml_string(self.xml)
         self.data = mujoco.MjData(self.model)
         self.robots = {r["id"]: r for r in self.metadata["robots"]}
+        overrides = robot_drive_limits or {}
+        if set(overrides) - set(self.robots):
+            raise ValueError("Drive-limit override names an absent robot")
+        self.robot_drive_limits = {}
+        for key in self.robots:
+            limits = np.asarray(overrides.get(key, self.drive_limits), dtype=float)
+            if limits.shape != (2,) or not np.isfinite(limits).all() or np.any(limits <= 0):
+                raise ValueError(f"Invalid drive limits for {key}")
+            self.robot_drive_limits[key] = limits.copy()
+        self.metadata["requested_drive_limits"]["by_robot"] = {
+            key: {"linear_m_s": float(value[0]), "yaw_rad_s": float(value[1])}
+            for key, value in self.robot_drive_limits.items()}
         rng = np.random.default_rng(seed + 711)
         self.motor_strength = {key: float(rng.uniform(.8, 1.)) if randomize else 1.
                                for key in self.robots}
@@ -244,7 +333,7 @@ class FleetSimulation:
         values = np.asarray([forward, yaw, lift, jaw], dtype=float)
         if not np.isfinite(values).all():
             raise ValueError("Nonfinite fleet command")
-        linear, yaw_limit = self.drive_limits
+        linear, yaw_limit = self.robot_drive_limits[key]
         self.targets[key] = np.clip(values, [-linear, -yaw_limit, 0., 0.], [linear, yaw_limit, .045, .025])
 
     def step(self, *, record=False):

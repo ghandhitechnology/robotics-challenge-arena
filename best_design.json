@@ -144,7 +144,88 @@
         0.95,
         1
       ],
-      "target_count": 3
+      "target_count": 3,
+      "front_anti_tip_caster": {
+        "ball_radius_m": 0.006,
+        "center_body_m": [
+          0,
+          0.02,
+          -0.0185
+        ],
+        "floor_clearance_m": 0.0005,
+        "bracket_center_body_m": [
+          0,
+          0.02,
+          -0.0025
+        ],
+        "bracket_size_m": [
+          0.016,
+          0.016,
+          0.005
+        ],
+        "housing_center_body_m": [
+          0,
+          0.02,
+          -0.01
+        ],
+        "housing_radius_m": 0.008,
+        "housing_half_height_m": 0.005,
+        "mass_kg": {
+          "ball": 0.012,
+          "bracket": 0.004,
+          "housing": 0.002
+        },
+        "purpose": "Passive forward anti-tip support. Ball and housing remain behind the laboratory plate edge at the 105 mm tool reach.",
+        "native_evidence": "front_caster_20mm_gap_full: 160 points at 117.88 s; 50 hold checks retain 160; LAB peak pitch 2.44 degrees."
+      },
+      "assembled_mass_budget_kg": 0.474,
+      "inspection_camera": {
+        "optical_center_carriage_m": [
+          0,
+          0,
+          0.0841
+        ],
+        "optical_axis_carriage": [
+          0,
+          0,
+          -1
+        ],
+        "vertical_fov_degrees": 58,
+        "module_center_carriage_m": [
+          0,
+          0,
+          0.08
+        ],
+        "module_size_m": [
+          0.025,
+          0.024,
+          0.006
+        ],
+        "mass_kg": 0.006,
+        "initial_optical_height_m": 0.1041,
+        "initial_module_height_range_m": [
+          0.097,
+          0.1061
+        ],
+        "native_module_collision_enabled": true,
+        "mount": "Four frame walls surround a 12 x 12 mm clear optical aperture. The sensor board is behind the optical center. Two light posts attach the module to the moving tool carriage.",
+        "validation": "Onboard camera coupons use the matching transform; final loaded full-fleet validation includes this 6 g mass.",
+        "clear_aperture_m": [
+          0.012,
+          0.012
+        ],
+        "backplate_center_carriage_m": [
+          0,
+          0,
+          0.0853
+        ],
+        "backplate_size_m": [
+          0.025,
+          0.024,
+          0.0016
+        ],
+        "backplate_mass_kg": 0.002
+      }
     },
     {
       "id": "red",
@@ -227,7 +308,7 @@
   },
   "alternatives": {
     "four_robots": "fewer computers and less traffic, but kit tasks serialize with patient transport",
-    "six_robots": "extra robot can split long patient routes but leaves no kit staging cell in this layout",
+    "six_robots": "A sixth 125 x 150 mm robot fits the vacant upper-left cell after kit preloading. It can split patient queues; two bounded native schedules failed due to KIT traffic, so no speed advantage is established.",
     "forty_modules": "connection alignment, magnet load path, electronics packaging and forty-way traffic dominate a120s task",
     "preloaded_kit_magazine": "Adopted as KIT baseline after sequential collection exceeded120s; physical three-gate drop tests required.",
     "vacuum_lab": "keeps annulus clear but needs wood leakage measurement, pressure sensing and pump volume; not baseline"

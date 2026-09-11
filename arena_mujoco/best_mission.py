@@ -41,7 +41,7 @@ class Driver:
 
     def tick(self, forward=0., heading=0., *, target=None, target_heading=None, precision=False):
         if self.policy is None or target is None or precision:
-            linear_limit, yaw_limit = self.sim.drive_limits
+            linear_limit, yaw_limit = self.sim.robot_drive_limits[self.key]
             v, yaw = linear_limit * math.tanh(forward / .055), yaw_limit * math.tanh(heading / .35)
             self.geometric_calls += 1
         else:
@@ -199,6 +199,10 @@ class Driver:
                       ("Cylinder_Green_04", "right", [1.08, .88], "right"),
                       ("Cylinder_Green_09", "right", [1.08, .76], "right")],
         }
+        if self.key == "green" and getattr(self.sim, "green_upper_first", False):
+            tasks["green"] = [("Cylinder_Green_10", "right", [1.08, 1.03], "right"),
+                              ("Cylinder_Green_09", "right", [1.08, .88], "right"),
+                              ("Cylinder_Green_04", "right", [1.08, .76], "right")]
         return tasks[self.key]
 
     def work(self, count=None):
@@ -221,7 +225,7 @@ class Driver:
                 self.phase = "wait for RED to clear west lane"
                 while "red" in self.peers and self.peers["red"].phase != "finished":
                     yield from self.tick()
-            if self.key == "green" and self.jobs_done == 1:
+            if self.key == "green" and name == "Cylinder_Green_04":
                 self.phase = "wait for LAB to clear lower right lane"
                 while "lab" in self.peers and self.peers["lab"].phase != "finished":
                     yield from self.tick()
@@ -268,11 +272,14 @@ class Driver:
 
 def run(*, seed=0, randomize=False, output=None, only=None, task_count=None,
         maximum_seconds=120., time_penalty_per_second=.5, drive_limits=(.35, 2.5),
-        drive_policy=None):
+        drive_policy=None, lab_drive_limits=None, green_upper_first=False):
     if not 0 <= time_penalty_per_second < 100 / 120:
         raise ValueError("Time cost must stay below the reward for one 10-point delivery over a full match")
     source_hashes = mission_sources()
-    sim = FleetSimulation(seed=seed, randomize=randomize, only=only, drive_limits=drive_limits)
+    overrides = {"lab": lab_drive_limits} if lab_drive_limits is not None else None
+    sim = FleetSimulation(seed=seed, randomize=randomize, only=only, drive_limits=drive_limits,
+                          robot_drive_limits=overrides)
+    sim.green_upper_first = green_upper_first
     sim.metadata["source_sha256"] = source_hashes
     if not sim.setup["valid"]:
         raise ValueError(sim.setup["errors"])
@@ -331,8 +338,14 @@ def run(*, seed=0, randomize=False, output=None, only=None, task_count=None,
         yield from driver.work(task_count)
     for key, driver in drivers.items():
         programs[key] = program(driver)
+    score_stop = False
     while programs and sim.data.time < maximum_seconds:
         advance(programs)
+        if round(sim.data.time / sim.control_dt) % 5 == 0:
+            current_score = sim.score()
+            if current_score["score"] == 160 and current_score["official_success"]:
+                score_stop = True
+                break
     deployment_time = max(sequencer.completed.values(), default=0.)
     declaration = float(sim.data.time)
     score = sim.score()
@@ -355,8 +368,13 @@ def run(*, seed=0, randomize=False, output=None, only=None, task_count=None,
               "controller_calls": {key: {"learned": driver.learned_calls, "geometric": driver.geometric_calls}
                                    for key, driver in drivers.items()},
               "requested_drive_limits": sim.metadata["requested_drive_limits"],
+              "green_upper_first": green_upper_first,
               "deployment_seconds": deployment_time, "departed": sequencer.completed, "declaration_seconds": declaration,
-              "completed_robots": completed, "unfinished_robots": list(programs), "failures": failures, "traffic_trace": traffic_trace,
+              "completed_robots": completed,
+              "unfinished_robots": [] if score_stop else list(programs),
+              "programs_stopped_after_full_score": list(programs) if score_stop else [],
+              "termination": "all160points_secured" if score_stop else ("time_limit" if programs else "programs_complete"),
+              "failures": failures, "traffic_trace": traffic_trace,
               "five_second_hold": {"sample_interval_s": .1, "samples": len(hold_checks), "minimum_score": min(check["score"] for check in hold_checks), "violations": hold_violations},
               "events": {key: driver.events for key, driver in drivers.items()},
               "score_at_declaration": score, "score_after_five_seconds": settled_score,
@@ -368,7 +386,9 @@ def run(*, seed=0, randomize=False, output=None, only=None, task_count=None,
                             "time_cost": -time_penalty_per_second * declaration,
                             "return": 10. * score["score"] - time_penalty_per_second * declaration,
                             "selection": "highest official score, then shortest declaration time"}}
-    report["success"] = bool(report["official_time_pass"] and not failures and not programs and not hold_violations and settled_score["task_score"] == 160)
+    report["success"] = bool(report["official_time_pass"] and not failures and
+                             (score_stop or not programs) and not hold_violations and
+                             settled_score["task_score"] == 160)
     report["source_sha256"] = source_hashes
     report["sources_stable_during_run"] = source_hashes == mission_sources()
     report["success"] = report["success"] and report["sources_stable_during_run"]
