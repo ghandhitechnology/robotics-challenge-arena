@@ -22,7 +22,7 @@ python3 -m venv .venv
 
 ## 시니어 예선 5대 분업 설계
 
-LAB, RED, YELLOW, KIT, GREEN이 16개 운반 과제를 나눠 수행합니다. 125 × 150 mm 로봇 5대를 출발 구역에 배치하고, KIT에 의료 키트 4개를 미리 싣습니다. LAB은 수평 확장 집게, 전방 보조 캐스터와 이동식 검사 카메라를 사용합니다. 최종 형상의 기본 물성 실행은 79.60초에 160점을 얻고 이후 5초 동안 점수를 유지했습니다.
+LAB, RED, YELLOW, KIT, GREEN이 16개 운반 과제를 나눠 수행합니다. 125 × 150 mm 로봇 5대를 출발 구역에 배치하고, KIT에 의료 키트 4개를 미리 싣습니다. LAB은 수평 확장 집게, 전방 보조 캐스터와 이동식 검사 카메라를 사용합니다. 출발 차선 예약과 내려놓기 확인을 적용한 기본 물성 실행은 81.10초에 160점을 얻고 이후 5초 동안 점수를 유지했습니다.
 
 ![5대 분업 설계](output/best_design/fleet_arena.png)
 
@@ -33,9 +33,9 @@ LAB, RED, YELLOW, KIT, GREEN이 16개 운반 과제를 나눠 수행합니다. 1
   --output output/best_design/reproduction
 ```
 
-G4에서 학습한 CNN은 독립 시험 영상 3,000장의 99.70%를 분류했습니다. 주행 정책은 시간 벌점을 초당 0.05에서 0.5로 높였으며, 독립 시험 목표 120개 중 119개에 도달했습니다. 전체 과제 실행에는 시뮬레이터 위치를 관측하는 기하 제어기를 사용합니다. RGB 기반 전체 과제 수행과 실물 성능은 별도로 검증해야 합니다.
+G4에서 학습한 CNN은 독립 시험 영상 3,000장의 99.70%를 분류했습니다. 최종 474 g LAB으로 시간 벌점 0.05/s와 0.5/s를 각각 학습했습니다. 검증 도달률은 40/40과 39/40이었으며, 도달률을 우선해 선택한 0.05/s 정책은 독립 시험 목표 120개 중 119개에 도달했습니다. 학습 정책을 결합한 전체 실행은 116.30초에 160점을 얻었습니다. 더 빠른 기본 실행에는 시뮬레이터 위치를 관측하는 기하 제어기를 사용합니다. RGB 기반 전체 과제 수행과 실물 성능은 별도로 검증해야 합니다.
 
-[구조와 운반 계획](docs/best_design_mechanics.md), [G4 학습·시간 비교](docs/best_design_training.md), [검사 카메라 검증](docs/best_onboard_sample_camera.md), [Blender 편집 파일](output/best_design/best_design.blend), [최종 시뮬레이션 영상](output/best_design/final_frame_160_top.mp4)을 제공합니다.
+[구조와 운반 계획](docs/best_design_mechanics.md), [G4 학습·시간 비교](docs/best_design_training.md), [검사 카메라 검증](docs/best_onboard_sample_camera.md), [Blender 편집 파일](output/best_design/best_design.blend), [최종 시뮬레이션 영상](output/best_design/validated_fleet_top.mp4)을 제공합니다.
 
 ## 시니어 예선 단일 로봇과 학습 정책
 

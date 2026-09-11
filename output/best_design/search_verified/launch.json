@@ -1,0 +1,27 @@
+{
+  "requested_ref": "a7e420d099ac78404725ab21154304d4775c98cc",
+  "resolved_commit": "a7e420d099ac78404725ab21154304d4775c98cc",
+  "checkout": "/content/robotics_fleet_search_a7e420d0",
+  "pid": 200477,
+  "started_at_utc": "2026-09-11T13:36:08Z",
+  "command": [
+    "/usr/bin/python3",
+    "scripts/optimize_best_fleet.py",
+    "tune",
+    "--output",
+    "output/best_design/search_verified",
+    "--workers",
+    "12",
+    "--profile",
+    "fast_couriers_0.48_4",
+    "--episodes",
+    "12",
+    "--seed",
+    "202609118"
+  ],
+  "workers": 12,
+  "episodes": 12,
+  "profile": "fast_couriers_0.48_4",
+  "seed": 202609118,
+  "output": "/content/robotics_fleet_search_a7e420d0/output/best_design/search_verified"
+}

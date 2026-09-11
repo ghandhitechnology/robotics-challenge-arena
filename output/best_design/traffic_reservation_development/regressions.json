@@ -1,0 +1,53 @@
+[
+  {
+    "success": true,
+    "failures": {},
+    "declaration_seconds": 80.30000000001937,
+    "departed": {
+      "lab": 10.059999999999864,
+      "red": 11.019999999999332,
+      "green": 12.679999999998412,
+      "yellow": 14.259999999997536,
+      "kit": 15.999999999996572
+    },
+    "sources_stable_during_run": true,
+    "seed": 1681844804,
+    "randomized": true,
+    "score": 160,
+    "hold_minimum": 160
+  },
+  {
+    "success": true,
+    "failures": {},
+    "declaration_seconds": 81.10000000002319,
+    "departed": {
+      "lab": 10.719999999999498,
+      "red": 11.559999999999032,
+      "green": 13.019999999998223,
+      "yellow": 14.819999999997226,
+      "kit": 16.519999999997207
+    },
+    "sources_stable_during_run": true,
+    "seed": 1811892436,
+    "randomized": true,
+    "score": 160,
+    "hold_minimum": 160
+  },
+  {
+    "success": true,
+    "failures": {},
+    "declaration_seconds": 81.10000000002319,
+    "departed": {
+      "lab": 10.899999999999398,
+      "red": 11.159999999999254,
+      "green": 13.059999999998201,
+      "yellow": 14.479999999997414,
+      "kit": 16.21999999999684
+    },
+    "sources_stable_during_run": true,
+    "seed": 0,
+    "randomized": false,
+    "score": 160,
+    "hold_minimum": 160
+  }
+]

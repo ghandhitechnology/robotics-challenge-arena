@@ -1,0 +1,26 @@
+{
+  "requested_ref": "bbc54c3",
+  "resolved_commit": "bbc54c3e797ebcefbcca60c7e94aade5b687f872",
+  "checkout": "/content/robotics_fleet_search_bbc54c3",
+  "pid": 194073,
+  "started_at_utc": "2026-09-11T13:32:03Z",
+  "command": [
+    "/usr/bin/python3",
+    "scripts/test_best_drive.py",
+    "--dataset",
+    "output/best_drive_final/dataset",
+    "--model",
+    "output/best_drive_final/model",
+    "--workers",
+    "24",
+    "--min-reach-rate",
+    ".95",
+    "--max-final-distance-m",
+    ".002"
+  ],
+  "workers": 24,
+  "expected_episodes": 120,
+  "output": "/content/robotics_fleet_search_bbc54c3/output/best_drive_final/model/test.json",
+  "model": "/content/robotics_fleet_search_bbc54c3/output/best_drive_final/model/weights.npz",
+  "dataset": "/content/robotics_fleet_search_bbc54c3/output/best_drive_final/dataset"
+}

@@ -1,0 +1,6 @@
+{
+  "artifact": "output/best_drive_final/model/weights.npz",
+  "artifact_sha256": "dbe14271f520a306e2bf11f2338f70ef72accf28d34fc8650a5371ef2a3cef8e",
+  "phase": "complete",
+  "selected_bc_dagger_round": 1
+}

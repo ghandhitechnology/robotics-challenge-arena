@@ -39,7 +39,7 @@ See `docs/best_vision.md` for the inference API and camera contract. The existin
 
 The exported network has eight observations: local goal position, final heading error, both wheel speeds and measured forward/yaw velocity. It outputs forward and yaw commands. The controller applies those commands through torque-limited wheels, with native floor contact at a 1 ms physics interval.
 
-Training includes forward lines, reverse lines and turns. Each episode varies wheel friction, motor strength and no-load speed. Two DAgger rounds label states reached by the current learner. PPO then compares the two time costs using actual native rollouts. The precision gate is 2 mm position error and 0.015 rad heading error within 12 seconds. This benchmark covers one unloaded LAB base in the center corridor.
+Training includes forward lines, reverse lines and turns. Each episode varies wheel friction, motor strength and no-load speed. Two DAgger rounds label states reached by the current learner. PPO then compares the two time costs using actual native rollouts. The precision gate is 2 mm position error and 0.015 rad heading error within 12 seconds. This first benchmark covers one unloaded 450 g LAB base in the center corridor, before the passive support and inspection camera additions.
 
 The G4 source snapshot is commit `9ce704984e89316e8d1acb29c69047f743feeeb5`:
 
@@ -69,6 +69,21 @@ The executed run took 442.1 seconds. Its initial dataset contains 73,002 native 
 The selected 0.5/s weights have SHA-256 `851484bad87154380fae57ee4a85717004ed4dc9b8cba1c153446314ecb8e047`. The independent final test reaches 119 of 120 targets, with a 95.43% Wilson lower confidence bound, 1.9864 mm position p95 and no terminal physical failures. Successful episodes average 2.8513 seconds. The teacher reaches 107 of the same 120 targets; its successful episodes average 1.6510 seconds. The learner improves precision reliability in this benchmark, while the teacher completes its successful trials faster.
 
 The first full-fleet hybrid trial, using learned coarse drive and geometric fine docking, scored 70 points. Its changed arrival times disrupted corridor sharing. The geometric fleet remains the validated mission controller. Both implementations and their results are retained for comparison.
+
+### Final 474 g drive retrain
+
+The final drive model was retrained after the passive support and inspection camera raised LAB to 474 g. The frozen native dataset has 72,562 transitions from 720 episodes. Two DAgger rounds added 44,834 and 29,098 learner-visited transitions. The three supervised phases ran for 200, 200 and 134 epochs. Each PPO candidate then ran 20 updates with 24 native episodes per update. Dataset generation and training took 637.1 seconds on G4.
+
+| Final validation candidate | Targets reached | Successful mean | Mean including timeouts | Position p95 |
+| --- | ---: | ---: | ---: | ---: |
+| PPO, time cost 0.05/s | 40/40 | 1.9245 s | 1.9245 s | 1.9838 mm |
+| PPO, time cost 0.5/s | 39/40 | 1.8821 s | 2.1350 s | 1.8999 mm |
+
+Selection keeps reach rate ahead of completion time, so the final export uses the 0.05/s candidate. Its SHA-256 is `dbe14271f520a306e2bf11f2338f70ef72accf28d34fc8650a5371ef2a3cef8e`. The requested 0.5/s checkpoint remains at `output/best_drive_final/model/ppo_requested.npz`; the selected checkpoint is also stored as `ppo_baseline.npz` and `weights.npz`. The matched comparison plot is `output/best_design/final_drive_time_penalty_comparison.png`.
+
+On the independent 120-episode test, the selected learner reached 119 targets. Its successful episodes averaged 2.020840 seconds and its final position error p95 was 1.979758 mm. The geometric teacher reached 118 targets and averaged 1.788644 seconds across its successful episodes. Neither controller had a terminal physical failure.
+
+The final hybrid fleet trial uses the learned network for coarse travel and the geometric controller for precision approach. It scored 160 at 116.30 seconds and retained 160 through all 50 hold checks. The report records 7,221 learned calls and 15,622 geometric calls. This was 35.2 seconds slower than the selected geometric mission's 81.10-second nominal run. The report and trajectory are under `output/best_design/final_learned_fleet_trial/`.
 
 ## RGB sample refinement
 
@@ -106,10 +121,18 @@ The 54 final tuning missions took 498.8 seconds on G4, using 12 native workers. 
 
 Mixed-speed profiles also use GREEN's upper-first route. Candidate speed and route changes therefore belong to one profile comparison. Successful-time means exclude failed episodes; the success and score columns retain every trial. Selection and complete episode records are in `output/best_design/search_final/`.
 
+The first independent 100-mission test achieved 97 full successes. Successful runs averaged 79.912 seconds, with 90.84 seconds p95. The Wilson lower 95% confidence bound was 91.548%. Two runs stopped at 60 points after YELLOW/KIT traffic conflicts. A third reached 160 but briefly fell to 150 during the final hold. No numerical exception occurred. The report's 158-point mean uses declaration/final endpoint scores; the mean using the minimum score across the hold is 157.9. The complete original test remains in `search_final/test.json`.
+
+Those failures motivated two changes. YELLOW now waits for RED to finish turning off the west lane, and KIT waits east of the crossing until both patient robots finish deployment. Declaration requires all 16 release events and 160 continuously for half a second while the robots continue retreating. The separate five-second hold remains unchanged. The revised nominal run finishes at 81.10 seconds, with a 16.22-second deployment and 7.161-degree peak fleet tilt. Both traffic development cases finish with 160, at 80.30 and 81.10 seconds. The separate transient-hold development case passes at 83.00 seconds.
+
+The repaired scheduler is commit `a7e420d099ac78404725ab21154304d4775c98cc`. Its evaluation uses a 12-seed check of the already-selected profile, followed by a new 100-seed test. Generator seeds are 202609118 and 202609117 respectively. The new test seeds have no overlap with the previous 100. Results belong under `output/best_design/search_verified/`; the previous test becomes development evidence for this revision.
+
+The 12 validation missions all passed, averaging 81.142 seconds. The following 100-seed test passed only 88 missions, averaging 82.713 seconds among successes, with 90.375 seconds p95. All 12 failures scored 120 after LAB dropped its first sample in transit. Source hashes matched all 14 frozen files, and no numerical exception occurred. This result exposes a regression in the revised scheduler and remains recorded in `search_verified/test.json` while its cause is investigated.
+
 ## Mechanical evidence and simulation limits
 
 The isolated LAB mechanism seated and released three samples for 30 points in 59.8 simulated seconds. The KIT gravity magazine released all four kits for 40 points in 39.44 seconds. Both recordings include a further five-second stable view. Their scenes retain the original arena objects, with only the tested robot present. Shared-fleet timing is measured separately.
 
 `scripts/capture_best_fleet.py` records saved native states at real-time speed and writes source hashes alongside the MP4. It does not interpolate robot or object poses. The clips in `output/best_design` show simulation playback.
 
-The dynamic model uses simplified collision shapes, a 450 g base mass budget and a 474 g LAB budget including its support and camera. Some mast and servo details in Blender are absent from the dynamic model. Tape is rigid, and motor/friction distributions are engineering estimates. Hardware measurement, camera calibration, loaded mechanism tests and repeated physical full-field runs are required to establish real competition performance. The finite searches and early stopping establish measured comparisons; they cannot establish that every possible design or optimization has been exhausted.
+The dynamic model uses simplified collision shapes, a 450 g base mass budget and a 474 g LAB budget including its support and camera. Some mast and servo details in Blender are absent from the dynamic model. Tape is rigid, motor/friction distributions are engineering estimates, and the full mission does not include communication or camera-processing delays. Hardware measurement, camera calibration, loaded mechanism tests and repeated physical full-field runs are required to establish real competition performance. The finite searches and early stopping establish measured comparisons; they cannot establish that every possible design or optimization has been exhausted.
