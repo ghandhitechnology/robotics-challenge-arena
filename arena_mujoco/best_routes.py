@@ -119,7 +119,10 @@ class DepartureSequencer:
                 clear_index = {"lab": 1, "red": 0, "yellow": 1, "kit": 1, "green": 0}[driver.key]
                 if index == clear_index:
                     self.cleared.append(driver.key)
-            if driver.key in ("red", "yellow"):
+            # KIT is already heading west through the reserved crossing. Its
+            # first job must continue west from .550, not return to the right
+            # corridor before crossing again beside LAB's sample delivery.
+            if driver.key in ("red", "yellow", "kit"):
                 driver.side = "left"
             self.completed[driver.key] = float(driver.sim.data.time)
         except (RuntimeError, FloatingPointError) as error:
