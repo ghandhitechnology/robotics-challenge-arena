@@ -47,7 +47,8 @@ def episode(task):
         final = report["score_after_five_seconds"]
         return {
             "profile": profile["name"], "limits": list(limits), "seed": seed, "success": report["success"],
-            "score": min(initial["score"], final["score"]),
+            "score": min(initial["score"], final["score"],
+                         report["five_second_hold"]["minimum_score"]),
             "task_score": min(initial["task_score"], final["task_score"]),
             "declaration_seconds": report["declaration_seconds"],
             "deployment_seconds": report["deployment_seconds"],
@@ -95,22 +96,29 @@ def main():
     parser.add_argument("--workers", type=int, default=12)
     parser.add_argument("--episodes", type=int, help="defaults: 6 per profile for tuning, 100 for test")
     parser.add_argument("--selection", type=Path)
+    parser.add_argument("--seed", type=int, help="episode generator seed; defaults differ between tuning and test")
+    parser.add_argument("--profile", action="append", choices=[profile["name"] for profile in PROFILES],
+                        help="restrict tuning to a named profile; repeat for multiple profiles")
     args = parser.parse_args()
     if args.workers < 1 or (args.episodes is not None and args.episodes < 1):
         parser.error("workers and episodes must be positive")
     source_hashes = sources()
     count = args.episodes or (6 if args.mode == "tune" else 100)
     if args.mode == "tune":
-        profiles = PROFILES
-        seeds = np.random.default_rng(202609115).integers(0, 1_000_000_000, count).tolist()
+        profiles = [profile for profile in PROFILES if not args.profile or profile["name"] in args.profile]
+        generator_seed = args.seed if args.seed is not None else 202609115
+        seeds = np.random.default_rng(generator_seed).integers(0, 1_000_000_000, count).tolist()
         selection = None
     else:
+        if args.profile:
+            parser.error("test profile must come from the frozen selection")
         selection_path = args.selection or args.output / "selection.json"
         selection = json.loads(selection_path.read_text())
         if selection["source_sha256"] != source_hashes:
             raise ValueError("Mission sources differ from speed selection; create a new tuning run")
         profiles = (selection["selected_profile"],)
-        seeds = np.random.default_rng(202609116).integers(1_000_000_000, 2_000_000_000, count).tolist()
+        generator_seed = args.seed if args.seed is not None else 202609116
+        seeds = np.random.default_rng(generator_seed).integers(1_000_000_000, 2_000_000_000, count).tolist()
     started = time.perf_counter()
     tasks = [(profile, seed) for profile in profiles for seed in seeds]
     rows = []
@@ -133,7 +141,8 @@ def main():
         "method": "matched native mission parameter search" if args.mode == "tune" else "frozen held-out native mission test",
         "source_sha256": source_hashes,
         "commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
-        "seeds": seeds, "randomized_physics": True, "candidates": candidates,
+        "seeds": seeds, "episode_generator_seed": generator_seed,
+        "randomized_physics": True, "candidates": candidates,
         "elapsed_seconds": time.perf_counter() - started, "episodes": rows,
         "controller": "geometric task planner and motor feedback",
     }

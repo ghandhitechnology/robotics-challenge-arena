@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Plot the executed matched PPO time-penalty comparison."""
+import argparse
 import json
 from pathlib import Path
 
@@ -10,7 +11,11 @@ import matplotlib.pyplot as plt
 
 def main():
     root = Path(__file__).resolve().parents[1]
-    report = json.loads((root / "output/best_drive/model/training.json").read_text())
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--training", type=Path, default=root / "output/best_drive/model/training.json")
+    parser.add_argument("--output", type=Path, default=root / "output/best_design/drive_time_penalty_comparison.png")
+    args = parser.parse_args()
+    report = json.loads(args.training.read_text())
     candidates = report["selection"]["ppo_time_penalty_candidates"]
     figure, axes = plt.subplots(1, 3, figsize=(13, 4.2), layout="constrained")
     colors = ("#777777", "#176a9a")
@@ -33,7 +38,8 @@ def main():
         axis.grid(axis="y", alpha=.2)
         axis.set_axisbelow(True)
     figure.suptitle("Stronger elapsed-time reward in native wheel-contact training", fontsize=14)
-    figure.savefig(root / "output/best_design/drive_time_penalty_comparison.png", dpi=170)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    figure.savefig(args.output, dpi=170)
 
 
 if __name__ == "__main__":

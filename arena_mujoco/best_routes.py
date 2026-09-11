@@ -68,6 +68,8 @@ class DepartureSequencer:
 
     The robots continue to their first pickup concurrently. ``completed`` records
     arrival at those endpoints; ``cleared`` controls the next start-cell release.
+    The west lane stays reserved until patient robots finish their off-lane
+    parking moves, including any controller retries.
     All moves use the shared native simulation clock and motor controller.
     """
     def __init__(self, keys: Iterable[str]):
@@ -100,6 +102,19 @@ class DepartureSequencer:
         driver.phase = "deploy"
         try:
             for index, waypoint in enumerate(departure_waypoints(driver.key, driver.sim.pose(driver.key)[0])):
+                # RED must finish turning off the west lane before YELLOW heads
+                # north. KIT waits on the east side of the crossing until both
+                # patient robots are parked, so it cannot catch a slow deployment
+                # or enter the space used by a departure controller's retry.
+                predecessors = {
+                    ("yellow", 4): ("red",),
+                    ("kit", 3): ("red", "yellow"),
+                }.get((driver.key, index), ())
+                while any(key in self.order and key not in self.completed for key in predecessors):
+                    self._check_failure()
+                    driver.phase = "wait for west lane departure clearance"
+                    yield from driver.tick()
+                driver.phase = "deploy"
                 yield from driver.line(waypoint.xy, heading=waypoint.heading)
                 clear_index = {"lab": 1, "red": 0, "yellow": 1, "kit": 1, "green": 0}[driver.key]
                 if index == clear_index:

@@ -339,11 +339,17 @@ def run(*, seed=0, randomize=False, output=None, only=None, task_count=None,
     for key, driver in drivers.items():
         programs[key] = program(driver)
     score_stop = False
+    full_score_since = None
     while programs and sim.data.time < maximum_seconds:
         advance(programs)
         if round(sim.data.time / sim.control_dt) % 5 == 0:
             current_score = sim.score()
-            if current_score["score"] == 160 and current_score["official_success"]:
+            released = {event["object"] for driver in drivers.values() for event in driver.events
+                        if event["event"] == "release"}
+            ready = (len(released) == 16 and current_score["score"] == 160
+                     and current_score["official_success"])
+            full_score_since = (float(sim.data.time) if full_score_since is None else full_score_since) if ready else None
+            if full_score_since is not None and sim.data.time - full_score_since >= .5 - 1e-9:
                 score_stop = True
                 break
     deployment_time = max(sequencer.completed.values(), default=0.)
@@ -374,6 +380,7 @@ def run(*, seed=0, randomize=False, output=None, only=None, task_count=None,
               "unfinished_robots": [] if score_stop else list(programs),
               "programs_stopped_after_full_score": list(programs) if score_stop else [],
               "termination": "all160points_secured" if score_stop else ("time_limit" if programs else "programs_complete"),
+              "full_score_confirmation_seconds": .5,
               "failures": failures, "traffic_trace": traffic_trace,
               "five_second_hold": {"sample_interval_s": .1, "samples": len(hold_checks), "minimum_score": min(check["score"] for check in hold_checks), "violations": hold_violations},
               "events": {key: driver.events for key, driver in drivers.items()},
