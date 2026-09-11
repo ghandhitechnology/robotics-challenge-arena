@@ -692,22 +692,27 @@ class BestDriveController:
         self.policy = policy
         self.key = key
         self.previous_pose = None
+        self.previous_time = None
 
     def reset(self, simulation: FleetSimulation) -> None:
         self.previous_pose = simulation.pose(self.key)
+        self.previous_time = float(simulation.data.time)
 
     def command(self, simulation: FleetSimulation, goal_xy: Iterable[float],
                 goal_heading: float) -> tuple[float, float]:
         pose_xy, heading = simulation.pose(self.key)
-        if self.previous_pose is None:
+        current_time = float(simulation.data.time)
+        elapsed = current_time - self.previous_time if self.previous_time is not None else 0.0
+        if self.previous_pose is None or elapsed <= 0:
             body_velocity = (0.0, 0.0)
         else:
             previous_xy, previous_heading = self.previous_pose
-            world_velocity = (pose_xy - previous_xy) / simulation.control_dt
+            world_velocity = (pose_xy - previous_xy) / elapsed
             forward_axis = np.array((math.cos(heading), math.sin(heading)))
             body_velocity = (float(np.dot(world_velocity, forward_axis)),
-                             wrap(heading - previous_heading) / simulation.control_dt)
+                             wrap(heading - previous_heading) / elapsed)
         self.previous_pose = (pose_xy.copy(), heading)
+        self.previous_time = current_time
         return self.policy.command(goal_xy, goal_heading, pose_xy, heading,
                                    _wheel_speeds(simulation, self.key), body_velocity)
 
@@ -752,7 +757,7 @@ def collect_ppo_rollouts(weights: str | Path, seeds: list[int], config: DriveCon
     } | {"status": [status for result in results for status in result["status"]]}
 
 
-def _evaluate_policy_chunk(payload: tuple[str, list[int], int, dict]) -> list[dict]:
+def _evaluate_policy_chunk(payload: tuple[str, list[int], int, dict, str]) -> list[dict]:
     weights, seeds, domain_seed, config_values, policy_kind = payload
     config = DriveConfig(**config_values)
     policy = BestDrivePolicy(weights) if policy_kind == "learned" else None

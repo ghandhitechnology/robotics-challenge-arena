@@ -192,8 +192,12 @@ class FleetSimulation:
 
     control_dt = .02
 
-    def __init__(self, *, seed=0, randomize=False, only=None, timestep=.001):
+    def __init__(self, *, seed=0, randomize=False, only=None, timestep=.001, drive_limits=(.35, 2.5)):
+        self.drive_limits = np.asarray(drive_limits, dtype=float)
+        if self.drive_limits.shape != (2,) or not np.isfinite(self.drive_limits).all() or np.any(self.drive_limits <= 0):
+            raise ValueError("Drive limits must be two finite positive velocity limits")
         self.xml, self.metadata = build_fleet(seed=seed, randomize=randomize, only=only, timestep=timestep)
+        self.metadata["requested_drive_limits"] = {"linear_m_s": float(self.drive_limits[0]), "yaw_rad_s": float(self.drive_limits[1]), "wheel_rad_s": 20.}
         self.model = mujoco.MjModel.from_xml_string(self.xml)
         self.data = mujoco.MjData(self.model)
         self.robots = {r["id"]: r for r in self.metadata["robots"]}
@@ -240,7 +244,8 @@ class FleetSimulation:
         values = np.asarray([forward, yaw, lift, jaw], dtype=float)
         if not np.isfinite(values).all():
             raise ValueError("Nonfinite fleet command")
-        self.targets[key] = np.clip(values, [-.35, -2.5, 0., 0.], [.35, 2.5, .045, .025])
+        linear, yaw_limit = self.drive_limits
+        self.targets[key] = np.clip(values, [-linear, -yaw_limit, 0., 0.], [linear, yaw_limit, .045, .025])
 
     def step(self, *, record=False):
         for _ in range(round(self.control_dt / self.model.opt.timestep)):
