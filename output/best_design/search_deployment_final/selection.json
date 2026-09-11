@@ -1,0 +1,84 @@
+{
+  "selected_limits": [
+    0.48,
+    4.0
+  ],
+  "source_sha256": {
+    "arena_spec.json": "26b10a4a5fc607ab58d1692d9fd9b4a2a466fd6bc789a7c9e7032066c5d4fbf1",
+    "best_design.json": "e1f7e2a01e4b3b548033d1fa822b3fd70e43338e45cf559cdd65767cc2740d19",
+    "competition_rules.json": "df44c749e89cdddb1e3d19535a4a13be4f7fb2623d7473dadfdd3d13be1fd1f0",
+    "arena_mujoco/best_fleet.py": "10e77a1665fb17a48d0291e3a837a989ccc325340fc003fd4f42052a88f70c8f",
+    "arena_mujoco/best_mission.py": "9e49311a8efaebec16b77dfe5e0a3b36f65f90b3a9d27eb01e1390b3b1afcc16",
+    "arena_mujoco/best_routes.py": "bc7d1ce9309b88e86295a96ae2cd74ff9dc79c81d441add3facfe79c66ade28a",
+    "arena_mujoco/best_drive.py": "2bace81fe619a1ce9ea3fbfac9e20cd2fda4b1683afbe71bbcec1ab4b28a6fb0",
+    "arena_mujoco/builder.py": "172b4405c59b2ac6ef7142bde3e16bcf2697fe6dd2908fcff4c421007313e51b",
+    "arena_mujoco/geometry.py": "ecf1faf8282dacfb4da7c8fbc9624fb6b5e4dd66c5e2e08f362b433567bd2ff8",
+    "arena_mujoco/materials.py": "266e9b21c4179cda5b05058f88d328ffb69c6b18032f9dee7164e80a866bd2af",
+    "arena_mujoco/competition_robot.py": "ad1045d570526b41582f19bf091111e039b5a516de65d1c706ee11e5b50c9773",
+    "arena_mujoco/competition_scoring.py": "f882c3a1a0510a2d02d66342ddaad68cf06556ae4ca9873feed2cc3cbfc740f4",
+    "arena_mujoco/competition_events.py": "f6841726d246047b8211bdb51a86964ee53630a21d59e9f9ef9f4e3ba4abb5e2",
+    "scripts/optimize_best_fleet.py": "3a7a80befb8bbe659d8c0e6edaf04a3f3a873b1fb2596478512bdf3d776be702"
+  },
+  "selected_profile": {
+    "name": "fast_couriers_0.48_4",
+    "limits": [
+      0.48,
+      4.0
+    ],
+    "lab_limits": [
+      0.35,
+      2.5
+    ],
+    "green_upper_first": true
+  },
+  "selection_rule": "maximize full success rate, then mean official score, then score minus elapsed-time cost",
+  "validation": {
+    "name": "fast_couriers_0.48_4",
+    "limits": [
+      0.48,
+      4.0
+    ],
+    "lab_limits": [
+      0.35,
+      2.5
+    ],
+    "green_upper_first": true,
+    "episodes": 24,
+    "full_success_rate": 1.0,
+    "wilson_lower_95": 0.8620194241710247,
+    "mean_score": 160.0,
+    "minimum_score": 160,
+    "mean_task_objective": 1559.1604166666536,
+    "mean_success_seconds": 81.67916666669261,
+    "p95_success_seconds": 89.85000000006497,
+    "maximum_tilt_degrees": 13.057370622854673,
+    "exceptions": 0
+  },
+  "tuning_seeds": [
+    199873468,
+    187281671,
+    124931867,
+    179154201,
+    89219882,
+    779206999,
+    834423271,
+    241865562,
+    862499816,
+    452364377,
+    541723648,
+    140921644,
+    857572167,
+    202985343,
+    36986298,
+    404561363,
+    745259749,
+    544548876,
+    683862377,
+    979018716,
+    197451146,
+    128756293,
+    147671618,
+    130253141
+  ],
+  "test_evaluation": "not run"
+}

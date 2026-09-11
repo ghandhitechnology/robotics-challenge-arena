@@ -1,0 +1,14 @@
+{
+  "source_commit": "e2be32d42e5dd0b8486881919f37c2d4a13cc419",
+  "source_files_verified": 14,
+  "episodes": 300,
+  "unique_seeds": 300,
+  "previous_seed_overlap": 0,
+  "successes": 299,
+  "failures": 1,
+  "test_sha256": "7d3e5c2d766dc570b3ab3154f98860ea53942433e7bb885bc7ff9626850e8cfc",
+  "protocol_sha256": "f83dd282d383151aa4a4126b4548d90838c6230a779248ee8b11853a94744ecb",
+  "subsequent_scoring_correction": "output/best_design/scoring_review.json",
+  "passed": true,
+  "scoring_review_sha256": "f8fcb5b3d3733bcc82840ae780b35eb875ea9de06936caf54f81eaaca7ec49e2"
+}

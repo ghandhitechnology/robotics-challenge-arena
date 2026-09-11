@@ -22,7 +22,7 @@ python3 -m venv .venv
 
 ## 시니어 예선 5대 분업 설계
 
-LAB, RED, YELLOW, KIT, GREEN이 16개 운반 과제를 나눠 수행합니다. 125 × 150 mm 로봇 5대를 출발 구역에 배치하고, KIT에 의료 키트 4개를 미리 싣습니다. LAB은 수평 확장 집게, 전방 보조 캐스터와 이동식 검사 카메라를 사용합니다. 출발 차선 예약과 내려놓기 확인을 적용한 기본 물성 실행은 81.10초에 160점을 얻고 이후 5초 동안 점수를 유지했습니다.
+LAB, RED, YELLOW, KIT, GREEN이 16개 운반 과제를 나눠 수행합니다. 125 × 150 mm 로봇 5대를 출발 구역에 배치하고, KIT에 의료 키트 4개를 미리 싣습니다. LAB은 수평 확장 집게, 전방 보조 캐스터와 이동식 검사 카메라를 사용합니다. 현재 선택한 기하 제어기는 KIT의 불필요한 교차로 왕복을 없애고, 출발 중 멈춘 무적재 RED·YELLOW·GREEN을 제한된 점 추종으로 복구합니다. 기본 물성 실행은 80.80초에 160점을 얻고 이후 5초 동안 점수를 유지했습니다. 동결한 `e2be32d` 소스의 무작위 최종 평가는 300회 중 299회를 성공했으며, 성공 실행의 평균은 80.684초, p95는 89.52초입니다. 성공률의 Wilson 95% 하한은 98.136%입니다.
 
 ![5대 분업 설계](output/best_design/fleet_arena.png)
 
@@ -33,9 +33,11 @@ LAB, RED, YELLOW, KIT, GREEN이 16개 운반 과제를 나눠 수행합니다. 1
   --output output/best_design/reproduction
 ```
 
-G4에서 학습한 CNN은 독립 시험 영상 3,000장의 99.70%를 분류했습니다. 최종 474 g LAB으로 시간 벌점 0.05/s와 0.5/s를 각각 학습했습니다. 검증 도달률은 40/40과 39/40이었으며, 도달률을 우선해 선택한 0.05/s 정책은 독립 시험 목표 120개 중 119개에 도달했습니다. 학습 정책을 결합한 전체 실행은 116.30초에 160점을 얻었습니다. 더 빠른 기본 실행에는 시뮬레이터 위치를 관측하는 기하 제어기를 사용합니다. RGB 기반 전체 과제 수행과 실물 성능은 별도로 검증해야 합니다.
+G4에서 CNN 정제 모델을 91 epoch 학습하고 66 epoch 체크포인트를 선택했습니다. 같은 데이터로 학습한 대조 모델은 33 epoch를 실행했습니다. 정제 모델은 독립 시험 영상 3,000장의 99.70%를 분류했습니다. 최종 474 g LAB으로 시간 벌점 0.05/s와 0.5/s를 각각 학습했습니다. 검증 도달률은 40/40과 39/40이었으며, 도달률을 우선해 선택한 0.05/s 정책은 독립 주행 시험 목표 120개 중 119개에 도달했습니다.
 
-[구조와 운반 계획](docs/best_design_mechanics.md), [G4 학습·시간 비교](docs/best_design_training.md), [검사 카메라 검증](docs/best_onboard_sample_camera.md), [Blender 편집 파일](output/best_design/best_design.blend), [최종 시뮬레이션 영상](output/best_design/validated_fleet_top.mp4)을 제공합니다.
+동결한 `e2be32d` 소스에서 학습 주행을 결합한 전체 실행은 120초에 140점으로 실패했습니다. LAB의 세 번째 샘플 직선 이동이 시간 초과되었고 GREEN은 완료하지 못했습니다. 116.30초와 117.90초에 160점을 얻은 이전 결합 실행은 과거 비교 자료로 보관합니다. 전체 과제에는 시뮬레이터 위치를 관측하는 기하 제어기를 선택했습니다. 임무 비교 목적함수는 `10 × 공식 점수 - 0.5 × 선언 시간(초)`입니다. RGB 기반 전체 과제 수행과 실물 성능은 별도로 검증해야 합니다.
+
+[구조와 운반 계획](docs/best_design_mechanics.md), [G4 학습·시간 비교](docs/best_design_training.md), [검사 카메라 검증](docs/best_onboard_sample_camera.md), [Blender 편집 파일](output/best_design/best_design.blend), [최신 기하 제어 시뮬레이션 영상](output/best_design/final_fleet_top.mp4), [최종 300회 평가 그래프](output/best_design/final_fleet_evaluation.png)를 제공합니다.
 
 ## 시니어 예선 단일 로봇과 학습 정책
 

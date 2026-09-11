@@ -1,0 +1,8 @@
+{
+  "test": "output/best_design/search_deployment_final/test.json",
+  "test_sha256": "7d3e5c2d766dc570b3ab3154f98860ea53942433e7bb885bc7ff9626850e8cfc",
+  "source_commit": "e2be32d42e5dd0b8486881919f37c2d4a13cc419",
+  "episodes": 300,
+  "successes": 299,
+  "image_sha256": "25ad614dd65874917a8bd99a16eea559eb6ad5c59453aaf7658b3ba45428487e"
+}

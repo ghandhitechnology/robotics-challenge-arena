@@ -31,13 +31,14 @@ def main():
     fig, axes = plt.subplots(1, 2, figsize=(12, 5), gridspec_kw={"width_ratios": [.9, 1.2]})
     fig.patch.set_facecolor("#faf8f3")
     axes[0].axis("off")
-    axes[0].text(0, .85, f"{successes}/{len(rows)}", fontsize=48, fontweight="bold", color="#1c7c82")
-    axes[0].text(0, .70, "Complete 160-point missions", fontsize=16)
+    axes[0].text(0, .90, f"{successes}/{len(rows)}", fontsize=48, fontweight="bold", color="#1c7c82")
+    axes[0].text(0, .76, "Complete 160-point missions", fontsize=16)
+    failures = len(rows) - successes
     details = (
         f"{100 * candidate['wilson_lower_95']:.2f}% Wilson 95% lower bound\n\n"
         f"{candidate['mean_success_seconds']:.2f} s mean successful time\n"
         f"{candidate['p95_success_seconds']:.2f} s successful time p95\n\n"
-        f"{len(rows) - successes} failed missions retained\n"
+        f"{failures} failed mission{'s' if failures != 1 else ''} retained\n"
         f"{candidate['exceptions']} numerical exceptions"
     )
     axes[0].text(0, .09, details, fontsize=13, linespacing=1.45, color="#29343b")

@@ -1,0 +1,21 @@
+{
+  "pid": 243332,
+  "started_utc": "2026-09-11T15:05:48.719904+00:00",
+  "commit": "e2be32d42e5dd0b8486881919f37c2d4a13cc419",
+  "command": [
+    "/usr/bin/python3",
+    "/content/robotics_fleet_deployment_final/scripts/optimize_best_fleet.py",
+    "test",
+    "--workers",
+    "24",
+    "--episodes",
+    "300",
+    "--seed",
+    "202609123",
+    "--selection",
+    "/content/robotics_fleet_deployment_final/output/best_design/search_deployment_final/selection.json",
+    "--output",
+    "/content/robotics_fleet_deployment_final/output/best_design/search_deployment_final"
+  ],
+  "selection_sha256": "a84f8818c0510ae27fb8729b02c3d5e2d36de064a82f6d3c5df215de52e55f70"
+}

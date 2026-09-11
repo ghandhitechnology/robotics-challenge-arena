@@ -21,5 +21,24 @@
     "physics": "Motion reads neither counter nor event log. Both implementations call mj_forward once; added bounds calculations do not mutate physics.",
     "changed_metrics": "Failed-run penalty totals, objective returns and mean score may decrease."
   },
-  "reproducibility": "Benchmark reports keep their original e2be32d commit and hashes. Historical event states should be resumed under their recorded source."
+  "reproducibility": "Benchmark reports keep their original e2be32d commit and hashes. Historical event states should be resumed under their recorded source.",
+  "corrected_nominal": {
+    "report": "output/best_design/corrected_scoring_nominal/report.json",
+    "success": true,
+    "declaration_seconds": 80.80000000002175,
+    "hold_samples": 50,
+    "minimum_hold_score": 160,
+    "trajectory_array_equality_with_frozen_benchmark": {
+      "time": true,
+      "qpos": true,
+      "qvel": true,
+      "command": true
+    },
+    "sources_stable": true
+  },
+  "frozen_test_score_audit": {
+    "episodes": 300,
+    "every_minimum_score_is_positive_and_equals_task_score": true,
+    "interpretation": "All frozen episodes retain zero exit penalties; the subsequent exit-counter correction does not change the reported scores in this particular test."
+  }
 }
