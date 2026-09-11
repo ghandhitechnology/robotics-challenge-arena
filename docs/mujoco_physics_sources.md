@@ -93,6 +93,10 @@ The native contact cone provides sticking and sliding under one coefficient; it 
 
 Use a task-scale rigid support and wooden bodies unless their flexure is observed to matter; retain exact collision shape, mass and inertia. Treat paper coating, paint, dust, humidity, application dwell and temperature as recorded episode conditions that modify fitted parameters. This recommendation assumes indoor conditions and does not include heat conduction, electrical breakdown or chemical ageing dynamics. Surface wear, paper delamination and PVC tearing need explicit state/model coverage when those outcomes enter the intended training regime.
 
+## Competition world solver settings
+
+The preliminary competition run used a stiffer contact regime than the arena defaults: Newton solver, elliptic friction cone, `impratio` 100 and 1 ms steps with rigid tape. `profiles/competition.json` carries those values. Rigid pair contacts that involve a collider marked `grip_pad` use `solref=".003 1"` and `solimp=".90 .99 .0003"`.
+
 ## Numerical validation and RL backend
 
 Keep shell thickness, collision radius, tape mass and bond strength independent. A larger collision radius changes the obstacle a wheel feels. Do not increase tape mass to cure instability. Custom bond forces passed through `qfrc_applied` are not automatically made implicit by `implicitfast`; test the fastest bond mode or integrate the bond response implicitly. Start with small timesteps and halve the timestep and mesh spacing until peel force, sliding distance and curl height converge within a declared tolerance. Confirm that damage dissipates energy and that a block placed on intact tape top experiences no tensile attachment.

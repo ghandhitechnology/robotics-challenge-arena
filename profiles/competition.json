@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "status": "Contact regime validated with the rigid-tape preliminary competition run.",
+  "timestep_s": 0.001,
+  "solver": {
+    "solver": "Newton",
+    "cone": "elliptic",
+    "impratio": 100
+  }
+}

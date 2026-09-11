@@ -34,9 +34,11 @@ def build_arena(config="senior_preliminary", *, tape_mode="flex", robot=True,
     thickness, density = dim["tape_thickness"]*.001, p["wood_density_kg_m3"]
     root = ET.Element("mujoco", model="robotics_challenge_arena")
     ET.SubElement(root, "compiler", angle="radian", autolimits="true", balanceinertia="false")
-    ET.SubElement(root, "option", timestep=str(p["timestep_s"]), gravity=f"0 0 {-p['gravity_m_s2']}",
+    option = ET.SubElement(root, "option", timestep=str(p["timestep_s"]), gravity=f"0 0 {-p['gravity_m_s2']}",
                   integrator="implicitfast", solver="CG", iterations="80", tolerance="1e-9",
                   cone="pyramidal", jacobian="sparse")
+    for key, value in p.get("solver", {}).items():
+        option.set(key, str(value))
     ET.SubElement(root, "size", memory="256M")
     visual = ET.SubElement(root, "visual")
     ET.SubElement(visual, "global", offwidth="1280", offheight="960")
@@ -155,19 +157,23 @@ def build_arena(config="senior_preliminary", *, tape_mode="flex", robot=True,
                      for strip in metadata["tape_strips"])
     # Explicit rigid pairs preserve independently measured surface coefficients.
     # This also makes each wall tunable without engine max-friction mixing.
+    robot_geoms = {item["name"] for item in metadata.get("robot",{}).get("colliders",[])}
     for i,first in enumerate(geoms):
         for second in geoms[i+1:]:
             if first["body"]==second["body"] or not(first["dynamic"] or second["dynamic"]):
                 continue
-            if first["name"].startswith("robot_") and second["name"].startswith("robot_"):
+            if first["name"] in robot_geoms and second["name"] in robot_geoms:
                 continue
             values = list(material_pair(p,first["material"],second["material"]))
             side=first["wall"] or second["wall"]
             if side:
                 values=[v*p["wall_friction_scale"][side] for v in values]
             name=f"dry_{len(pairs):05d}"
+            grip_contact = first.get("grip_pad",False) or second.get("grip_pad",False)
+            pair_solref = ".003 1" if grip_contact else solref
+            pair_solimp = ".90 .99 .0003" if grip_contact else solimp
             ET.SubElement(contacts,"pair",name=name,geom1=first["name"],geom2=second["name"],
-                          condim="6",friction=numbers(friction5(values)),solref=solref,solimp=solimp,adhesion="0")
+                          condim="6",friction=numbers(friction5(values)),solref=pair_solref,solimp=pair_solimp,adhesion="0")
             pairs.append({"name":name,"geom1":first["name"],"geom2":second["name"],"parameters":values})
     metadata["rigid_geoms"] = geoms
     ET.indent(root)

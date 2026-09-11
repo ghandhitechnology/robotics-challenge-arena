@@ -49,12 +49,21 @@ def _merge(base, override):
             base[key] = copy.deepcopy(value)
 
 
+SOLVER_KEYS = {"solver", "cone", "iterations", "ls_iterations", "tolerance", "impratio"}
+
+
 def load_profile(profile=None, *, seed=None, randomize=False):
     result = copy.deepcopy(DEFAULT_PROFILE)
     if isinstance(profile, (str, Path)):
         profile = json.loads(Path(profile).read_text())
     if profile:
         _merge(result, profile)
+    solver = result.get("solver", {})
+    if not isinstance(solver, dict):
+        raise ValueError("solver must be an object of MuJoCo option values")
+    unknown = sorted(set(solver) - SOLVER_KEYS)
+    if unknown:
+        raise ValueError(f"solver: unsupported option keys {unknown}")
     if randomize:
         rng = np.random.default_rng(seed)
         r = result["randomization"]
